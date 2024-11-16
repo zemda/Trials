@@ -47,11 +47,10 @@ func handle_wall_jump():
 	if ((Input.is_action_just_pressed("move_left")) or 
 		(Input.is_action_just_pressed("move_right"))
 		) :
+			velocity.x = wall_normal.x * movement_data.speed / 2
 			if Input.is_action_pressed("move_up"):
-				velocity.x = wall_normal.x * movement_data.speed / 2
 				velocity.y = movement_data.jump_velocity * 0.7
 			elif Input.is_action_pressed("move_down"): # TODO: when falling down deal dmg to player, with this he can counter it
-				velocity.x = wall_normal.x * movement_data.speed / 2
 				velocity.y = movement_data.jump_velocity * 0.1
 
 
@@ -86,6 +85,7 @@ func handle_air_acceleration(input_axis, delta):
 		return
 	if input_axis:
 		velocity.x = move_toward(velocity.x, movement_data.speed * input_axis, movement_data.air_acceleration * delta)
+
 
 func update_animations(input_axis):
 	if input_axis:

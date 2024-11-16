@@ -78,8 +78,8 @@ animations = [{
 "speed": 7.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_3qnvl"]
-height = 34.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lnte8"]
+size = Vector2(20, 31)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rk5ob"]
 size = Vector2(14.5, 31.5)
@@ -101,8 +101,8 @@ animation = &"idle"
 frame_progress = 0.826549
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -14)
-shape = SubResource("CapsuleShape2D_3qnvl")
+position = Vector2(0, -12.5)
+shape = SubResource("RectangleShape2D_lnte8")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -50)
