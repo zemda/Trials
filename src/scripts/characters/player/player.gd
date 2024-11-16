@@ -3,6 +3,10 @@ extends CharacterBody2D
 @export var movement_data : PlayerMovementData
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var start_pos = global_position # TODO: later checkpoint or something
+@onready var wall_jump_timer: Timer = $WallJumpTimer
+
+var last_wall_normal = Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
 	apply_gravity(delta)
@@ -17,8 +21,14 @@ func _physics_process(delta: float) -> void:
 	apply_air_resistance(input_axis, delta)
 	
 	update_animations(input_axis)
-
+	
+	var was_on_wall = is_on_wall_only()
+	if was_on_wall:
+		last_wall_normal = get_wall_normal()
 	move_and_slide()
+	var just_left_wall = was_on_wall and not is_on_wall()
+	if just_left_wall:
+		wall_jump_timer.start()
 
 
 func apply_gravity(delta):
@@ -27,16 +37,21 @@ func apply_gravity(delta):
 
 
 func handle_wall_jump():
-	if not is_on_wall_only():
+	if not is_on_wall_only() and wall_jump_timer.time_left <= 0.0:
 		return
+	
 	var wall_normal = get_wall_normal()
+	if wall_jump_timer.time_left > 0:
+		wall_normal = last_wall_normal
+	
 	if ((Input.is_action_just_pressed("move_left")) or 
 		(Input.is_action_just_pressed("move_right"))
 		) :
-			velocity.x = wall_normal.x * movement_data.speed
-			if Input.is_action_pressed("move_up"):	
+			if Input.is_action_pressed("move_up"):
+				velocity.x = wall_normal.x * movement_data.speed / 2
 				velocity.y = movement_data.jump_velocity * 0.7
 			elif Input.is_action_pressed("move_down"): # TODO: when falling down deal dmg to player, with this he can counter it
+				velocity.x = wall_normal.x * movement_data.speed / 2
 				velocity.y = movement_data.jump_velocity * 0.1
 
 
@@ -81,3 +96,7 @@ func update_animations(input_axis):
 		
 	if not is_on_floor():
 		animated_sprite_2d.play("jump")
+
+
+func _on_hazard_detector_area_entered(area: Area2D) -> void:
+	global_position = start_pos # TODO: this insta "kills" the player, later health

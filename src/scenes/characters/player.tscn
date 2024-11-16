@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cftmvn5pjp8ac"]
+[gd_scene load_steps=15 format=3 uid="uid://cftmvn5pjp8ac"]
 
 [ext_resource type="Script" path="res://scripts/characters/player/player.gd" id="1_8qk58"]
 [ext_resource type="Texture2D" uid="uid://dsqxdfviphsn" path="res://assets/sprites/player/playerT.png" id="2_ekgkp"]
@@ -79,11 +79,14 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_3qnvl"]
-radius = 29.0
-height = 82.0
+height = 34.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rk5ob"]
+size = Vector2(14.5, 31.5)
 
 [node name="Player" type="CharacterBody2D"]
 position = Vector2(0, -4)
+collision_layer = 2
 floor_constant_speed = true
 floor_max_angle = 1.0472
 floor_snap_length = 4.0
@@ -91,16 +94,33 @@ script = ExtResource("1_8qk58")
 movement_data = ExtResource("2_ssmf6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(-9.53674e-07, -44)
-scale = Vector2(4.775, 4.775)
+position = Vector2(1.90735e-06, -18)
+scale = Vector2(2.1, 2.1)
 sprite_frames = SubResource("SpriteFrames_gl4yw")
 animation = &"idle"
 frame_progress = 0.826549
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1, -37)
+position = Vector2(0, -14)
 shape = SubResource("CapsuleShape2D_3qnvl")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(0, -120)
+position = Vector2(0, -50)
 zoom = Vector2(0.8, 0.8)
+process_callback = 0
+position_smoothing_enabled = true
+position_smoothing_speed = 15.0
+
+[node name="HazardDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HazardDetector"]
+position = Vector2(0, -13)
+shape = SubResource("RectangleShape2D_rk5ob")
+
+[node name="WallJumpTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[connection signal="area_entered" from="HazardDetector" to="." method="_on_hazard_detector_area_entered"]
