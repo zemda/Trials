@@ -27,6 +27,7 @@ window/stretch/mode="canvas_items"
 [global_group]
 
 Hookable="Objects that can be use as a hook point"
+Wrapable=""
 
 [input]
 
@@ -68,6 +69,7 @@ shoot={
 2d_physics/layer_3="Hazards"
 2d_physics/layer_4="Enemies"
 2d_physics/layer_5="Hook"
+2d_physics/layer_6="Rope"
 
 [rendering]
 
