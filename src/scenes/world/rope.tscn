@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3 uid="uid://dfhxu3p84uj6j"]
+
+[ext_resource type="Script" path="res://scripts/world/rope.gd" id="1_51abu"]
+[ext_resource type="PackedScene" uid="uid://bjyv05n4r5dl" path="res://scenes/world/rope_segment.tscn" id="2_5uudj"]
+[ext_resource type="PackedScene" uid="uid://bka861vxagua" path="res://scenes/world/hook.tscn" id="3_53bfx"]
+
+[node name="Rope" type="Node2D"]
+script = ExtResource("1_51abu")
+segment_scene = ExtResource("2_5uudj")
+hook = ExtResource("3_53bfx")

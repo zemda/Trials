@@ -13,19 +13,19 @@ script = ExtResource("1_ti01y")
 
 [node name="Links" type="Sprite2D" parent="."]
 texture_repeat = 2
-position = Vector2(0, -1)
-scale = Vector2(0.42, 0.35)
+position = Vector2(2, -2)
+scale = Vector2(0.5225, 0.460063)
 texture = ExtResource("1_ls45g")
 centered = false
 offset = Vector2(-8, 14)
 region_enabled = true
-region_rect = Rect2(0, 0, 16, 16)
+region_rect = Rect2(0, 0, 8, 16)
 
 [node name="Tip" type="CharacterBody2D" parent="."]
 collision_layer = 16
 
 [node name="Hook" type="Sprite2D" parent="Tip"]
-position = Vector2(-0.2, -1)
+position = Vector2(4.47035e-08, -1)
 scale = Vector2(0.2625, 0.3)
 texture = ExtResource("2_pm0tc")
 offset = Vector2(0, 8)
