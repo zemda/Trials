@@ -6,14 +6,44 @@ extends CharacterBody2D
 @onready var start_pos = global_position # TODO: later checkpoint or something
 @onready var wall_jump_timer: Timer = $WallJumpTimer
 
+const CHAIN_PULL = 25
+const SWING_DAMPING = 0.9
+
+var chain_velocity = Vector2.ZERO
+var custom_velocity = Vector2.ZERO
+
 var last_wall_normal = Vector2.ZERO
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.pressed:
+			$Chain.shoot(get_global_mouse_position())
+		else:
+			$Chain.release()
+
 
 func _physics_process(delta: float) -> void:
 	apply_gravity(delta)
 	handle_wall_jump()
 	handle_jump()
-	
 	var input_axis := Input.get_axis("move_left", "move_right")
+	
+	
+	# Hook ---------------------------------------------------------
+	if $Chain.hooked:
+		chain_velocity = to_local($Chain.tip_position).normalized() * CHAIN_PULL
+		if chain_velocity.y > 0:
+			chain_velocity.y *= 0.55
+		else:
+			chain_velocity.y *= 1.65
+		if sign(chain_velocity.x) != sign(input_axis):
+			chain_velocity.x *= 0.7
+	else:
+		chain_velocity = Vector2(0,0)
+	velocity += chain_velocity
+	
+	# -------------------------------------------------------------------
 	
 	handle_acceleration(input_axis, delta)
 	handle_air_acceleration(input_axis, delta)

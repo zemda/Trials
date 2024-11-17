@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://cftmvn5pjp8ac"]
+[gd_scene load_steps=16 format=3 uid="uid://cftmvn5pjp8ac"]
 
 [ext_resource type="Script" path="res://scripts/characters/player/player.gd" id="1_8qk58"]
 [ext_resource type="Texture2D" uid="uid://dsqxdfviphsn" path="res://assets/sprites/player/playerT.png" id="2_ekgkp"]
 [ext_resource type="Resource" uid="uid://d07icyh40egpk" path="res://resources/player/DefaultMovementData.tres" id="2_ssmf6"]
+[ext_resource type="PackedScene" uid="uid://b8p6vkkri6gum" path="res://scenes/characters/hook/chain.tscn" id="4_bbe10"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g3yig"]
 atlas = ExtResource("2_ekgkp")
@@ -105,7 +106,7 @@ position = Vector2(0, -12.5)
 shape = SubResource("RectangleShape2D_lnte8")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(0, -50)
+position = Vector2(0, -37)
 zoom = Vector2(0.8, 0.8)
 process_callback = 0
 position_smoothing_enabled = true
@@ -122,5 +123,9 @@ shape = SubResource("RectangleShape2D_rk5ob")
 [node name="WallJumpTimer" type="Timer" parent="."]
 wait_time = 0.1
 one_shot = true
+
+[node name="Chain" parent="." instance=ExtResource("4_bbe10")]
+visible = false
+position = Vector2(0, -37)
 
 [connection signal="area_entered" from="HazardDetector" to="." method="_on_hazard_detector_area_entered"]
