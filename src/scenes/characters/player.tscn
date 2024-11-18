@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/characters/player/player.gd" id="1_8qk58"]
 [ext_resource type="Texture2D" uid="uid://dsqxdfviphsn" path="res://assets/sprites/player/playerT.png" id="2_ekgkp"]
 [ext_resource type="Resource" uid="uid://d07icyh40egpk" path="res://resources/player/DefaultMovementData.tres" id="2_ssmf6"]
-[ext_resource type="PackedScene" uid="uid://b8p6vkkri6gum" path="res://scenes/characters/hook/chain.tscn" id="4_bbe10"]
+[ext_resource type="PackedScene" uid="uid://b8p6vkkri6gum" path="res://scenes/characters/hook/grappling_hook.tscn" id="4_bbe10"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g3yig"]
 atlas = ExtResource("2_ekgkp")
@@ -124,7 +124,7 @@ shape = SubResource("RectangleShape2D_rk5ob")
 wait_time = 0.1
 one_shot = true
 
-[node name="Chain" parent="." instance=ExtResource("4_bbe10")]
+[node name="GrapplingHook" parent="." instance=ExtResource("4_bbe10")]
 visible = false
 position = Vector2(0, -37)
 

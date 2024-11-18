@@ -18,9 +18,9 @@ var last_wall_normal = Vector2.ZERO
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed:
-			$Chain.shoot(get_global_mouse_position())
+			$GrapplingHook.shoot(get_global_mouse_position(), self)
 		else:
-			$Chain.release()
+			$GrapplingHook.release()
 
 
 func _physics_process(delta: float) -> void:
@@ -29,21 +29,7 @@ func _physics_process(delta: float) -> void:
 	handle_jump()
 	var input_axis := Input.get_axis("move_left", "move_right")
 	
-	
-	# Hook ---------------------------------------------------------
-	if $Chain.hooked:
-		chain_velocity = to_local($Chain.tip_position).normalized() * CHAIN_PULL
-		if chain_velocity.y > 0:
-			chain_velocity.y *= 0.55
-		else:
-			chain_velocity.y *= 1.65
-		if sign(chain_velocity.x) != sign(input_axis):
-			chain_velocity.x *= 0.7
-	else:
-		chain_velocity = Vector2(0,0)
-	velocity += chain_velocity
-	
-	# -------------------------------------------------------------------
+	handle_grappling_hook(input_axis)
 	
 	handle_acceleration(input_axis, delta)
 	handle_air_acceleration(input_axis, delta)
@@ -59,6 +45,22 @@ func _physics_process(delta: float) -> void:
 	var just_left_wall = was_on_wall and not is_on_wall()
 	if just_left_wall:
 		wall_jump_timer.start()
+
+
+func handle_grappling_hook(input_axis) -> void:
+	if $GrapplingHook.hooked:
+		var direction_to_anchor = ($GrapplingHook.global_position - global_position).normalized()
+		chain_velocity = direction_to_anchor * CHAIN_PULL
+
+		if chain_velocity.y > 0:
+			chain_velocity.y *= 0.55
+		else:
+			chain_velocity.y *= 1.65
+		if sign(chain_velocity.x) != sign(input_axis):
+			chain_velocity.x *= 0.7
+	else:
+		chain_velocity = Vector2.ZERO
+	velocity += chain_velocity
 
 
 func apply_gravity(delta):
