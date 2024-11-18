@@ -125,7 +125,6 @@ wait_time = 0.1
 one_shot = true
 
 [node name="GrapplingHook" parent="." instance=ExtResource("4_bbe10")]
-visible = false
 position = Vector2(0, -37)
 
 [connection signal="area_entered" from="HazardDetector" to="." method="_on_hazard_detector_area_entered"]
