@@ -1,27 +1,37 @@
 extends Node2D
 
 @onready var tip: CharacterBody2D = $Tip
+@onready var rope: Line2D = $Rope
 
 const SPEED = 30
-const HOOK_PULL_SPEED = 400.0
 
 var direction := Vector2.ZERO
 var tip_position := Vector2.ZERO
 
 var flying = false
 var hooked = false
-var player: CharacterBody2D = null
 
+func _ready():
+	rope.width = 3
+	rope.default_color = Color(1, 1, 1)
+	rope.visible = false
+	tip.visible = false
 
-func _process(_delta: float) -> void:
-	self.visible = flying or hooked
-	if not self.visible:
+func _process(delta: float) -> void:
+	if not flying and not hooked:
+		rope.visible = false
+		tip.visible = false
+		rope.points = []
 		return
-	
-	rotation = (tip_position - global_position).angle()
 
+	rope.visible = true
+	tip.visible = true
 
-func _physics_process(_delta: float) -> void:
+	var player_pos = get_parent().global_position - global_position
+	var tip_pos = tip.global_position - global_position
+	rope.points = [player_pos, tip_pos]
+
+func _physics_process(delta: float) -> void:
 	if flying:
 		var collision = tip.move_and_collide(direction * SPEED)
 		if collision:
@@ -35,24 +45,25 @@ func _physics_process(_delta: float) -> void:
 				flying = false
 	if hooked:
 		tip.global_position = tip_position
-		if player:
-			var pull_direction = (tip_position - player.global_position).normalized()
-			player.velocity = pull_direction * HOOK_PULL_SPEED
 
-
-func shoot(target_position: Vector2, player_ref: CharacterBody2D) -> void:
-	player = player_ref
+func shoot(target_position: Vector2) -> void:
+	global_position = get_parent().global_position
 	direction = (target_position - global_position).normalized()
 	
 	if direction.angle() > deg_to_rad(45) and direction.angle() < deg_to_rad(135):
 		return
+	
 	flying = true
 	hooked = false
 	tip_position = global_position
 	tip.global_position = global_position
-
+	tip.visible = true
+	rope.visible = true
+	rope.points = []
 
 func release() -> void:
 	flying = false
 	hooked = false
-	player = null
+	tip.visible = false
+	rope.visible = false
+	rope.points = []

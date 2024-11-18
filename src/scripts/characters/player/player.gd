@@ -18,7 +18,7 @@ var last_wall_normal = Vector2.ZERO
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed:
-			$GrapplingHook.shoot(get_global_mouse_position(), self)
+			$GrapplingHook.shoot(get_global_mouse_position())
 		else:
 			$GrapplingHook.release()
 
@@ -49,9 +49,10 @@ func _physics_process(delta: float) -> void:
 
 func handle_grappling_hook(input_axis) -> void:
 	if $GrapplingHook.hooked:
-		var direction_to_anchor = ($GrapplingHook.global_position - global_position).normalized()
+		print("Hooked")
+		var direction_to_anchor = ($GrapplingHook.tip_position - global_position).normalized()
 		chain_velocity = direction_to_anchor * CHAIN_PULL
-
+		print("Vel: ", chain_velocity)
 		if chain_velocity.y > 0:
 			chain_velocity.y *= 0.55
 		else:

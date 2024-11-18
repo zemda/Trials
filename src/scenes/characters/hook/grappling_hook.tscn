@@ -22,3 +22,7 @@ offset = Vector2(0, 8)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Tip"]
 position = Vector2(0, -1)
 shape = SubResource("CircleShape2D_wgomj")
+
+[node name="Rope" type="Line2D" parent="."]
+points = PackedVector2Array(0, 4)
+width = 20.0
