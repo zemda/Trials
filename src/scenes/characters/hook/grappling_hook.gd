@@ -2,8 +2,8 @@ extends Node2D
 
 @onready var tip: CharacterBody2D = $Tip
 
-const SPEED = 25
-const HOOK_PULL_SPEED = 350.0
+const SPEED = 30
+const HOOK_PULL_SPEED = 400.0
 
 var direction := Vector2.ZERO
 var tip_position := Vector2.ZERO
