@@ -24,7 +24,6 @@ texture = ExtResource("1")
 position = Vector2(0, 17)
 node_a = NodePath("..")
 bias = 0.9
-softness = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("1")

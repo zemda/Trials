@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://d1ascia0wibrl"]
+[gd_scene load_steps=7 format=4 uid="uid://d1ascia0wibrl"]
 
 [ext_resource type="Script" path="res://levels/test_main_map.gd" id="1_6j0a2"]
 [ext_resource type="PackedScene" uid="uid://cftmvn5pjp8ac" path="res://scenes/characters/player.tscn" id="2_lfv6r"]
@@ -6,13 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://cutu0gftlve2p" path="res://levels/level_tile_map.tscn" id="4_5rt4o"]
 [ext_resource type="PackedScene" uid="uid://dfhxu3p84uj6j" path="res://scenes/world/rope.tscn" id="5_gcflu"]
 [ext_resource type="PackedScene" uid="uid://bcd4ejkx5feex" path="res://scenes/world/rope_manuall.tscn" id="6_mitek"]
-[ext_resource type="PackedScene" uid="uid://b1unhik2gekuu" path="res://scenes/world/rope/Rope.tscn" id="7_wfn4k"]
 
 [node name="TestMainMap" type="Node2D"]
 script = ExtResource("1_6j0a2")
 
 [node name="Player" parent="." groups=["Wrapable"] instance=ExtResource("2_lfv6r")]
-position = Vector2(-1107, -182)
+position = Vector2(-1033, -180)
 
 [node name="Spikes" parent="." instance=ExtResource("3_60050")]
 position = Vector2(271, 82)
@@ -35,8 +34,3 @@ position = Vector2(-123, -489)
 
 [node name="RopeManuall" parent="Map" instance=ExtResource("6_mitek")]
 position = Vector2(-1268, -268)
-
-[node name="Rope" parent="." instance=ExtResource("7_wfn4k")]
-position = Vector2(-1100, -336)
-rotation = -1.5708
-scale = Vector2(0.5, 0.5)

@@ -1,9 +1,15 @@
-[gd_scene load_steps=16 format=3 uid="uid://cftmvn5pjp8ac"]
+[gd_scene load_steps=22 format=3 uid="uid://cftmvn5pjp8ac"]
 
 [ext_resource type="Script" path="res://scripts/characters/player/player.gd" id="1_8qk58"]
 [ext_resource type="Texture2D" uid="uid://dsqxdfviphsn" path="res://assets/sprites/player/playerT.png" id="2_ekgkp"]
 [ext_resource type="Resource" uid="uid://d07icyh40egpk" path="res://resources/player/DefaultMovementData.tres" id="2_ssmf6"]
 [ext_resource type="PackedScene" uid="uid://b8p6vkkri6gum" path="res://scenes/characters/hook/grappling_hook.tscn" id="4_bbe10"]
+[ext_resource type="Script" path="res://fsm/fsm.gd" id="5_v7uqt"]
+[ext_resource type="Script" path="res://states/state_idle.gd" id="6_vsldh"]
+[ext_resource type="Script" path="res://states/state_run.gd" id="7_md3qu"]
+[ext_resource type="Script" path="res://states/state_jump.gd" id="8_cvfmw"]
+[ext_resource type="Script" path="res://states/state_grappling.gd" id="9_ujpwe"]
+[ext_resource type="Script" path="res://states/state_swinging.gd" id="10_bcgbv"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g3yig"]
 atlas = ExtResource("2_ekgkp")
@@ -88,9 +94,6 @@ size = Vector2(14.5, 31.5)
 [node name="Player" type="CharacterBody2D"]
 position = Vector2(0, -4)
 collision_layer = 2
-floor_constant_speed = true
-floor_max_angle = 1.0472
-floor_snap_length = 4.0
 script = ExtResource("1_8qk58")
 movement_data = ExtResource("2_ssmf6")
 
@@ -126,5 +129,27 @@ one_shot = true
 
 [node name="GrapplingHook" parent="." instance=ExtResource("4_bbe10")]
 position = Vector2(0, -37)
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(0, -13)
+
+[node name="FSM" type="Node" parent="."]
+script = ExtResource("5_v7uqt")
+default_state_path = NodePath("state_idle")
+
+[node name="state_idle" type="Node" parent="FSM"]
+script = ExtResource("6_vsldh")
+
+[node name="state_run" type="Node" parent="FSM"]
+script = ExtResource("7_md3qu")
+
+[node name="state_jump" type="Node" parent="FSM"]
+script = ExtResource("8_cvfmw")
+
+[node name="state_grappling" type="Node" parent="FSM"]
+script = ExtResource("9_ujpwe")
+
+[node name="state_swinging" type="Node" parent="FSM"]
+script = ExtResource("10_bcgbv")
 
 [connection signal="area_entered" from="HazardDetector" to="." method="_on_hazard_detector_area_entered"]
