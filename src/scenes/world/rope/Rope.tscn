@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://b1unhik2gekuu"]
+[gd_scene load_steps=6 format=3 uid="uid://b1unhik2gekuu"]
 
 [ext_resource type="Script" path="res://scenes/world/rope/Rope.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://balv4c8mitmbu" path="res://scenes/world/rope/Segment.tscn" id="2"]
@@ -6,6 +6,10 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nbod2"]
 size = Vector2(7, 7)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_aacnp"]
+radius = 13.0
+height = 286.0
 
 [node name="Rope" type="Node2D"]
 z_index = -1
@@ -69,7 +73,7 @@ node_b = NodePath("../../Segment7")
 
 [node name="Player1_Joint" type="PinJoint2D" parent="."]
 z_index = -1
-position = Vector2(-271, -15)
+position = Vector2(-259, -15)
 node_a = NodePath("../Segments/Segment8")
 bias = 0.9
 softness = 1.0
@@ -84,6 +88,18 @@ shape = SubResource("RectangleShape2D_nbod2")
 position = Vector2(5.84126e-06, 1.19209e-07)
 scale = Vector2(2.25, 2.25)
 texture = ExtResource("3_i08pj")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-133, -16)
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_aacnp")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
 
 [editable path="Segments/Segment"]
 [editable path="Segments/Segment2"]
