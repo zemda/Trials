@@ -1,45 +1,83 @@
 extends Node2D
 
-var player
 var anchor
 var linked := false
 
 
-@export var pull_factor = 5
-@export var minimum_distance = 15
+@export var pull_factor = 7
+@export var minimum_distance = 22
+
+
+var player_in_range := false
+var player = null
 
 
 func _ready():
-	link_player_to_anchor()
+	link_segments_to_anchor()
+
 
 func _physics_process(delta):
 	if linked:
 		enforce_rope_constraints(delta)
+		if Input.is_action_just_pressed("rope"):
+			print("unlinking")
+			unlink_player()
+	elif player_in_range:
+		if Input.is_action_just_pressed("rope"):
+			print("Linking")
+			link_player_to_rope()
 
-func link_player_to_anchor():
-	await get_tree().process_frame
-	
-	player = get_parent().get_node("Player")
+
+func link_segments_to_anchor():
 	anchor = $Anchor
-	
-	# connect player to the last segment
-	$Player1_Joint.node_b = player.get_path()
-	
-	# connect anchor
 	var first_segment = $Segments.get_child(0)
 	var first_segment_join = first_segment.get_node("PinJoint2D")
 	first_segment_join.node_b = anchor.get_path()
 	
+	
+func link_player_to_rope():
+	await get_tree().process_frame
+	player.is_attached_to_rope = true
+	# TODO: will create new joint here
+	$Player1_Joint.node_b = player.get_path()
 	linked = true
 
+
+func unlink_player():
+	linked = false
+	player.is_attached_to_rope = false
+	#$Player1_Joint.queue_free() ->since cant assign null to node_b, TODO creating new joint, prolly fix this when i will generate whole rope based on segment count. also when i will use smaller segments
+
+
 func enforce_rope_constraints(delta: float):
-	var player_position = player.global_position
-	var anchor_position = anchor.global_position
 	var rope_length = $Segments.get_child_count() * minimum_distance
 
-	var current_distance = player_position.distance_to(anchor_position)
-	if current_distance > rope_length:
-		var direction = (anchor_position - player_position).normalized()
+	var rope_vector =  player.global_position - anchor.global_position
+	var current_distance = rope_vector.length()
+	var direction = rope_vector.normalized()
+	var distance_difference = current_distance - rope_length
 
-		var pull_force = direction * (current_distance - rope_length) * pull_factor * delta
-		player.velocity += pull_force
+	if distance_difference > 0:
+		var k = 100.0
+		var damping = 10.0
+
+		var spring_force = -k * distance_difference * direction
+
+		var relative_velocity_along_rope = player.velocity.dot(direction) * direction
+		var damping_force = -damping * relative_velocity_along_rope
+
+		var total_force = spring_force + damping_force
+
+		player.velocity += total_force * delta
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.is_in_group("Player"):
+		print("entered area")
+		player_in_range = true
+		player = body
+
+
+func _on_area_2d_body_exited(body: Node2D) -> void:
+	if body.is_in_group("Player") && !linked:
+		player_in_range = false

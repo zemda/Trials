@@ -34,7 +34,10 @@ func is_on_floor_override() -> bool:
 
 func apply_gravity(delta):
 	if not is_on_floor_override():
-		velocity += get_gravity() * delta * movement_data.gravity_scale
+		if is_attached_to_rope:
+			velocity += get_gravity() * delta * movement_data.gravity_scale * 0.3
+		else:
+			velocity += get_gravity() * delta * movement_data.gravity_scale
 
 
 func handle_acceleration(input_axis, delta):

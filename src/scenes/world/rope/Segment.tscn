@@ -8,8 +8,7 @@ radius = 3.0
 height = 26.0
 
 [node name="Segment" type="RigidBody2D"]
-modulate = Color(1, 0, 0, 0.686275)
-collision_layer = 0
+collision_layer = 32
 gravity_scale = 0.2
 contact_monitor = true
 max_contacts_reported = 1
