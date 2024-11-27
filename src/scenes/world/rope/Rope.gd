@@ -16,6 +16,8 @@ var attached_segment_index := -1
 var rest_check_delay = 7
 var rest_check_timer = null
 
+var attaching_to_rope := false
+
 @onready var anchor := $Anchor
 
 
@@ -24,9 +26,11 @@ func _ready():
 	connect_segment_signals_to_rope()
 
 
-# TODO: NEXT UPDATE - DONT LINK TO THE LAST SEGMENT BUT THE CLOSEST TO WHERE PLAYER JUMPED
-# AND FIX SMOOTH ATTACHMENT TO THE ROPE
 func _physics_process(delta):
+	if attaching_to_rope:
+		smooth_attach_to_rope(delta)
+		return
+	
 	if linked:
 		enforce_rope_constraints(delta)
 		handle_rope_swing_input(delta)
@@ -41,6 +45,26 @@ func _physics_process(delta):
 			if rest_check_timer:
 				rest_check_timer.queue_free()
 				rest_check_timer = null
+
+
+func smooth_attach_to_rope(delta: float):
+	var attached_segment = $Segments.get_child(attached_segment_index)
+	var target_position = attached_segment.global_position + Vector2(0, 15)
+
+	var direction_to_target = (target_position - player.global_position).normalized()
+	var distance_to_target = player.global_position.distance_to(target_position)
+
+	var max_force = 100000
+	var force = direction_to_target * min(distance_to_target * 500, max_force)
+	player.velocity += force * delta
+
+	var damping = 0.5
+	player.velocity *= pow(damping, delta * 60)
+
+	if distance_to_target < 2:
+		player.global_position = target_position
+		player.velocity = Vector2.ZERO
+		attaching_to_rope = false
 
 
 func generate_segments():
@@ -75,6 +99,7 @@ func link_player_to_rope():
 	if attached_segment_index != -1:
 		player.is_attached_to_rope = true
 		linked = true
+		attaching_to_rope = true
 
 
 func unlink_player_from_rope():
@@ -84,7 +109,8 @@ func unlink_player_from_rope():
 	var attached_segment = $Segments.get_child(attached_segment_index)
 	var boost = Vector2(attached_segment.linear_velocity.x * 1.7, -250)
 	attached_segment_index = -1
-	
+
+	boost.x = clamp(boost.x, -260, 260)
 	player.velocity = Vector2.ZERO
 	player.velocity += boost
 
