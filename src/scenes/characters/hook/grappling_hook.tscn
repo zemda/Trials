@@ -26,3 +26,5 @@ shape = SubResource("CircleShape2D_wgomj")
 [node name="Rope" type="Line2D" parent="."]
 points = PackedVector2Array(0, 4)
 width = 20.0
+
+[node name="RayCast2D" type="RayCast2D" parent="."]

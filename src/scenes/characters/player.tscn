@@ -98,6 +98,7 @@ script = ExtResource("1_8qk58")
 movement_data = ExtResource("2_ssmf6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 1
 position = Vector2(1.90735e-06, -18)
 scale = Vector2(2.1, 2.1)
 sprite_frames = SubResource("SpriteFrames_gl4yw")
@@ -128,7 +129,6 @@ wait_time = 0.1
 one_shot = true
 
 [node name="GrapplingHook" parent="." instance=ExtResource("4_bbe10")]
-position = Vector2(0, -37)
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(0, -13)
