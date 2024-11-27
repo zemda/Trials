@@ -1,83 +1,160 @@
 extends Node2D
 
-var anchor
-var linked := false
+const MINIMUM_DISTANCE = 8
 
+@export var segment_count: int = 5
+@export var segment_spacing: float = 6.0
+@export var segment_scene: PackedScene
 
-@export var pull_factor = 7
-@export var minimum_distance = 22
-
-
-var player_in_range := false
 var player = null
+var player_in_range := false
+var linked := false
+var player_detected_segments_cnt := 0
+var segments = []
+
+var rest_check_delay = 7
+var rest_check_timer = null
+
+@onready var anchor := $Anchor
 
 
 func _ready():
-	link_segments_to_anchor()
+	generate_segments()
+	connect_segment_signals_to_rope()
 
 
+# TODO: NEXT UPDATE - DONT LINK TO THE LAST SEGMENT BUT THE CLOSEST TO WHERE PLAYER JUMPED
+# AND FIX SMOOTH ATTACHMENT TO THE ROPE
 func _physics_process(delta):
 	if linked:
 		enforce_rope_constraints(delta)
+		handle_rope_swing_input(delta)
+		
 		if Input.is_action_just_pressed("rope"):
-			print("unlinking")
-			unlink_player()
+			unlink_player_from_rope()
+			adjust_still_rope()
+		
 	elif player_in_range:
 		if Input.is_action_just_pressed("rope"):
-			print("Linking")
 			link_player_to_rope()
+			if rest_check_timer:
+				rest_check_timer.queue_free()
+				rest_check_timer = null
+			
 
 
-func link_segments_to_anchor():
-	anchor = $Anchor
-	var first_segment = $Segments.get_child(0)
-	var first_segment_join = first_segment.get_node("PinJoint2D")
-	first_segment_join.node_b = anchor.get_path()
+func generate_segments():
+	for segment in segments:
+		segment.queue_free()
+	segments.clear()
 	
-	
+	var previous_node = anchor
+	for i in range(segment_count):
+		var segment = segment_scene.instantiate()
+		$Segments.add_child(segment)
+		segments.append(segment)
+
+		segment.position = Vector2(0, 3 + i * segment_spacing)
+
+		var pin_joint = segment.get_node("PinJoint2D")
+		pin_joint.node_a = segment.get_path()
+		pin_joint.node_b = previous_node.get_path()
+		
+		previous_node = segment
+
+
+func connect_segment_signals_to_rope():
+	for segment in $Segments.get_children():
+		segment.connect("player_entered_segment", Callable(self, "_on_segment_player_entered"))
+		segment.connect("player_exited_segment", Callable(self, "_on_segment_player_exited"))
+
+
 func link_player_to_rope():
-	await get_tree().process_frame
 	player.is_attached_to_rope = true
-	# TODO: will create new joint here
-	$Player1_Joint.node_b = player.get_path()
 	linked = true
 
 
-func unlink_player():
+func set_segments_damping(linear_damp, angular_damp):
+	for segment in $Segments.get_children():
+		segment.linear_damp = linear_damp
+		segment.angular_damp = angular_damp
+
+
+func unlink_player_from_rope():
 	linked = false
 	player.is_attached_to_rope = false
-	#$Player1_Joint.queue_free() ->since cant assign null to node_b, TODO creating new joint, prolly fix this when i will generate whole rope based on segment count. also when i will use smaller segments
+	
+	var last_segment = $Segments.get_child($Segments.get_child_count() - 1)
+	var boost = Vector2(last_segment.linear_velocity.x * 1.7, -250)
+	player.velocity = Vector2.ZERO
+	player.velocity += boost
+
+
+func adjust_still_rope():
+	rest_check_timer = Timer.new()
+	rest_check_timer.wait_time = rest_check_delay
+	rest_check_timer.one_shot = true
+	rest_check_timer.connect("timeout", Callable(self, "_on_rest_check_timer_timeout"))
+	add_child(rest_check_timer)
+	rest_check_timer.start()
+
+
+func _on_rest_check_timer_timeout():
+	set_segments_damping(50, 50)
+	rest_check_timer.queue_free()
+	rest_check_timer = null
 
 
 func enforce_rope_constraints(delta: float):
-	var rope_length = $Segments.get_child_count() * minimum_distance
+	var rope_length = $Segments.get_child_count() * MINIMUM_DISTANCE
 
-	var rope_vector =  player.global_position - anchor.global_position
-	var current_distance = rope_vector.length()
-	var direction = rope_vector.normalized()
-	var distance_difference = current_distance - rope_length
+	for segment_index in range($Segments.get_child_count() - 1, -1, -1):
+		var segment = $Segments.get_child(segment_index)
+		segment.linear_damp = 1
+		segment.angular_damp = 1
+		var next_segment = null
+		if segment_index > 0:
+			next_segment = $Segments.get_child(segment_index - 1)
 
-	if distance_difference > 0:
-		var k = 100.0
-		var damping = 10.0
+		if next_segment:
+			var distance = segment.global_position.distance_to(next_segment.global_position)
+			var direction = (next_segment.global_position - segment.global_position).normalized()
+			var stretch = distance - MINIMUM_DISTANCE
 
-		var spring_force = -k * distance_difference * direction
+			# Adjust stiffness and damping based on stretch
+			var stiffness = lerp(50, 800, abs(stretch) / MINIMUM_DISTANCE)
+			var damping = lerp(2, 8, abs(stretch) / MINIMUM_DISTANCE)
 
-		var relative_velocity_along_rope = player.velocity.dot(direction) * direction
-		var damping_force = -damping * relative_velocity_along_rope
+			# Apply spring force
+			var spring_force = -stiffness * stretch * direction
+			segment.apply_force(spring_force, Vector2.ZERO)
 
-		var total_force = spring_force + damping_force
+			# Apply damping force
+			var relative_velocity = next_segment.linear_velocity - segment.linear_velocity
+			var damping_force = -damping * relative_velocity.dot(direction) * direction
+			segment.apply_force(damping_force, Vector2.ZERO)
 
-		player.velocity += total_force * delta
+
+func handle_rope_swing_input(delta: float):
+	var last_segment = $Segments.get_child($Segments.get_child_count() - 1)
+	player.global_position = last_segment.global_position + Vector2(0,20)
+	
+	var input_axis = Input.get_axis("move_left", "move_right")
+	if input_axis != 0:
+		var swing_force = Vector2(input_axis * 180000, 0)
+		last_segment.apply_force(swing_force, Vector2.ZERO)
+	last_segment.apply_torque_impulse(input_axis * 1500)
 
 
-func _on_area_2d_body_entered(body: Node2D) -> void:
-	if body.is_in_group("Player"):
-		print("entered area")
+func _on_segment_player_entered(player_body: Node):
+	if player_body.is_in_group("Player"):
+		player_detected_segments_cnt += 1
 		player_in_range = true
-		player = body
+		player = player_body
 
 
-func _on_area_2d_body_exited(body: Node2D) -> void:
-	if body.is_in_group("Player") && !linked:
-		player_in_range = false
+func _on_segment_player_exited(player_body: Node):
+	if player_body.is_in_group("Player"):
+		player_detected_segments_cnt -= 1
+		if player_detected_segments_cnt == 0:
+			player_in_range = false

@@ -1,11 +1,19 @@
 extends RigidBody2D
 
-var colliding : bool
-
-const color = [Color.TRANSPARENT, Color.GREEN]
+signal player_entered_segment
+signal player_exited_segment
 
 func _ready():
-	mass = 10
-	linear_damp = 5
-	angular_damp = 5
-	pass
+	mass = 150
+	linear_damp = 50
+	angular_damp = 50
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.is_in_group("Player"):
+		emit_signal("player_entered_segment", body)
+
+
+func _on_area_2d_body_exited(body: Node2D) -> void:
+	if body.is_in_group("Player"):
+		emit_signal("player_exited_segment", body)

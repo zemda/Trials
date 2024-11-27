@@ -10,7 +10,6 @@ const SWING_DAMPING = 100.0
 
 func update(delta):
 	host.on_floor_override = false
-	handle_swinging_input(delta)
 	host.apply_gravity(delta)
 	handle_jump()
 	host.update_animations(0)
@@ -35,25 +34,3 @@ func handle_jump():
 	else:
 		if Input.is_action_just_released("move_up") and host.velocity.y < -140 / 2:
 			host.velocity.y = -140 / 2.0
-
-
-func handle_swinging_input(delta):
-	var input_axis = Input.get_axis("move_left", "move_right")
-	var rope = host.get_parent().get_node_or_null("Rope")
-	
-	if rope:
-		var player_position = host.global_position
-		var anchor_position = rope.anchor.global_position
-		var rope_vector = player_position - anchor_position
-		var angle = atan2(rope_vector.y, rope_vector.x)
-		var desired_angle = deg_to_rad(-90)
-		var angle_difference = angle - desired_angle
-
-		if input_axis != 0:
-			host.velocity.x = move_toward(host.velocity.x, SWING_MAX_SPEED * input_axis, SWING_ACCELERATION * delta)
-		else:
-			host.velocity.x = move_toward(host.velocity.x, 0, SWING_DAMPING * delta)
-			var correction_force = -sin(angle_difference) * 30
-			host.velocity.x += correction_force * delta
-	else:
-		host.is_attached_to_rope = false
