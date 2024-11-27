@@ -11,6 +11,7 @@ func update(delta):
 	host.move_and_slide()
 	host.update_wall_state()
 
+
 func handle_grappling_hook(delta):
 	var input_axis = Input.get_axis("move_left", "move_right")
 	if host.get_node("GrapplingHook").hooked:
@@ -25,6 +26,7 @@ func handle_grappling_hook(delta):
 	else:
 		host.hook_rope_velocity = Vector2.ZERO
 	host.velocity += host.hook_rope_velocity
+
 
 func _transition():
 	if not host.get_node("GrapplingHook").hooked:
