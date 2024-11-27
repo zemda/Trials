@@ -11,6 +11,7 @@ var player_in_range := false
 var linked := false
 var player_detected_segments_cnt := 0
 var segments = []
+var attached_segment_index := -1
 
 var rest_check_delay = 7
 var rest_check_timer = null
@@ -40,7 +41,6 @@ func _physics_process(delta):
 			if rest_check_timer:
 				rest_check_timer.queue_free()
 				rest_check_timer = null
-			
 
 
 func generate_segments():
@@ -70,39 +70,41 @@ func connect_segment_signals_to_rope():
 
 
 func link_player_to_rope():
-	player.is_attached_to_rope = true
-	linked = true
+	attached_segment_index = find_closest_valid_segment()
 
-
-func set_segments_damping(linear_damp, angular_damp):
-	for segment in $Segments.get_children():
-		segment.linear_damp = linear_damp
-		segment.angular_damp = angular_damp
+	if attached_segment_index != -1:
+		player.is_attached_to_rope = true
+		linked = true
 
 
 func unlink_player_from_rope():
 	linked = false
 	player.is_attached_to_rope = false
 	
-	var last_segment = $Segments.get_child($Segments.get_child_count() - 1)
-	var boost = Vector2(last_segment.linear_velocity.x * 1.7, -250)
+	var attached_segment = $Segments.get_child(attached_segment_index)
+	var boost = Vector2(attached_segment.linear_velocity.x * 1.7, -250)
+	attached_segment_index = -1
+	
 	player.velocity = Vector2.ZERO
 	player.velocity += boost
 
 
-func adjust_still_rope():
-	rest_check_timer = Timer.new()
-	rest_check_timer.wait_time = rest_check_delay
-	rest_check_timer.one_shot = true
-	rest_check_timer.connect("timeout", Callable(self, "_on_rest_check_timer_timeout"))
-	add_child(rest_check_timer)
-	rest_check_timer.start()
+func find_closest_valid_segment() -> int:
+	if $Segments.get_child_count() <= 1:
+		return -1
 
+	var closest_distance = INF
+	var closest_index = -1
 
-func _on_rest_check_timer_timeout():
-	set_segments_damping(50, 50)
-	rest_check_timer.queue_free()
-	rest_check_timer = null
+	for segment_index in range(2, $Segments.get_child_count()):
+		var segment = $Segments.get_child(segment_index)
+		var distance = segment.global_position.distance_to(player.global_position)
+
+		if distance < closest_distance:
+			closest_distance = distance
+			closest_index = segment_index
+
+	return closest_index
 
 
 func enforce_rope_constraints(delta: float):
@@ -136,14 +138,37 @@ func enforce_rope_constraints(delta: float):
 
 
 func handle_rope_swing_input(delta: float):
-	var last_segment = $Segments.get_child($Segments.get_child_count() - 1)
-	player.global_position = last_segment.global_position + Vector2(0,20)
+	if attached_segment_index == -1:
+		return
+	var attached_segment = $Segments.get_child(attached_segment_index)
+	player.global_position = attached_segment.global_position + Vector2(0,15)
 	
 	var input_axis = Input.get_axis("move_left", "move_right")
 	if input_axis != 0:
 		var swing_force = Vector2(input_axis * 180000, 0)
-		last_segment.apply_force(swing_force, Vector2.ZERO)
-	last_segment.apply_torque_impulse(input_axis * 1500)
+		attached_segment.apply_force(swing_force, Vector2.ZERO)
+	attached_segment.apply_torque_impulse(input_axis * 1500)
+
+
+func adjust_still_rope():
+	rest_check_timer = Timer.new()
+	rest_check_timer.wait_time = rest_check_delay
+	rest_check_timer.one_shot = true
+	rest_check_timer.connect("timeout", Callable(self, "_on_rest_check_timer_timeout"))
+	add_child(rest_check_timer)
+	rest_check_timer.start()
+
+
+func set_segments_damping(linear_damp, angular_damp):
+	for segment in $Segments.get_children():
+		segment.linear_damp = linear_damp
+		segment.angular_damp = angular_damp
+
+
+func _on_rest_check_timer_timeout():
+	set_segments_damping(50, 50)
+	rest_check_timer.queue_free()
+	rest_check_timer = null
 
 
 func _on_segment_player_entered(player_body: Node):

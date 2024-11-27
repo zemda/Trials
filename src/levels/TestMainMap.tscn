@@ -41,7 +41,7 @@ segment_count = 12
 segment_scene = ExtResource("8_a411k")
 
 [node name="Rope3" parent="." instance=ExtResource("7_q24tn")]
-position = Vector2(-879, -358)
+position = Vector2(-872, -355)
 segment_count = 12
 segment_scene = ExtResource("8_a411k")
 
