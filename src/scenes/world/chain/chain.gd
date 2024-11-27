@@ -9,6 +9,7 @@ extends Node2D
 func _ready():
 	create_rope()
 
+
 func create_rope():
 	var anchor_point = StaticBody2D.new()
 	var col = CollisionShape2D.new()
@@ -51,4 +52,3 @@ func create_rope():
 		add_child(joint2)
 		
 		previous_body = segment
-	

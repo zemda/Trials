@@ -10,14 +10,15 @@ extends CharacterBody2D
 var hook_rope_velocity = Vector2.ZERO
 
 var last_wall_normal = Vector2.ZERO
-
+	
+	
 var is_attached_to_rope = false
 var on_floor_override = false  # Override for animation stability with swinging rope, idk rn how much it helps tho
 
 
 func _ready():
 	fsm.set_host(self)
-
+  
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
