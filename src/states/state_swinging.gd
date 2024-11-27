@@ -11,7 +11,6 @@ const SWING_DAMPING = 100.0
 func update(delta):
 	host.on_floor_override = false
 	host.apply_gravity(delta)
-	handle_jump()
 	host.update_animations(0)
 	host.move_and_slide()
 	host.update_wall_state()
@@ -25,12 +24,3 @@ func _transition():
 			return states.JUMP
 	else:
 		return states.NONE
-
-
-func handle_jump():
-	if host.is_on_floor_override():
-		if Input.is_action_pressed("move_up"):
-			host.velocity.y = -140
-	else:
-		if Input.is_action_just_released("move_up") and host.velocity.y < -140 / 2:
-			host.velocity.y = -140 / 2.0
