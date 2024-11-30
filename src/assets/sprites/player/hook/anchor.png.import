@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://uwfrlvy4lnm3"
-path="res://.godot/imported/anchor.png-d634604835c3f3e1f899a6fd42064aa1.ctex"
+uid="uid://cc5uaruy83d05"
+path="res://.godot/imported/anchor.png-529e62e9771b57e6babb7b9297eb3cc6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scenes/world/rope/anchor.png"
-dest_files=["res://.godot/imported/anchor.png-d634604835c3f3e1f899a6fd42064aa1.ctex"]
+source_file="res://assets/sprites/player/hook/anchor.png"
+dest_files=["res://.godot/imported/anchor.png-529e62e9771b57e6babb7b9297eb3cc6.ctex"]
 
 [params]
 
