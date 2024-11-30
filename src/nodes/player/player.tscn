@@ -1,15 +1,15 @@
 [gd_scene load_steps=22 format=3 uid="uid://cftmvn5pjp8ac"]
 
-[ext_resource type="Script" path="res://scripts/characters/player/player.gd" id="1_8qk58"]
+[ext_resource type="Script" path="res://nodes/player/player.gd" id="1_8qk58"]
 [ext_resource type="Texture2D" uid="uid://dsqxdfviphsn" path="res://assets/sprites/player/playerT.png" id="2_ekgkp"]
 [ext_resource type="Resource" uid="uid://d07icyh40egpk" path="res://resources/player/DefaultMovementData.tres" id="2_ssmf6"]
-[ext_resource type="PackedScene" uid="uid://b8p6vkkri6gum" path="res://scenes/characters/hook/grappling_hook.tscn" id="4_bbe10"]
-[ext_resource type="Script" path="res://fsm/fsm.gd" id="5_v7uqt"]
-[ext_resource type="Script" path="res://states/state_idle.gd" id="6_vsldh"]
-[ext_resource type="Script" path="res://states/state_run.gd" id="7_md3qu"]
-[ext_resource type="Script" path="res://states/state_jump.gd" id="8_cvfmw"]
-[ext_resource type="Script" path="res://states/state_grappling.gd" id="9_ujpwe"]
-[ext_resource type="Script" path="res://states/state_swinging.gd" id="10_bcgbv"]
+[ext_resource type="Script" path="res://core/fsm/fsm.gd" id="5_v7uqt"]
+[ext_resource type="Script" path="res://nodes/player/states/state_idle.gd" id="6_vsldh"]
+[ext_resource type="Script" path="res://nodes/player/states/state_run.gd" id="7_md3qu"]
+[ext_resource type="Script" path="res://nodes/player/states/state_jump.gd" id="8_cvfmw"]
+[ext_resource type="Script" path="res://nodes/player/states/state_grappling.gd" id="9_ujpwe"]
+[ext_resource type="Script" path="res://nodes/player/states/state_swinging.gd" id="10_bcgbv"]
+[ext_resource type="PackedScene" uid="uid://dmr2mqoiknm8e" path="res://nodes/grappling_hook/GrapplingHook.tscn" id="10_wpntg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g3yig"]
 atlas = ExtResource("2_ekgkp")
@@ -128,8 +128,6 @@ shape = SubResource("RectangleShape2D_rk5ob")
 wait_time = 0.1
 one_shot = true
 
-[node name="GrapplingHook" parent="." instance=ExtResource("4_bbe10")]
-
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(0, -13)
 
@@ -151,5 +149,7 @@ script = ExtResource("9_ujpwe")
 
 [node name="state_swinging" type="Node" parent="FSM"]
 script = ExtResource("10_bcgbv")
+
+[node name="GrapplingHook" parent="." instance=ExtResource("10_wpntg")]
 
 [connection signal="area_entered" from="HazardDetector" to="." method="_on_hazard_detector_area_entered"]

@@ -5,36 +5,20 @@ extends CharacterBody2D
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var start_pos = global_position  # TODO: later checkpoint or something
 @onready var wall_jump_timer: Timer = $WallJumpTimer
-@onready var fsm: FSM = $FSM
+@onready var fsm = $FSM
 
 var hook_rope_velocity = Vector2.ZERO
 
 var last_wall_normal = Vector2.ZERO
-	
-	
 var is_attached_to_rope = false
-var on_floor_override = false  # Override for animation stability with swinging rope, idk rn how much it helps tho
 
 
 func _ready():
 	fsm.set_host(self)
   
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if not is_attached_to_rope:
-			if event.pressed:
-				$GrapplingHook.shoot(get_global_mouse_position())
-			else:
-				$GrapplingHook.release()
-
-
-func is_on_floor_override() -> bool:
-	return on_floor_override or is_on_floor()
-
-
 func apply_gravity(delta):
-	if not is_on_floor_override():
+	if not is_on_floor():
 		if is_attached_to_rope:
 			velocity += get_gravity() * delta * movement_data.gravity_scale * 0.3
 		else:
@@ -42,31 +26,31 @@ func apply_gravity(delta):
 
 
 func handle_acceleration(input_axis, delta):
-	if not is_on_floor_override(): 
+	if not is_on_floor(): 
 		return
 	if input_axis:
 		velocity.x = move_toward(velocity.x, movement_data.speed * input_axis, movement_data.acceleration * delta)
 
 
 func handle_air_acceleration(input_axis, delta):
-	if is_on_floor_override():
+	if is_on_floor():
 		return
 	if input_axis:
 		velocity.x = move_toward(velocity.x, movement_data.speed * input_axis, movement_data.air_acceleration * delta)
 
 
 func apply_friction(input_axis, delta):
-	if not input_axis and is_on_floor_override():
+	if not input_axis and is_on_floor():
 		velocity.x = move_toward(velocity.x, 0, movement_data.friction * delta)
 
 
 func apply_air_resistance(input_axis, delta):
-	if not input_axis and not is_on_floor_override():
+	if not input_axis and not is_on_floor():
 		velocity.x = move_toward(velocity.x, 0, movement_data.air_resistance * delta)
 
 
 func handle_jump():
-	if is_on_floor_override():
+	if is_on_floor():
 		if Input.is_action_pressed("move_up"):
 			velocity.y = movement_data.jump_velocity
 	else:
@@ -81,7 +65,7 @@ func update_animations(input_axis):
 	else:
 		animated_sprite_2d.play("idle")
 		
-	if not is_on_floor_override():
+	if not is_on_floor():
 		animated_sprite_2d.play("jump")
 
 
