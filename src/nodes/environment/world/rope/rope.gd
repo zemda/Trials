@@ -12,10 +12,8 @@ var linked := false
 var player_detected_segments_cnt := 0
 var segments = []
 var attached_segment_index := -1
-
 var rest_check_delay = 7
 var rest_check_timer = null
-
 var attaching_to_rope := false
 
 @onready var anchor := $Anchor
