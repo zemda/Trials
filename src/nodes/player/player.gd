@@ -78,5 +78,9 @@ func update_wall_state():
 		wall_jump_timer.start()
 
 
+func can_grapple() -> bool:
+	return not fsm.current_state.name == "state_swinging"
+
+
 func _on_hazard_detector_area_entered(area: Area2D) -> void:
 	global_position = start_pos  # TODO: this insta "kills" the player, later health

@@ -15,6 +15,10 @@ func update(delta: float):
 
 func _transition():
 	if Input.is_action_just_pressed("grapple"):
-		if target_ray.is_colliding() and target_ray.get_collider().is_in_group("Hookable"): # TODO: and player not on rope
+		if (target_ray.is_colliding() and 
+			target_ray.get_collider().is_in_group("Hookable") and
+			host.get_parent().can_grapple()
+		):
+			print(host.get_parent().can_grapple())
 			return states.GRAPPLE
 	return states.NONE
