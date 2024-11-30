@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3 uid="uid://dfhxu3p84uj6j"]
+
+[ext_resource type="Script" path="res://nodes/environment/world/chain/chain.gd" id="1_wpdeb"]
+[ext_resource type="PackedScene" uid="uid://bjyv05n4r5dl" path="res://nodes/environment/world/chain/Chain_segment.tscn" id="2_idnyq"]
+[ext_resource type="PackedScene" uid="uid://bka861vxagua" path="res://nodes/environment/world/chain/Hook.tscn" id="3_c348m"]
+
+[node name="Chain" type="Node2D"]
+script = ExtResource("1_wpdeb")
+segment_scene = ExtResource("2_idnyq")
+hook = ExtResource("3_c348m")

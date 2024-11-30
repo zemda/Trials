@@ -32,8 +32,8 @@ func _physics_process(delta):
 		return
 	
 	if linked:
-		enforce_rope_constraints(delta)
-		handle_rope_swing_input(delta)
+		enforce_rope_constraints()
+		handle_rope_swing_input()
 		
 		if Input.is_action_just_pressed("rope"):
 			unlink_player_from_rope()
@@ -133,9 +133,7 @@ func find_closest_valid_segment() -> int:
 	return closest_index
 
 
-func enforce_rope_constraints(delta: float):
-	var rope_length = $Segments.get_child_count() * MINIMUM_DISTANCE
-
+func enforce_rope_constraints():
 	for segment_index in range($Segments.get_child_count() - 1, -1, -1):
 		var segment = $Segments.get_child(segment_index)
 		segment.linear_damp = 1
@@ -163,7 +161,7 @@ func enforce_rope_constraints(delta: float):
 			segment.apply_force(damping_force, Vector2.ZERO)
 
 
-func handle_rope_swing_input(delta: float):
+func handle_rope_swing_input():
 	if attached_segment_index == -1:
 		return
 	var attached_segment = $Segments.get_child(attached_segment_index)

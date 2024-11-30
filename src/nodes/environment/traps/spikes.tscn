@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://5rx7v1h7s0wm"]
 
 [ext_resource type="Texture2D" uid="uid://dpdpvhugjtxqc" path="res://assets/sprites/traps/spikes.png" id="1_41r0m"]
-[ext_resource type="PackedScene" uid="uid://beqr4p74bj0ag" path="res://scenes/traps/hazard_area.tscn" id="2_8e5xk"]
+[ext_resource type="PackedScene" uid="uid://beqr4p74bj0ag" path="res://nodes/environment/traps/hazard_area.tscn" id="2_8e5xk"]
 
 [node name="Spikes" type="Node2D"]
 position = Vector2(16, -16)

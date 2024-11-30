@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://drkdfjsc5shbg"]
 
-[ext_resource type="Script" path="res://scenes/world/rope/segment.gd" id="1_pahv5"]
+[ext_resource type="Script" path="res://nodes/environment/world/rope/segment.gd" id="1_pahv5"]
 [ext_resource type="Texture2D" uid="uid://cmjfe0ci0768g" path="res://assets/sprites/player/hook/link.png" id="2_enero"]
 
 [sub_resource type="CapsuleShape2D" id="1"]
@@ -11,7 +11,7 @@ height = 6.0
 radius = 5.0
 height = 10.0
 
-[node name="SegmentGen" type="RigidBody2D"]
+[node name="Segment" type="RigidBody2D"]
 rotation = 3.14159
 collision_layer = 32
 gravity_scale = 0.5
@@ -45,5 +45,7 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CapsuleShape2D_npvsd")
 
+[connection signal="body_entered" from="." to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_area_2d_body_exited"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
