@@ -1,7 +1,7 @@
 extends FSMState
 
+
 func update(delta):
-	host.on_floor_override = false
 	host.apply_gravity(delta)
 	var input_axis = Input.get_axis("move_left", "move_right")
 	host.handle_acceleration(input_axis, delta)

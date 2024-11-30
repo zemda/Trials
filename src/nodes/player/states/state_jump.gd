@@ -1,7 +1,7 @@
 extends FSMState
 
+
 func update(delta):
-	host.on_floor_override = false
 	host.apply_gravity(delta)
 	host.handle_jump()
 	handle_wall_jump()
@@ -30,7 +30,7 @@ func handle_wall_jump():
 
 
 func _transition():
-	if host.is_on_floor_override():
+	if host.is_on_floor():
 		if not host.velocity.is_zero_approx():
 			return states.RUN
 		else:
