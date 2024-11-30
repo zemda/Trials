@@ -1,22 +1,18 @@
 class_name FSMState
 extends Node
 
-var state_name: StringName
-var state_index: int
-
-var state_active: bool = false
-var is_exiting: bool = false
-var is_entering: bool = false
-
-var states: Dictionary
-
-var host: Node
-
 signal transition_to
 signal transition_to_default
 signal transition_to_last
-
 signal state_exiting_tree(state: FSMState)
+
+var state_name: StringName
+var state_index: int
+var state_active: bool = false
+var is_exiting: bool = false
+var is_entering: bool = false
+var states: Dictionary
+var host: Node
 
 
 func enter():

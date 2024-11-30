@@ -1,17 +1,16 @@
 class_name FSM
 extends Node
 
-var host: Node : set = set_host
 @export_node_path("FSMState") var default_state_path
-
-@onready var default_state: FSMState = get_node(default_state_path)
 @export_range(1, 100) var history_buffer_size: int = 10
 
-
+var host: Node : set = set_host
 var current_state: FSMState : set = change_state
 var state_history: Array[FSMState]
 var state_list: Array[FSMState]
 var states: Dictionary = {"NONE" = -1, "LAST" = -2}
+
+@onready var default_state: FSMState = get_node(default_state_path)
 
 
 func _ready():

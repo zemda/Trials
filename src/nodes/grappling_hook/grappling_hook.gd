@@ -1,9 +1,9 @@
 extends Node2D
 
-@onready var fsm = $States
-var parent : CharacterBody2D
+var parent: CharacterBody2D
 var hooked := false
 
+@onready var fsm = $States
 
 func _ready() -> void:
 	fsm.set_host(self)

@@ -2,15 +2,14 @@ extends CharacterBody2D
 
 @export var movement_data: PlayerMovementData
 
+var hook_rope_velocity = Vector2.ZERO
+var last_wall_normal = Vector2.ZERO
+var is_attached_to_rope = false
+
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var start_pos = global_position  # TODO: later checkpoint or something
 @onready var wall_jump_timer: Timer = $WallJumpTimer
 @onready var fsm = $FSM
-
-var hook_rope_velocity = Vector2.ZERO
-
-var last_wall_normal = Vector2.ZERO
-var is_attached_to_rope = false
 
 
 func _ready():
