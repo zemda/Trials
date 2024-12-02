@@ -1,13 +1,13 @@
 extends FSMState
 
 
-func update(_delta):
+func update(_delta: float) -> void:
 	host.update_animations(0)
 	host.move_and_slide()
 	host.update_wall_state()
 
 
-func _transition():
+func _transition() -> int:
 	if not host.get_node("GrapplingHook").hooked:
 		if host.is_on_floor():
 			return states.IDLE

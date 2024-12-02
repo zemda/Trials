@@ -8,14 +8,14 @@ signal state_exiting_tree(state: FSMState)
 
 var state_name: StringName
 var state_index: int
-var state_active: bool = false
-var is_exiting: bool = false
-var is_entering: bool = false
+var state_active := false
+var is_exiting := false
+var is_entering := false
 var states: Dictionary
 var host: Node
 
 
-func enter():
+func enter() -> void:
 	is_entering = true
 	assert(states.size() > 2, 
 		"State Error in " + name + 
@@ -25,18 +25,18 @@ func enter():
 	state_active = true
 
 
-func _enter():
+func _enter() -> void:
 	pass
 
 
-func exit():
+func exit() -> void:
 	is_exiting = true
 	await _exit()
 	is_exiting = false
 	state_active = false
 
 
-func _exit():
+func _exit() -> void:
 	pass
 
 
@@ -63,5 +63,5 @@ func is_busy() -> bool:
 	return is_exiting or is_entering
 
 
-func _exit_tree():
+func _exit_tree() -> void:
 	emit_signal("state_exiting_tree", self)

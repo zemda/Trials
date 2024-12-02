@@ -3,7 +3,7 @@ extends RigidBody2D
 signal player_entered_segment
 signal player_exited_segment
 
-func _ready():
+func _ready() -> void:
 	mass = 150
 	linear_damp = 50
 	angular_damp = 50
