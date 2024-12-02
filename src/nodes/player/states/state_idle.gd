@@ -1,7 +1,7 @@
 extends FSMState
 
 
-func update(delta):
+func update(delta: float) -> void:
 	host.apply_gravity(delta)
 	var input_axis = Input.get_axis("move_left", "move_right")
 	host.apply_friction(input_axis, delta)
@@ -10,7 +10,7 @@ func update(delta):
 	host.update_wall_state()
 
 
-func _transition():
+func _transition() -> int:
 	var input_axis = Input.get_axis("move_left", "move_right")
 	if input_axis != 0:
 		return states.RUN

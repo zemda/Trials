@@ -3,14 +3,14 @@ extends Node2D
 @export var segment_scene: PackedScene
 @export var hook: PackedScene
 @export var segment_count: int = 5
-@export var segment_spacing: float = 4
+@export var segment_spacing := 4.0
 
 
-func _ready():
-	create_rope()
+func _ready() -> void:
+	_create_rope()
 
 
-func create_rope():
+func _create_rope() -> void: # TODO: redo, do the chain more stable to collision with player
 	var anchor_point = StaticBody2D.new()
 	var col = CollisionShape2D.new()
 	var shape = CircleShape2D.new()

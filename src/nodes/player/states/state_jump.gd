@@ -1,10 +1,10 @@
 extends FSMState
 
 
-func update(delta):
+func update(delta: float) -> void:
 	host.apply_gravity(delta)
 	host.handle_jump()
-	handle_wall_jump()
+	_handle_wall_jump()
 	var input_axis = Input.get_axis("move_left", "move_right")
 	host.handle_air_acceleration(input_axis, delta)
 	host.apply_air_resistance(input_axis, delta)
@@ -13,7 +13,7 @@ func update(delta):
 	host.update_wall_state()
 
 
-func handle_wall_jump():
+func _handle_wall_jump() -> void:
 	if not host.is_on_wall_only() and host.wall_jump_timer.time_left <= 0.0:
 		return
 	
@@ -29,7 +29,7 @@ func handle_wall_jump():
 			host.velocity.y = host.movement_data.jump_velocity * 0.35
 
 
-func _transition():
+func _transition() -> int:
 	if host.is_on_floor():
 		if not host.velocity.is_zero_approx():
 			return states.RUN

@@ -13,7 +13,7 @@ var states: Dictionary = {"NONE" = -1, "LAST" = -2}
 @onready var default_state: FSMState = get_node(default_state_path)
 
 
-func _ready():
+func _ready() -> void:
 	_set_up_fsm()
 
 
@@ -67,7 +67,7 @@ func remove_state(state: FSMState) -> void:
 	state.host = null
 
 
-func change_state_to(index: int):
+func change_state_to(index: int) -> void:
 	change_state(state_list[index])
 
 
@@ -82,7 +82,7 @@ func change_state_to_last() -> void:
 		change_state_to_default()
 
 
-func change_state(new_state : FSMState) -> void:
+func change_state(new_state: FSMState) -> void:
 	var old_state: FSMState = current_state
 	if old_state:
 		_track_state(old_state)
@@ -92,7 +92,7 @@ func change_state(new_state : FSMState) -> void:
 	await current_state.enter()
 
 
-func _physics_process(delta) -> void:
+func _physics_process(delta: float) -> void:
 	if host:
 		if current_state:
 			if current_state.state_active:
@@ -102,11 +102,11 @@ func _physics_process(delta) -> void:
 				current_state.handle_transition()
 
 
-func _track_state(state : FSMState) -> void:
+func _track_state(state: FSMState) -> void:
 	if state_history.size() == history_buffer_size:
 		state_history.remove_at(0)
 	state_history.append(state)
 
 
-func _get_trimmed_name(state_name : String) -> StringName:
+func _get_trimmed_name(state_name: String) -> StringName:
 	return state_name.substr(state_name.find("_") + 1).to_upper() as StringName

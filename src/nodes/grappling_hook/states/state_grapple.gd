@@ -1,46 +1,48 @@
 extends FSMState
 
-var anchor: Marker2D
-var anchor_stack = []
-var target_ray: RayCast2D
+var _anchor: Marker2D
+var _anchor_stack: Array[Marker2D] = []
+var _ray_to_anchor: RayCast2D
+var _rope: Line2D
 
 
-func _enter():
-	target_ray = host.get_node("TargetRay")
-	anchor = Marker2D.new()
-	var anchor_host: Node2D = target_ray.get_collider()
-	anchor_host.add_child(anchor)
-	anchor.position = anchor_host.to_local(target_ray.get_collision_point())
-	$Rope.visible = true
+func _enter() -> void:
+	_ray_to_anchor = host.get_node("TargetRay")
+	_anchor = Marker2D.new()
+	var anchor_host: Node2D = _ray_to_anchor.get_collider()
+	anchor_host.add_child(_anchor)
+	_anchor.position = anchor_host.to_local(_ray_to_anchor.get_collision_point())
+	_rope = $Rope
+	_rope.visible = true
 
 
-func update(delta: float):
-	_wrap()
-	unwind()
-	host.orbit(anchor.global_position, delta)
+func update(delta: float) -> void:
+	_process_wrapping()
+	_process_unwinding()
+	host.apply_grapple_physics(_anchor.global_position, delta)
 	host.hooked = true
-	var points = [host.global_position, anchor.global_position]
-	if anchor_stack:
-		for a in anchor_stack:
+	var points = [host.global_position, _anchor.global_position]
+	if _anchor_stack:
+		for a in _anchor_stack:
 			points.insert(2, a.global_position)
-	$Rope.points = points
+	_rope.points = points
 
 
-func _transition():
+func _transition() -> int:
 	if Input.is_action_just_released("grapple"):
 		host.hooked = false
 		return states.IDLE
 	return states.NONE
 
 
-func _exit():
-	if anchor:
-		anchor.queue_free()
-	for a in anchor_stack:
+func _exit() -> void:
+	if _anchor:
+		_anchor.queue_free()
+	for a in _anchor_stack:
 		if a:
 			a.queue_free()
-	anchor_stack.clear()
-	$Rope.visible = false
+	_anchor_stack.clear()
+	_rope.visible = false
 
 
 func create_anchor(anchor_host: Node2D, anchor_pos: Vector2) -> Marker2D:
@@ -50,33 +52,33 @@ func create_anchor(anchor_host: Node2D, anchor_pos: Vector2) -> Marker2D:
 	return new_anchor
 
 
-func vect_angle(vect_a: Vector2, vect_b: Vector2) -> float:
+func _vector_alignment(vect_a: Vector2, vect_b: Vector2) -> float:
 	if vect_a.length() * vect_b.length() == 0:
 		return 0.0
 	return vect_a.dot(vect_b) / (vect_a.length() * vect_b.length())
 
 
-func unwind() -> void:
-	if not anchor_stack:
+func _process_unwinding() -> void:
+	if not _anchor_stack:
 		return
-	target_ray.target_position = host.to_local(anchor.global_position)
-	target_ray.force_raycast_update()
-	if target_ray.is_colliding() and (target_ray.get_collision_point() - anchor.global_position).length() > 3:
+	_ray_to_anchor.target_position = host.to_local(_anchor.global_position)
+	_ray_to_anchor.force_raycast_update()
+	if _ray_to_anchor.is_colliding() and (_ray_to_anchor.get_collision_point() - _anchor.global_position).length() > 3:
 		return
-	target_ray.target_position = host.to_local(anchor_stack[-1].global_position)
-	target_ray.force_raycast_update()
-	if target_ray.is_colliding() and (target_ray.get_collision_point() - anchor_stack[-1].global_position).length() > 3:
+	_ray_to_anchor.target_position = host.to_local(_anchor_stack[-1].global_position)
+	_ray_to_anchor.force_raycast_update()
+	if _ray_to_anchor.is_colliding() and (_ray_to_anchor.get_collision_point() - _anchor_stack[-1].global_position).length() > 3:
 		return
-	if vect_angle(host.to_local(anchor.global_position), host.to_local(anchor_stack[-1].global_position)) > 0.95:
-		anchor.queue_free()
-		anchor = anchor_stack.pop_back()
+	if _vector_alignment(host.to_local(_anchor.global_position), host.to_local(_anchor_stack[-1].global_position)) > 0.80:
+		_anchor.queue_free()
+		_anchor = _anchor_stack.pop_back()
 
 
-func _wrap() -> void:
-	target_ray.target_position = host.to_local(anchor.global_position)
-	target_ray.force_raycast_update()
-	if target_ray.is_colliding():
-		if (target_ray.get_collision_point() - anchor.global_position).length() < 3:
+func _process_wrapping() -> void:
+	_ray_to_anchor.target_position = host.to_local(_anchor.global_position)
+	_ray_to_anchor.force_raycast_update()
+	if _ray_to_anchor.is_colliding():
+		if (_ray_to_anchor.get_collision_point() - _anchor.global_position).length() < 3:
 			return
-		anchor_stack.append(anchor)
-		anchor = create_anchor(target_ray.get_collider(), target_ray.get_collision_point())
+		_anchor_stack.append(_anchor)
+		_anchor = create_anchor(_ray_to_anchor.get_collider(), _ray_to_anchor.get_collision_point())
