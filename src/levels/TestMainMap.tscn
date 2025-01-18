@@ -34,7 +34,7 @@ position = Vector2(-1230, -384)
 segment_count = 12
 
 [node name="Rope2" parent="." instance=ExtResource("7_q24tn")]
-position = Vector2(-1039, -411)
+position = Vector2(-1037, -371)
 segment_count = 12
 
 [node name="Rope3" parent="." instance=ExtResource("7_q24tn")]

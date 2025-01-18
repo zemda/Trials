@@ -59,6 +59,7 @@ func _smooth_attach_to_rope(delta: float) -> void:
 	else:
 		_attach_stuck_time += delta
 		if _attach_stuck_time > 1.0:
+			print("stuck, unlinkng")
 			_linked = false
 			_player.is_attached_to_rope = false
 			_adjust_still_rope()
@@ -79,6 +80,7 @@ func _smooth_attach_to_rope(delta: float) -> void:
 		_player.global_position = target_position
 		_player.velocity = Vector2.ZERO
 		_attaching_to_rope = false
+		_attach_previous_distance = -1
 
 
 func _generate_segments() -> void:
@@ -192,11 +194,10 @@ func _handle_rope_swing_input() -> void:
 func _apply_initial_attach_boost() -> void:
 	var attached_segment = $Segments.get_child(_attached_segment_index)
 	if attached_segment:
-		print("applying")
-		attached_segment.apply_force(_player.velocity * 50000, Vector2.ZERO)
+		attached_segment.apply_impulse(Vector2(_player.velocity.x * 1000, 0), Vector2.ZERO)
 
 
-func _adjust_still_rope() -> void:
+func _adjust_still_rope() -> void: # TODO: do this somehow better, since the initial attach doesnt work with this and the force should be different for still rope and active one
 	_rest_check_timer = Timer.new()
 	_rest_check_timer.wait_time = REST_CHECK_DELAY
 	_rest_check_timer.one_shot = true
