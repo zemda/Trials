@@ -58,13 +58,17 @@ func handle_jump() -> void:
 
 func update_animations(input_axis: float) -> void:
 	if input_axis:
-		animated_sprite_2d.flip_h = (input_axis < 0)
+		update_sprite_flip(input_axis)
 		animated_sprite_2d.play("run")
 	else:
 		animated_sprite_2d.play("idle")
 		
 	if not is_on_floor():
 		animated_sprite_2d.play("jump")
+
+
+func update_sprite_flip(input_axis: float) -> void:
+	animated_sprite_2d.flip_h = (input_axis < 0)
 
 
 func update_wall_state() -> void:
