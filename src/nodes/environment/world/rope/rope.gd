@@ -28,12 +28,13 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if _attaching_to_rope:
-		_smooth_attach_to_rope(delta)
+		_attach_to_rope(delta)
 		return
 	
 	if _linked:
 		_enforce_rope_constraints()
 		_handle_rope_swing_input()
+		_handle_rope_climb_input()
 		
 		if Input.is_action_just_pressed("rope"):
 			_unlink_player_from_rope()
@@ -47,7 +48,7 @@ func _physics_process(delta: float) -> void:
 				_rest_check_timer = null
 
 
-func _smooth_attach_to_rope(delta: float) -> void:
+func _attach_to_rope(delta: float) -> void:
 	var attached_segment = $Segments.get_child(_attached_segment_index)
 	var target_position = attached_segment.global_position + Vector2(0, 15)
 	var distance_to_target = _player.global_position.distance_to(target_position)
@@ -189,6 +190,26 @@ func _handle_rope_swing_input() -> void:
 		var swing_force = Vector2(input_axis * 180000, 0)
 		attached_segment.apply_force(swing_force, Vector2.ZERO)
 	attached_segment.apply_torque_impulse(input_axis * 1500)
+
+
+func _handle_rope_climb_input() -> void:
+	if _attached_segment_index == -1 or not _player:
+		return
+
+	var up_down = Input.get_axis("move_up", "move_down")
+	if up_down < 0.0:
+		_climb_to_segment(_attached_segment_index - 1)
+	elif up_down > 0.0:
+		_climb_to_segment(_attached_segment_index + 1)
+
+
+func _climb_to_segment(new_index: int) -> void:
+	if new_index < 2 or new_index >= $Segments.get_child_count():
+		return
+	var seg = $Segments.get_child(new_index)
+	if not seg:
+		return
+	_attached_segment_index = new_index
 
 
 func _apply_initial_attach_boost() -> void:
