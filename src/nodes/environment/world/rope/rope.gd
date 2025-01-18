@@ -15,6 +15,8 @@ var _segments := []
 var _attached_segment_index := -1
 var _rest_check_timer: Timer = null
 var _attaching_to_rope := false
+var _attach_previous_distance := -1.0
+var _attach_stuck_time := 0.0
 
 @onready var anchor := $Anchor
 
@@ -48,10 +50,24 @@ func _physics_process(delta: float) -> void:
 func _smooth_attach_to_rope(delta: float) -> void:
 	var attached_segment = $Segments.get_child(_attached_segment_index)
 	var target_position = attached_segment.global_position + Vector2(0, 15)
-
-	var direction_to_target = (target_position - _player.global_position).normalized()
 	var distance_to_target = _player.global_position.distance_to(target_position)
-
+	print("attaching")
+	if _attach_previous_distance < 0 or distance_to_target < _attach_previous_distance:
+		_attach_previous_distance = distance_to_target
+		_attach_stuck_time = 0.0
+	else:
+		_attach_stuck_time += delta
+		if _attach_stuck_time > 0.4:
+			print("stucked")
+			_linked = false
+			_player.is_attached_to_rope = false
+			_adjust_still_rope()
+			_attaching_to_rope = false
+			_attach_previous_distance = -1.0
+			_attach_stuck_time = 0.0
+			return
+	
+	var direction_to_target = (target_position - _player.global_position).normalized()
 	var max_force = 100000
 	var force = direction_to_target * min(distance_to_target * 500, max_force)
 	_player.velocity += force * delta
@@ -93,7 +109,7 @@ func _connect_segment_signals_to_rope() -> void:
 
 func _link_player_to_rope() -> void:
 	_attached_segment_index = _find_closest_valid_segment()
-
+	
 	if _attached_segment_index != -1:
 		_player.is_attached_to_rope = true
 		_linked = true
