@@ -51,14 +51,14 @@ func _smooth_attach_to_rope(delta: float) -> void:
 	var attached_segment = $Segments.get_child(_attached_segment_index)
 	var target_position = attached_segment.global_position + Vector2(0, 15)
 	var distance_to_target = _player.global_position.distance_to(target_position)
-	print("attaching")
+	
+	# Needed in order to prevent stuck position
 	if _attach_previous_distance < 0 or distance_to_target < _attach_previous_distance:
 		_attach_previous_distance = distance_to_target
 		_attach_stuck_time = 0.0
 	else:
 		_attach_stuck_time += delta
-		if _attach_stuck_time > 0.4:
-			print("stucked")
+		if _attach_stuck_time > 1.0:
 			_linked = false
 			_player.is_attached_to_rope = false
 			_adjust_still_rope()
@@ -114,6 +114,7 @@ func _link_player_to_rope() -> void:
 		_player.is_attached_to_rope = true
 		_linked = true
 		_attaching_to_rope = true
+		_apply_initial_attach_boost()
 
 
 func _unlink_player_from_rope() -> void:
@@ -186,6 +187,13 @@ func _handle_rope_swing_input() -> void:
 		var swing_force = Vector2(input_axis * 180000, 0)
 		attached_segment.apply_force(swing_force, Vector2.ZERO)
 	attached_segment.apply_torque_impulse(input_axis * 1500)
+
+
+func _apply_initial_attach_boost() -> void:
+	var attached_segment = $Segments.get_child(_attached_segment_index)
+	if attached_segment:
+		print("applying")
+		attached_segment.apply_force(_player.velocity * 50000, Vector2.ZERO)
 
 
 func _adjust_still_rope() -> void:
