@@ -91,7 +91,7 @@ size = Vector2(20, 31)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rk5ob"]
 size = Vector2(14.5, 31.5)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_gkbli"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_t62km"]
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 position = Vector2(0, -4)
@@ -156,9 +156,9 @@ script = ExtResource("10_bcgbv")
 position = Vector2(0, -13)
 
 [node name="DownwardCast" type="ShapeCast2D" parent="."]
-position = Vector2(0, 1)
-scale = Vector2(1, 0.5)
-shape = SubResource("RectangleShape2D_gkbli")
+position = Vector2(-1, -16)
+scale = Vector2(1.2, 1.2)
+shape = SubResource("CapsuleShape2D_t62km")
 target_position = Vector2(0, 5)
 collision_mask = 64
 
