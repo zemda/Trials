@@ -33,6 +33,7 @@ enabled=PackedStringArray("res://addons/Todo_Manager/plugin.cfg")
 Hookable="Objects that can be use as a hook point"
 Wrapable=""
 Player=""
+Plank=""
 
 [input]
 
@@ -80,6 +81,7 @@ grapple={
 2d_physics/layer_4="Enemies"
 2d_physics/layer_5="Hook"
 2d_physics/layer_6="Rope"
+2d_physics/layer_7="Plank"
 
 [rendering]
 

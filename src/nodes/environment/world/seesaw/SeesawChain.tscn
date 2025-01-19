@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3 uid="uid://cgqw75vlluh2i"]
+
+[ext_resource type="Script" path="res://nodes/environment/world/seesaw/seesaw_chain.gd" id="1_h1vv6"]
+[ext_resource type="PackedScene" uid="uid://bjyv05n4r5dl" path="res://nodes/environment/world/chain/Chain_segment.tscn" id="2_8ajx1"]
+[ext_resource type="PackedScene" uid="uid://bka861vxagua" path="res://nodes/environment/world/chain/Hook.tscn" id="3_x4etg"]
+
+[node name="SeesawChain" type="Node2D"]
+script = ExtResource("1_h1vv6")
+segment_scene = ExtResource("2_8ajx1")
+hook = ExtResource("3_x4etg")

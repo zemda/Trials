@@ -9,11 +9,29 @@ var is_attached_to_rope := false
 @onready var start_pos = global_position  # TODO: later checkpoint or something
 @onready var wall_jump_timer: Timer = $WallJumpTimer
 @onready var fsm: FSM = $FSM
+@onready var downward_cast: ShapeCast2D = $DownwardCast
 
 
 func _ready() -> void:
 	fsm.set_host(self)
   
+
+func handle_downward_cast() -> void:
+	downward_cast.force_shapecast_update()
+	
+	if downward_cast.is_colliding():
+		var collision_count = downward_cast.get_collision_count()
+		for i in range(collision_count):
+			var collider = downward_cast.get_collider(i)
+			if collider and collider.is_in_group("Plank"):
+				var collision_point = downward_cast.get_collision_point(i)
+				_apply_force_to_plank(collider, collision_point)
+
+
+func _apply_force_to_plank(plank: RigidBody2D, collision_point: Vector2) -> void:
+	var force = Vector2(0, -1)
+	plank.apply_impulse(collision_point - plank.global_position, force)
+
 
 func apply_gravity(delta: float) -> void:
 	if not is_on_floor():
