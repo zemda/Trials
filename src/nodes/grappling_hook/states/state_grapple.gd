@@ -18,7 +18,7 @@ func _enter() -> void:
 
 func update(delta: float) -> void:
 	_process_wrapping()
-	_process_unwinding()
+	_process_unwrapping()
 	host.apply_grapple_physics(_anchor.global_position, delta)
 	host.hooked = true
 	var points = [host.global_position, _anchor.global_position]
@@ -58,18 +58,29 @@ func _vector_alignment(vect_a: Vector2, vect_b: Vector2) -> float:
 	return vect_a.dot(vect_b) / (vect_a.length() * vect_b.length())
 
 
-func _process_unwinding() -> void:
+func _process_unwrapping() -> void:
 	if not _anchor_stack:
 		return
+	
 	_ray_to_anchor.target_position = host.to_local(_anchor.global_position)
 	_ray_to_anchor.force_raycast_update()
-	if _ray_to_anchor.is_colliding() and (_ray_to_anchor.get_collision_point() - _anchor.global_position).length() > 3:
-		return
+	
+	if _ray_to_anchor.is_colliding():
+		if(_ray_to_anchor.get_collision_point() - _anchor.global_position).length() > 3:
+			return
+	
 	_ray_to_anchor.target_position = host.to_local(_anchor_stack[-1].global_position)
 	_ray_to_anchor.force_raycast_update()
-	if _ray_to_anchor.is_colliding() and (_ray_to_anchor.get_collision_point() - _anchor_stack[-1].global_position).length() > 3:
-		return
-	if _vector_alignment(host.to_local(_anchor.global_position), host.to_local(_anchor_stack[-1].global_position)) > 0.80:
+	
+	if _ray_to_anchor.is_colliding():
+		if (_ray_to_anchor.get_collision_point() - _anchor_stack[-1].global_position).length() > 3:
+			return
+	
+	var angle_closeness = _vector_alignment(
+		host.to_local(_anchor.global_position), 
+		host.to_local(_anchor_stack[-1].global_position)
+	)
+	if angle_closeness > 0.955:
 		_anchor.queue_free()
 		_anchor = _anchor_stack.pop_back()
 
