@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=4 uid="uid://d1ascia0wibrl"]
+[gd_scene load_steps=8 format=4 uid="uid://d1ascia0wibrl"]
 
 [ext_resource type="Script" path="res://levels/test_main_map.gd" id="1_6j0a2"]
 [ext_resource type="PackedScene" uid="uid://cftmvn5pjp8ac" path="res://nodes/player/player.tscn" id="2_lfv6r"]
 [ext_resource type="PackedScene" uid="uid://5rx7v1h7s0wm" path="res://nodes/environment/traps/spikes.tscn" id="3_60050"]
 [ext_resource type="PackedScene" uid="uid://fsxe3pnrpvr5" path="res://levels/level_tile_map.tscn" id="4_5rt4o"]
+[ext_resource type="PackedScene" uid="uid://byxmd74w1etdd" path="res://nodes/environment/world/seesaw/Seesaw.tscn" id="7_3t1aw"]
 [ext_resource type="PackedScene" uid="uid://dfhxu3p84uj6j" path="res://nodes/environment/world/chain/Chain.tscn" id="7_gbrd8"]
 [ext_resource type="PackedScene" uid="uid://bqt1f14kj1766" path="res://nodes/environment/world/rope/Rope.tscn" id="7_q24tn"]
 
@@ -48,3 +49,15 @@ segment_count = 12
 [node name="Chain2" parent="." instance=ExtResource("7_gbrd8")]
 position = Vector2(-1183, -272)
 segment_count = 10
+
+[node name="Seesaw" parent="." instance=ExtResource("7_3t1aw")]
+position = Vector2(-1934, -328)
+segment_count = 12
+
+[node name="Seesaw2" parent="." instance=ExtResource("7_3t1aw")]
+position = Vector2(-1765, -328)
+segment_count = 12
+
+[node name="Seesaw3" parent="." instance=ExtResource("7_3t1aw")]
+position = Vector2(-1606, -330)
+segment_count = 12

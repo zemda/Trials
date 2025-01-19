@@ -7,10 +7,10 @@ extends Node2D
 
 
 func _ready() -> void:
-	_create_rope()
+	create_rope()
 
 
-func _create_rope() -> void: # TODO: redo, do the chain more stable to collision with player
+func create_rope() -> void: # TODO: redo, do the chain more stable to collision with player
 	var anchor_point = StaticBody2D.new()
 	var col = CollisionShape2D.new()
 	var shape = CircleShape2D.new()

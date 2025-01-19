@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://cftmvn5pjp8ac"]
+[gd_scene load_steps=23 format=3 uid="uid://cftmvn5pjp8ac"]
 
 [ext_resource type="Script" path="res://nodes/player/player.gd" id="1_8qk58"]
 [ext_resource type="Texture2D" uid="uid://dsqxdfviphsn" path="res://assets/sprites/player/playerT.png" id="2_ekgkp"]
@@ -91,9 +91,12 @@ size = Vector2(20, 31)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rk5ob"]
 size = Vector2(14.5, 31.5)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gkbli"]
+
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 position = Vector2(0, -4)
 collision_layer = 2
+collision_mask = 65
 script = ExtResource("1_8qk58")
 movement_data = ExtResource("2_ssmf6")
 
@@ -151,5 +154,12 @@ script = ExtResource("10_bcgbv")
 
 [node name="GrapplingHook" parent="." instance=ExtResource("10_wpntg")]
 position = Vector2(0, -13)
+
+[node name="DownwardCast" type="ShapeCast2D" parent="."]
+position = Vector2(0, 1)
+scale = Vector2(1, 0.5)
+shape = SubResource("RectangleShape2D_gkbli")
+target_position = Vector2(0, 5)
+collision_mask = 64
 
 [connection signal="area_entered" from="HazardDetector" to="." method="_on_hazard_detector_area_entered"]

@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3 uid="uid://byxmd74w1etdd"]
+
+[ext_resource type="Script" path="res://nodes/environment/world/seesaw/seesaw.gd" id="1_52tbp"]
+[ext_resource type="PackedScene" uid="uid://cgqw75vlluh2i" path="res://nodes/environment/world/seesaw/SeesawChain.tscn" id="2_e2tnl"]
+[ext_resource type="PackedScene" uid="uid://d2ymo5ydvjncv" path="res://nodes/environment/world/seesaw/Plank.tscn" id="3_ij4hr"]
+
+[node name="Seesaw" type="Node2D"]
+script = ExtResource("1_52tbp")
+chain_scene = ExtResource("2_e2tnl")
+plank_scene = ExtResource("3_ij4hr")

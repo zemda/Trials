@@ -11,6 +11,7 @@ func update(delta: float) -> void:
 	host.update_animations(input_axis)
 	host.move_and_slide()
 	host.update_wall_state()
+	host.handle_downward_cast()
 
 
 func _handle_wall_jump() -> void:
