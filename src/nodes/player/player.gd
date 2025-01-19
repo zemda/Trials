@@ -29,6 +29,13 @@ func handle_downward_cast() -> void:
 
 
 func _apply_force_to_plank(plank: RigidBody2D, collision_point: Vector2) -> void:
+	var plank_center = plank.global_position
+	var player_position = global_position
+	
+	var direction_to_player = player_position - plank_center
+	if direction_to_player.y > 0: # player is not on the plank, dont apply force
+		return
+	
 	var force = Vector2(0, -1)
 	plank.apply_impulse(collision_point - plank.global_position, force)
 
