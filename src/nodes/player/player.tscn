@@ -150,5 +150,6 @@ script = ExtResource("9_ujpwe")
 script = ExtResource("10_bcgbv")
 
 [node name="GrapplingHook" parent="." instance=ExtResource("10_wpntg")]
+position = Vector2(0, -13)
 
 [connection signal="area_entered" from="HazardDetector" to="." method="_on_hazard_detector_area_entered"]
