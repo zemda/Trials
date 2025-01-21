@@ -8,7 +8,7 @@ func create_rope() -> void:
 	shape.radius = 2
 	col.shape = shape
 	anchor_point.add_child(col)
-	for i in 3:
+	for i in range(1, 9):
 		anchor_point.set_collision_mask_value(i, 0)
 		anchor_point.set_collision_layer_value(i, 0)
 	add_child(anchor_point)
@@ -20,14 +20,11 @@ func create_rope() -> void:
 		var segment
 		if i == (segment_count - 1):
 			segment = hook.instantiate() as RigidBody2D
+			segment.settings_resource = hook_settings_resource
 		else:
 			segment = segment_scene.instantiate() as RigidBody2D
-		
-		segment.mass = 3
-		segment.linear_damp = 0.5
-		segment.angular_damp = 10.0
-		
-		segment.set_collision_mask_value(2, 0)
+			segment.settings_resource = segment_settings_resource
+			
 		segment.position = Vector2(0, i * segment_spacing)
 		add_child(segment)
 		

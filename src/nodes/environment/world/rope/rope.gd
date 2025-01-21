@@ -92,6 +92,10 @@ func _generate_segments() -> void:
 	var previous_node = anchor
 	for i in range(segment_count):
 		var segment = segment_scene.instantiate()
+		for y in range(1, 9):
+			segment.set_collision_mask_value(y, 0)
+			segment.set_collision_layer_value(y, 0)
+		segment.set_collision_mask_value(1, 1)
 		$Segments.add_child(segment)
 		_segments.append(segment)
 

@@ -96,7 +96,7 @@ size = Vector2(14.5, 31.5)
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 position = Vector2(0, -4)
 collision_layer = 2
-collision_mask = 65
+collision_mask = 113
 script = ExtResource("1_8qk58")
 movement_data = ExtResource("2_ssmf6")
 
@@ -156,10 +156,10 @@ script = ExtResource("10_bcgbv")
 position = Vector2(0, -13)
 
 [node name="DownwardCast" type="ShapeCast2D" parent="."]
-position = Vector2(-1, -16)
-scale = Vector2(1.2, 1.2)
+position = Vector2(0, -16)
+scale = Vector2(1.4, 1.2)
 shape = SubResource("CapsuleShape2D_t62km")
 target_position = Vector2(0, 5)
-collision_mask = 64
+collision_mask = 112
 
 [connection signal="area_entered" from="HazardDetector" to="." method="_on_hazard_detector_area_entered"]

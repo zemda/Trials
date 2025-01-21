@@ -34,6 +34,7 @@ Hookable="Objects that can be use as a hook point"
 Wrapable=""
 Player=""
 Plank=""
+Chain=""
 
 [input]
 
