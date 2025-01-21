@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://bjyv05n4r5dl"]
+[gd_scene load_steps=4 format=3 uid="uid://bjyv05n4r5dl"]
 
+[ext_resource type="Script" path="res://nodes/environment/world/chain/chain_segment.gd" id="1_cfw6p"]
 [ext_resource type="Texture2D" uid="uid://cmjfe0ci0768g" path="res://assets/sprites/player/hook/link.png" id="1_eem50"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_854jg"]
@@ -7,8 +8,8 @@ radius = 2.0
 height = 8.0
 
 [node name="Segment0" type="RigidBody2D"]
-collision_layer = 32
-collision_mask = 3
+collision_layer = 0
+script = ExtResource("1_cfw6p")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, 4)

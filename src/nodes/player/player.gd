@@ -22,10 +22,29 @@ func handle_downward_cast() -> void:
 	if downward_cast.is_colliding():
 		var collision_count = downward_cast.get_collision_count()
 		for i in range(collision_count):
+			print(i)
 			var collider = downward_cast.get_collider(i)
-			if collider and collider.is_in_group("Plank"):
+			if collider:
 				var collision_point = downward_cast.get_collision_point(i)
-				_apply_force_to_plank(collider, collision_point)
+				if collider.is_in_group("Plank"):
+					_apply_force_to_plank(collider, collision_point)
+				if collider.is_in_group("Chain"):
+					_apply_force_to_chain_segment(collider, collision_point)
+
+
+func _apply_force_to_chain_segment(segment: RigidBody2D, collision_point: Vector2) -> void:
+	var player_velocity = velocity
+	
+	var force_direction = player_velocity.normalized()
+	var speed = player_velocity.length()
+	
+	if speed < 80:
+		speed = lerp(0, 1, speed / 80)
+	else:
+		speed = lerp(1, 2, (speed - 80) / (200 - 80))
+	
+	var force = force_direction * -500 * speed
+	segment.apply_impulse(collision_point - global_position, force)
 
 
 func _apply_force_to_plank(plank: RigidBody2D, collision_point: Vector2) -> void:

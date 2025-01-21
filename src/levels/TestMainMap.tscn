@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=4 uid="uid://d1ascia0wibrl"]
+[gd_scene load_steps=9 format=4 uid="uid://d1ascia0wibrl"]
 
 [ext_resource type="Script" path="res://levels/test_main_map.gd" id="1_6j0a2"]
 [ext_resource type="PackedScene" uid="uid://cftmvn5pjp8ac" path="res://nodes/player/player.tscn" id="2_lfv6r"]
 [ext_resource type="PackedScene" uid="uid://5rx7v1h7s0wm" path="res://nodes/environment/traps/spikes.tscn" id="3_60050"]
 [ext_resource type="PackedScene" uid="uid://fsxe3pnrpvr5" path="res://levels/level_tile_map.tscn" id="4_5rt4o"]
 [ext_resource type="PackedScene" uid="uid://byxmd74w1etdd" path="res://nodes/environment/world/seesaw/Seesaw.tscn" id="7_3t1aw"]
+[ext_resource type="Resource" uid="uid://v34kl2206kw5" path="res://resources/segment/SolidSegmentData.tres" id="7_fc0ru"]
 [ext_resource type="PackedScene" uid="uid://dfhxu3p84uj6j" path="res://nodes/environment/world/chain/Chain.tscn" id="7_gbrd8"]
 [ext_resource type="PackedScene" uid="uid://bqt1f14kj1766" path="res://nodes/environment/world/rope/Rope.tscn" id="7_q24tn"]
 
@@ -13,7 +14,7 @@ script = ExtResource("1_6j0a2")
 
 [node name="Player" parent="." groups=["Wrapable"] instance=ExtResource("2_lfv6r")]
 z_index = 2
-position = Vector2(-1109, -228)
+position = Vector2(-1121, -227)
 floor_constant_speed = true
 floor_max_angle = 1.0472
 floor_snap_length = 4.0
@@ -44,6 +45,7 @@ segment_count = 12
 
 [node name="Chain" parent="." instance=ExtResource("7_gbrd8")]
 position = Vector2(-1265, -272)
+segment_settings_resource = ExtResource("7_fc0ru")
 segment_count = 12
 
 [node name="Chain2" parent="." instance=ExtResource("7_gbrd8")]
