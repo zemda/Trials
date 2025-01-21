@@ -12,7 +12,7 @@ func _ready() -> void:
 	create_rope()
 
 
-func create_rope() -> void:
+func create_rope() -> void: # TODO: merge segments and its gen with seesaw and chain
 	var anchor_point = StaticBody2D.new()
 	var col = CollisionShape2D.new()
 	var shape = CircleShape2D.new()
@@ -34,9 +34,6 @@ func create_rope() -> void:
 			segment.settings_resource = segment_settings_resource
 		
 		segment.position = Vector2(0, i * segment_spacing)
-		segment.mass = 0.2
-		segment.linear_damp = 0.5
-		segment.angular_damp = 200.0
 		segment.add_to_group("Chain")
 		add_child(segment)
 		

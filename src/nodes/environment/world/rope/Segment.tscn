@@ -14,30 +14,19 @@ height = 10.0
 [node name="Segment" type="RigidBody2D"]
 rotation = 3.14159
 collision_layer = 0
-collision_mask = 0
-gravity_scale = 0.5
+mass = 0.5
 contact_monitor = true
 max_contacts_reported = 1
+linear_damp = 0.5
+angular_damp = 100.0
 script = ExtResource("1_pahv5")
-
-[node name="PinJoint2D" type="PinJoint2D" parent="."]
-position = Vector2(2.62268e-07, 3)
-scale = Vector2(0.4, 0.4)
-node_a = NodePath("..")
-bias = 0.9
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("1")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(5.96046e-08, 1.19209e-07)
 texture = ExtResource("2_enero")
 
-[node name="North_Pole" type="Marker2D" parent="."]
-position = Vector2(0, 3)
-
-[node name="South_Pole" type="Marker2D" parent="."]
-position = Vector2(0, -3)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("1")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 32
