@@ -1,7 +1,7 @@
 extends "res://nodes/environment/world/chain/chain.gd"
 
 
-func create_rope() -> void:
+func create_rope() -> void: # TODO: merge segments and its gen with seesaw and chain
 	var anchor_point = StaticBody2D.new()
 	var col = CollisionShape2D.new()
 	var shape = CircleShape2D.new()

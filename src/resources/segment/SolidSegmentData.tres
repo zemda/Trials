@@ -6,6 +6,6 @@
 script = ExtResource("1_jk0p4")
 collision_layer = 32
 collision_mask = 1
-mass = 0.5
+mass = 0.2
 linear_damp = 0.5
 angular_damp = 200.0

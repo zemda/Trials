@@ -7,7 +7,7 @@
 radius = 2.0
 height = 8.0
 
-[node name="Segment0" type="RigidBody2D"]
+[node name="Segment" type="RigidBody2D"]
 collision_layer = 0
 script = ExtResource("1_cfw6p")
 

@@ -14,7 +14,7 @@ script = ExtResource("1_6j0a2")
 
 [node name="Player" parent="." groups=["Wrapable"] instance=ExtResource("2_lfv6r")]
 z_index = 2
-position = Vector2(-1121, -227)
+position = Vector2(-897, -269)
 floor_constant_speed = true
 floor_max_angle = 1.0472
 floor_snap_length = 4.0
@@ -40,8 +40,8 @@ position = Vector2(-1037, -371)
 segment_count = 12
 
 [node name="Rope3" parent="." instance=ExtResource("7_q24tn")]
-position = Vector2(-875, -373)
-segment_count = 12
+position = Vector2(-880, -363)
+segment_count = 15
 
 [node name="Chain" parent="." instance=ExtResource("7_gbrd8")]
 position = Vector2(-1265, -272)
