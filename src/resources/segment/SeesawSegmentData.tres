@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="SegmentData" load_steps=2 format=3 uid="uid://bdakrqa2u5c88"]
 
-[ext_resource type="Script" path="res://nodes/environment/world/chain/segment_settings.gd" id="1_er66f"]
+[ext_resource type="Script" path="res://nodes/environment/shared/master_chain/segments/segment_settings.gd" id="1_312x7"]
 
 [resource]
-script = ExtResource("1_er66f")
+script = ExtResource("1_312x7")
 collision_layer = 0
 collision_mask = 1
-mass = 3.0
+mass = 2.0
 linear_damp = 0.5
 angular_damp = 10.0

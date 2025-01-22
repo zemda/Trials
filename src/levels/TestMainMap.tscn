@@ -33,7 +33,7 @@ tile_map_data = PackedByteArray("AADz/wgAAQAAAAEAAADz/wcAAQAAAAEAAADz/wYAAQAAAAE
 
 [node name="Rope" parent="." instance=ExtResource("7_q24tn")]
 position = Vector2(-1230, -384)
-segment_count = 12
+segment_count = 10
 
 [node name="Rope2" parent="." instance=ExtResource("7_q24tn")]
 position = Vector2(-1037, -371)
@@ -41,25 +41,25 @@ segment_count = 12
 
 [node name="Rope3" parent="." instance=ExtResource("7_q24tn")]
 position = Vector2(-880, -363)
-segment_count = 15
+segment_count = 10
 
 [node name="Chain" parent="." instance=ExtResource("7_gbrd8")]
-position = Vector2(-1265, -272)
+position = Vector2(-1268, -272)
 segment_settings_resource = ExtResource("7_fc0ru")
-segment_count = 12
+segment_count = 8
 
 [node name="Chain2" parent="." instance=ExtResource("7_gbrd8")]
 position = Vector2(-1183, -272)
-segment_count = 10
+segment_count = 8
 
 [node name="Seesaw" parent="." instance=ExtResource("7_3t1aw")]
-position = Vector2(-1934, -328)
-segment_count = 12
+position = Vector2(-1981, -317)
 
 [node name="Seesaw2" parent="." instance=ExtResource("7_3t1aw")]
-position = Vector2(-1765, -328)
-segment_count = 12
+position = Vector2(-1802, -314)
 
 [node name="Seesaw3" parent="." instance=ExtResource("7_3t1aw")]
-position = Vector2(-1606, -330)
-segment_count = 12
+position = Vector2(-1661, -321)
+
+[node name="Seesaw4" parent="." instance=ExtResource("7_3t1aw")]
+position = Vector2(-1082, -257)

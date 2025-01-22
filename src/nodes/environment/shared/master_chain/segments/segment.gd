@@ -1,3 +1,4 @@
+class_name ChainSegment
 extends RigidBody2D
 
 

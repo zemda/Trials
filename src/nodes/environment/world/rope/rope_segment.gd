@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends ChainSegment
 
 signal player_entered_segment
 signal player_exited_segment
