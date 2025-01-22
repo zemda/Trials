@@ -22,7 +22,6 @@ func handle_downward_cast() -> void:
 	if downward_cast.is_colliding():
 		var collision_count = downward_cast.get_collision_count()
 		for i in range(collision_count):
-			print(i)
 			var collider = downward_cast.get_collider(i)
 			if collider:
 				var collision_point = downward_cast.get_collision_point(i)

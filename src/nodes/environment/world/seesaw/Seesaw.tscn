@@ -1,10 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://byxmd74w1etdd"]
+[gd_scene load_steps=7 format=3 uid="uid://byxmd74w1etdd"]
 
 [ext_resource type="Script" path="res://nodes/environment/world/seesaw/seesaw.gd" id="1_52tbp"]
-[ext_resource type="PackedScene" uid="uid://cgqw75vlluh2i" path="res://nodes/environment/world/seesaw/SeesawChain.tscn" id="2_e2tnl"]
 [ext_resource type="PackedScene" uid="uid://d2ymo5ydvjncv" path="res://nodes/environment/world/seesaw/Plank.tscn" id="3_ij4hr"]
+[ext_resource type="PackedScene" uid="uid://bjyv05n4r5dl" path="res://nodes/environment/shared/master_chain/segments/ChainSegment.tscn" id="3_ir7ux"]
+[ext_resource type="PackedScene" uid="uid://bka861vxagua" path="res://nodes/environment/shared/master_chain/segments/Hook.tscn" id="4_44lvq"]
+[ext_resource type="Resource" uid="uid://bdakrqa2u5c88" path="res://resources/segment/SeesawSegmentData.tres" id="5_6yqpb"]
+[ext_resource type="Resource" uid="uid://npc7j5663xqh" path="res://resources/segment/HookData.tres" id="6_bewpd"]
 
 [node name="Seesaw" type="Node2D"]
 script = ExtResource("1_52tbp")
-chain_scene = ExtResource("2_e2tnl")
 plank_scene = ExtResource("3_ij4hr")
+segment_scene = ExtResource("3_ir7ux")
+hook = ExtResource("4_44lvq")
+segment_settings_resource = ExtResource("5_6yqpb")
+hook_settings_resource = ExtResource("6_bewpd")

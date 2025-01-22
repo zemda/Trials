@@ -1,16 +1,12 @@
-extends Node2D
+extends MasterChain
 
-@export var chain_scene: PackedScene
 @export var plank_scene: PackedScene
-@export var segment_count: int = 5
 
 
 func _ready() -> void:
-	var _chain = chain_scene.instantiate()
-	_chain.segment_count = segment_count
-	add_child(_chain)
+	create_chain()
 	
-	var _hook = _chain.get_node("Hook")
+	var _hook = segments.back()
 	var _hook_position = _hook.global_position
 
 	var _plank = plank_scene.instantiate()

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SegmentData" load_steps=2 format=3 uid="uid://0774kptc4fda"]
+
+[ext_resource type="Script" path="res://nodes/environment/shared/master_chain/segments/segment_settings.gd" id="1_v0pu5"]
+
+[resource]
+script = ExtResource("1_v0pu5")
+collision_layer = 0
+collision_mask = 1
+mass = 0.5
+linear_damp = 0.5
+angular_damp = 20.0
