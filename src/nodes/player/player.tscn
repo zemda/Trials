@@ -97,6 +97,9 @@ size = Vector2(14.5, 31.5)
 position = Vector2(0, -4)
 collision_layer = 2
 collision_mask = 113
+platform_on_leave = 2
+platform_floor_layers = 4278190192
+platform_wall_layers = 64
 script = ExtResource("1_8qk58")
 movement_data = ExtResource("2_ssmf6")
 
@@ -157,7 +160,7 @@ position = Vector2(0, -13)
 
 [node name="DownwardCast" type="ShapeCast2D" parent="."]
 position = Vector2(0, -16)
-scale = Vector2(1.4, 1.2)
+scale = Vector2(1.2, 1.2)
 shape = SubResource("CapsuleShape2D_t62km")
 target_position = Vector2(0, 5)
 collision_mask = 112
