@@ -55,7 +55,7 @@ func _apply_force_to_plank(plank: RigidBody2D, collision_point: Vector2) -> void
 		return
 	
 	var force = Vector2(0, -1)
-	plank.apply_impulse(collision_point - plank.global_position, force)
+	plank.apply_impulse(force, plank.global_position - collision_point)
 
 
 func apply_gravity(delta: float) -> void:
