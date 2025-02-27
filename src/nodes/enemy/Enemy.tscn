@@ -1,0 +1,30 @@
+[gd_scene load_steps=7 format=3 uid="uid://0frcrpr5jv3u"]
+
+[ext_resource type="Script" path="res://nodes/enemy/enemy.gd" id="1_y5a76"]
+[ext_resource type="Texture2D" uid="uid://ds5xsnxvdh41r" path="res://assets/sprites/enemy/enemy2.png" id="2_ln8ms"]
+[ext_resource type="Script" path="res://nodes/enemy/enemy_base_states/enemy_states.gd" id="2_u8xxy"]
+[ext_resource type="Script" path="res://nodes/enemy/enemy_base_states/state_idle.gd" id="4_vq3yo"]
+[ext_resource type="Script" path="res://nodes/enemy/enemy_base_states/state_alert.gd" id="5_rhvvq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oc2r3"]
+radius = 8.0
+
+[node name="Enemy" type="CharacterBody2D"]
+collision_layer = 8
+script = ExtResource("1_y5a76")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_ln8ms")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_oc2r3")
+
+[node name="FSM" type="Node" parent="."]
+script = ExtResource("2_u8xxy")
+default_state_path = NodePath("state_idle")
+
+[node name="state_idle" type="Node" parent="FSM"]
+script = ExtResource("4_vq3yo")
+
+[node name="state_alert" type="Node" parent="FSM"]
+script = ExtResource("5_rhvvq")

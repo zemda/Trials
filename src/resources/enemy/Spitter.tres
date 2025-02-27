@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EnemySettings" load_steps=2 format=3 uid="uid://xuxmwtkw2rle"]
+
+[ext_resource type="Script" path="res://nodes/enemy/enemy_settings.gd" id="1_f338p"]
+
+[resource]
+script = ExtResource("1_f338p")
+display_color = Color(0.955719, 0.479161, 5.77569e-07, 1)
+speed = 50.0
+jump_strength = 200.0
