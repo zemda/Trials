@@ -7,7 +7,7 @@ var _current_target: Vector2 = NO_TARGET
 var _path_finder: Node
 var _go_to_position: Vector2 = NO_TARGET
 var _speed: float = 100
-var _jump_force: float = 200
+var _jump_force: float = 200 # TODO: let him jump as high as player, adjust pathfinding distance and height... its up to 8-10 tiles
 var _gravity: float = 550
 var _padding: float = 1
 var _finish_padding: float = 5
@@ -58,7 +58,7 @@ func _recalculate_path() -> void:
 	if _go_to_position != NO_TARGET and _path_finder:
 		print("Recalculating path...")
 		
-		var new_path = _path_finder.findPath(position, _go_to_position)
+		var new_path = _path_finder.find_path(position, _go_to_position)
 		
 		if len(new_path) > 0:
 			_current_path = new_path
@@ -76,7 +76,7 @@ func _recalculate_path() -> void:
 
 func _set_path(destination: Vector2) -> void:
 	_go_to_position = destination
-	_current_path = _path_finder.findPath(position, _go_to_position)
+	_current_path = _path_finder.find_path(position, _go_to_position)
 	if not _current_path or len(_current_path) == 0:
 		_go_to_position = NO_TARGET
 		return
