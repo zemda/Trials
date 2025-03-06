@@ -1,419 +1,396 @@
 extends Node2D
+class_name Pathfinder
 
 
-var _cell_size: int = 16
-var _jump_height: int = 2        # in "tiles"
-var _jump_distance: int = 3      # in "tiles", meaning that excluding tile i am at i can jump jump_distance further
 var _tile_map: TileMapLayer
-var _graph: AStar2D
-var _show_lines: bool = true
-var _used_cells: Array[Vector2i]
-var _used_cells_dict: Dictionary
-var _walkable_cells: Array[Vector2i]
+var _max_jump_height: int = 4  # Maximum jump height in tiles TODO
+var _jump_distance: int = 7    # Maximum jump distance in tiles TODO
 
 
-# track tile <-> point_id
-var _tile_to_pid: Dictionary = {}
-var _pid_to_tile: Dictionary = {}
-
-const MARKER = preload("res://TEST.tscn")
+var _debug_draw: bool = true
+var _path_to_draw: Array = []
+var astar = AStar2D.new()
 
 
-func _ready() -> void:
-	_graph = AStar2D.new()
-	_tile_map = get_parent().get_node("Map").get_node("base")
+var grid_to_id: Dictionary = {}
+var id_to_grid: Dictionary = {}
+var id_counter: int = 0
+var _used_cells_dict: Dictionary = {}
+var _used_cells_vect: Array[Vector2i] = []
+
+
+func _init(tile_map: TileMapLayer, max_jump_height: int = 4, jump_distance: int = 7):
+	_tile_map = tile_map
+	_used_cells_vect = _tile_map.get_used_cells()
 	
-	_used_cells = _tile_map.get_used_cells()
-	for cell in _used_cells:
-		_used_cells_dict[cell] = true
+	for c in _used_cells_vect:
+		_used_cells_dict[c] = true
 	
-	_walkable_cells = _get_walkable_cells()
+	_max_jump_height = max_jump_height
+	_jump_distance = jump_distance
+	print("PathFinder initialized")
 	
-	# Wait a bit so collisions exist, if needed
-	#var t = Timer.new()
-	#t.wait_time = 0.2
-	#t.one_shot = true
-	#add_child(t)
-	#t.start()
-	#await t.timeout
-	
-	
-	print("start map creation")
-	_create_map()
-	print("map done")
+	_create_grid(0, 200, -100, -1) # TODO, use map size
 	_create_connections()
-	print("connections done")
-	
-	if _show_lines:
-		queue_redraw()
 
 
-func find_path(start: Vector2, end: Vector2) -> Array:
-	var start_id = _graph.get_closest_point(start)
-	var end_id = _graph.get_closest_point(end)
+func find_path(start: Vector2, end: Vector2, character_width: int = 1, character_height: int = 2) -> Array:
+	var start_grid = _tile_map.local_to_map(start)
+	var end_grid = _tile_map.local_to_map(end)
 	
-	if start_id == -1 or end_id == -1:
-		print("No valid start or end point found")
+	print("Finding path from ", start_grid, " to ", end_grid)
+	
+	end_grid = _find_top_surface_tile(end_grid)
+	if end_grid == Vector2i(-1, -1):
+		print("No valid surface tile found")
 		return []
+
+	var path = _generate_path(start_grid, end_grid, character_width, character_height)
+	
+	_path_to_draw = path
+	queue_redraw()
+	return path
+
+
+func _find_top_surface_tile(pos: Vector2i) -> Vector2i:
+	for y in range(pos.y, pos.y + 100):
+		var check_pos = Vector2i(pos.x, y)
+		var above_pos = Vector2i(pos.x, y - 1)
 		
-	var id_path = _graph.get_id_path(start_id, end_id)
-	if id_path.is_empty():
-		print("No path found between points")
-		return []
+		if _is_solid(check_pos) and not _is_solid(above_pos):
+			return above_pos
 	
-	var actions = []
-	var prev_tile = null
+	return Vector2i(-1, -1)
+
+
+func _create_grid(x_min: int, x_max: int, y_min: int, y_max: int) -> void:
+	astar = AStar2D.new()
+	print("start grid")
+
+	grid_to_id = {}
+	id_to_grid = {}
+	id_counter = 0
 	
-	for i in range(id_path.size()):
-		var pid = id_path[i]
-		var pos = _graph.get_point_position(pid)
-		var tile = _pid_to_tile[pid]
+	for y in range(y_min, y_max + 1):
+		for x in range(x_min, x_max + 1):
+			var pos = Vector2i(x, y)
+			
+			if _is_solid(pos):
+				continue
+			var id = id_counter
+			id_counter += 1
+			
+			astar.add_point(id, Vector2(pos.x, pos.y))
+			grid_to_id[pos] = id
+			id_to_grid[id] = pos
+	print("end grid")
+
+
+func _create_connections():
+	for pos in grid_to_id:
+		var id = grid_to_id[pos]
+		var is_on_surface = _is_on_surface(pos)
 		
-		if prev_tile != null:
-			var dx = tile.x - prev_tile.x
-			var dy = tile.y - prev_tile.y
-			
-			# Check if we need to jump
-			var need_jump = false
-			
-			# CASE 1: Horizontal gap - need jump when gap is 2 or more tiles
-			if dy == 0 and abs(dx) >= 2:
-				if abs(dx) <= _jump_distance:
-					# Check if theres a walkable path through adjacent tiles
-					need_jump = true
-					
-					for step in range(1, abs(dx)):
-						var check_x = prev_tile.x + step * sign(dx)
-						var check_tile = Vector2i(check_x, prev_tile.y)
-						
-						# If theres a walkable tile in between, we dont need to jump
-						if check_tile in _tile_to_pid:
-							need_jump = false
-							break
-				else:
-					# Too far to jump
-					need_jump = false
-			
-			# CASE 2: Going up diagonally (must have horizontal movement)
-			elif dy < 0 and abs(dx) >= 1:
-				need_jump = true
-			
-			# CASE 3: Going down with horizontal movement
-			elif dy > 0 and abs(dx) >= 1:
-				need_jump = false
-			
-			if need_jump:
-				actions.append(null)
-		
-		actions.append(pos + Vector2(0, _cell_size * 0.2))
-		prev_tile = tile
-	
-	actions.append(end + Vector2(0, _cell_size * 0.2))
-	return actions
-
-
-func _get_walkable_cells() -> Array[Vector2i]:
-	var walkable: Array[Vector2i] = []
-	for cell in _used_cells:
-		var above = Vector2i(cell.x, cell.y - 1)
-		if not above in _used_cells_dict:
-			walkable.append(cell)
-	return walkable
-
-
-func _create_map() -> void:
-	for c in _walkable_cells:
-		_add_point_to_graph(c)
-
-
-func _add_point_to_graph(tile_coords: Vector2i) -> void:
-	var tile_above = Vector2i(tile_coords.x, tile_coords.y - 1)
-	var local = _tile_map.map_to_local(tile_above)
-	var world = _tile_map.to_global(local)
-	
-	var pid = _graph.get_available_point_id()
-	_graph.add_point(pid, world)
-	_tile_to_pid[tile_coords] = pid
-	_pid_to_tile[pid] = tile_coords
-	
-	if _show_lines:
-		var mark = MARKER.instantiate()
-		mark.position = world + Vector2(0, _cell_size * 0.2)
-		call_deferred("add_child", mark)
-
-
-func _create_connections() -> void:
-	var tile_grid_dict = {}
-	for tile_pos in _tile_to_pid.keys():
-		tile_grid_dict[tile_pos] = _tile_to_pid[tile_pos]
-	
-	for tile_pos in _tile_to_pid.keys():
-		var idA = _tile_to_pid[tile_pos]
-		
-		# 1: Only check direct neighbors for walkable connections (±1 in X)
+		# left/right horizontal neighbors
 		for dx in [-1, 1]:
-			var neighbor_pos = Vector2i(tile_pos.x + dx, tile_pos.y)
-			if neighbor_pos in tile_grid_dict:
-				var idB = tile_grid_dict[neighbor_pos]
-				_graph.connect_points(idA, idB)
-		
-		# 2: Only check specific positions for jump connections
-		for jump_x in range(2, _jump_distance + 1):
-			for direction in [-1, 1]:
-				var jump_pos = Vector2i(tile_pos.x + (jump_x * direction), tile_pos.y)
+			var neighbor_pos = Vector2i(pos.x + dx, pos.y)
+			
+			if neighbor_pos in grid_to_id:
+				var neighbor_id = grid_to_id[neighbor_pos]
+				var neighbor_on_surface = _is_on_surface(neighbor_pos)
 				
-				# Only process if this jump destination exists
-				if jump_pos in tile_grid_dict:
-					# Check if theres a walkable path instead
-					var needs_jump = true
-					for step in range(1, jump_x):
-						var step_pos = Vector2i(tile_pos.x + (step * direction), tile_pos.y)
-						if step_pos in tile_grid_dict:
-							needs_jump = false
-							break
-					
-					if needs_jump:
-						var idB = tile_grid_dict[jump_pos]
-						_graph.connect_points(idA, idB)
+				if is_on_surface and neighbor_on_surface:
+					astar.connect_points(id, neighbor_id, false)
+					astar.set_point_weight_scale(neighbor_id, 0.1)
 		
-		# 3: Diagonal jumps upward
-		for jump_y in range(1, _jump_height + 1):
-			for jump_x in range(1, _jump_distance + 1):
-				for direction in [-1, 1]:
-					var jump_pos = Vector2i(tile_pos.x + (jump_x * direction), tile_pos.y - jump_y)
-					
-					# Only process if this diagonal jump destination exists
-					if jump_pos in tile_grid_dict:
-						# Check for clearance above the player
-						var has_clearance = true
-						for y_check in range(1, jump_y + 1):
-							var check_pos = Vector2i(tile_pos.x, tile_pos.y - y_check)
-							if check_pos in _used_cells_dict:
-								has_clearance = false
-								break
-						
-						if has_clearance and not _is_blocked(tile_pos, jump_pos):
-							var idB = tile_grid_dict[jump_pos]
-							_graph.connect_points(idA, idB)
-		
-		# 4: Diagonal movement downward
-		for jump_y in range(1, _jump_height + 1):
-			for jump_x in range(1, _jump_distance + 1):
-				for direction in [-1, 1]:
-					var jump_pos = Vector2i(tile_pos.x + (jump_x * direction), tile_pos.y + jump_y)
-					
-					# Only process if this diagonal down destination exists
-					if jump_pos in tile_grid_dict:
-						# Check if were at an edge
-						var edge_pos = Vector2i(tile_pos.x + direction, tile_pos.y)
-						var at_edge = not edge_pos in _used_cells_dict
-						
-						if at_edge:
-							# Check for a clear path
-							var path_is_clear = true
-							
-							# Check if the tiles in between are clear
-							for x_off in range(1, jump_x + 1):
-								var x_pos = tile_pos.x + (x_off * direction)
-								
-								for y_off in range(0, jump_y):
-									var check_pos = Vector2i(x_pos, tile_pos.y + y_off)
-									if check_pos in _used_cells_dict:
-										path_is_clear = false
-										break
-								
-								if not path_is_clear:
-									break
-							
-							if path_is_clear and _has_space_for_drop(tile_pos, jump_pos):
-								var idB = tile_grid_dict[jump_pos]
-								_graph.connect_points(idA, idB)
-	
-	# 5: Drop connections
-	_create_drop_connections(tile_grid_dict)
-
-
-func _create_drop_connections(tile_grid_dict: Dictionary) -> void:
-	for tile_pos in tile_grid_dict.keys():
-		var idA = tile_grid_dict[tile_pos]
-		
-		# Check both left and right for ledges
-		for direction in [-1, 1]:
-			var side_pos = Vector2i(tile_pos.x + direction, tile_pos.y)
-			var above_side_pos = Vector2i(tile_pos.x + direction, tile_pos.y - 1)
+		# up/down vertical neighbors
+		for dy in [-1, 1]:
+			var neighbor_pos = Vector2i(pos.x, pos.y + dy)
 			
-			var is_ledge = not side_pos in _used_cells_dict and not above_side_pos in _used_cells_dict
-			
-			if is_ledge:
-				_find_drop_target(idA, tile_pos, direction, tile_grid_dict)
-
-
-func _find_drop_target(idA: int, tile_pos: Vector2i, direction: int, tile_grid_dict: Dictionary) -> void:
-	var max_drop_distance = 3
-	var max_drop_height = 10
-
-	# First, find the highest, topmost, target at each X position
-	var highest_targets = {}  # Store highest target by X position
-	
-	for drop_distance in range(1, max_drop_distance + 1):
-		var target_x = tile_pos.x + (direction * drop_distance)
-		
-		for drop_height in range(1, max_drop_height + 1):
-			var target_pos = Vector2i(target_x, tile_pos.y + drop_height)
-			
-			if target_pos in tile_grid_dict:
-				# If we havent found a target at this X yet, or if this one is higher (lower Y value)
-				if not target_x in highest_targets or target_pos.y < highest_targets[target_x].y:
-					highest_targets[target_x] = {
-						"y": target_pos.y,
-						"pos": target_pos,
-						"id": tile_grid_dict[target_pos]
-					}
-	
-	var x_positions = highest_targets.keys()
-	var sorted_x = []
-	
-	for x in x_positions:
-		var index = 0
-		while index < sorted_x.size() and abs(x - tile_pos.x) > abs(sorted_x[index] - tile_pos.x):
-			index += 1
-		sorted_x.insert(index, x)
-	
-	# Create connections to the highest targets
-	var targets_found = 0
-	for target_x in sorted_x:
-		var target = highest_targets[target_x]
-		var idB = target.id
-		
-		var has_clearance = true
-		# Check the vertical drop path (TODO: not accurate for eg x distance 3, since it doesnt check the distance 2)
-		for y in range(1, target.y - tile_pos.y):
-			var check_pos = Vector2i(target.pos.x, tile_pos.y + y)
-			if check_pos in _used_cells_dict:
-				has_clearance = false
-				break
-		
-		if has_clearance and not _graph.are_points_connected(idA, idB):
-			_graph.connect_points(idA, idB, false)
-			
-			targets_found += 1
-			if targets_found >= 3:
-				return  # Limit to 3 connections per ledge direction
-
-# Check if theres a block in the way for jumping TODO: improve
-func _is_blocked(from_tile: Vector2i, to_tile: Vector2i) -> bool:
-	# Calc jump arc and check for obstacles
-	var dx = to_tile.x - from_tile.x
-	var dy = to_tile.y - from_tile.y
-	
-	if dx == 0:
-		# Vertical jump - check all points in between
-		var y_step = sign(dy)
-		for y in range(from_tile.y + y_step, to_tile.y, y_step):
-			var check_tile = Vector2i(from_tile.x, y)
-			if check_tile in _used_cells_dict:
-				return true
-		return false
-	
-	# For a simple diagonal jump, we only need to check the target tile
-	if abs(dx) == 1 and dy == -1:
-		return false
-	
-	# Check all tiles in the path
-	for x in range(min(from_tile.x, to_tile.x), max(from_tile.x, to_tile.x) + 1):
-		if x == from_tile.x:
-			continue
-			
-		# Calculate approximate y position during jump
-		var t = float(x - from_tile.x) / dx
-		
-		var arc_height = 0
-		if dy < 0:
-			arc_height = abs(dy) * 0.25 * sin(t * PI)
-		
-		var y = from_tile.y + (dy * t) - arc_height
-		var check_y = int(round(y))
-		
-		if x == to_tile.x and check_y == to_tile.y:
-			continue
-		
-		# Check for a character height (just 1 tile for the basic check)
-		var check_tile = Vector2i(x, check_y)
-		if check_tile in _used_cells_dict:
-			return true
-	
-	return false
-
-
-func _has_space_for_drop(from_tile: Vector2i, to_tile: Vector2i) -> bool:
-	var dx = to_tile.x - from_tile.x
-	
-	# First, ensure theres actually a path to drop down
-	# Check the entire column from starting height to landing height
-	for y in range(from_tile.y + 1, to_tile.y):
-		var check_tile = Vector2i(from_tile.x, y)
-		if check_tile in _used_cells_dict:
-			return false
-	
-	# Then check for horizontal movement
-	if abs(dx) > 0:
-		# For each step in the horizontal direction
-		for step in range(1, abs(dx) + 1):
-			var x = from_tile.x + (step * sign(dx))
-			
-			# Check the entire vertical column at this horizontal position
-			for y in range(from_tile.y, to_tile.y + 1):
-				var check_tile = Vector2i(x, y)
+			if neighbor_pos in grid_to_id:
+				var neighbor_id = grid_to_id[neighbor_pos]
 				
-				if check_tile == to_tile:
+				# fall down
+				if dy == 1:
+					astar.connect_points(id, neighbor_id, false)
+				
+				# jump up
+				if dy == -1 and is_on_surface:
+					if _can_jump_to(pos, neighbor_pos):
+						astar.connect_points(id, neighbor_id, false)
+		
+		# diagonal neighbors
+		for dx in [-1, 1]:
+			for dy in [-1, 1]:
+				var direct_down = Vector2i(pos.x, pos.y + 1)
+				if direct_down in grid_to_id:
 					continue
+				var neighbor_pos = Vector2i(pos.x + dx, pos.y + dy)
+				
+				if neighbor_pos in grid_to_id:
+					var neighbor_id = grid_to_id[neighbor_pos]
+					if _is_diagonal_move_valid(pos, dx, dy):
+						if dy == -1 and is_on_surface:
+								astar.connect_points(id, neighbor_id, false)
+						if dy == 1:
+								astar.connect_points(id, neighbor_id, false)
+		
+		# distant jumps
+		if is_on_surface:
+			for dx in range(2, _jump_distance):
+				for dir_x in [-1, 1]:
+					var max_height = _get_max_jump_height_for_distance(dx)
+					if max_height <= 0:
+						continue
 					
-				if check_tile in _used_cells_dict:
-					return false
+					for dy in range(1, max_height):
+						var jump_target = Vector2i(pos.x + (dx * dir_x), pos.y - dy)
+						if jump_target in grid_to_id:
+							if not _is_jump_arc_blocked(pos, jump_target):
+								var target_id = grid_to_id[jump_target]
+								astar.connect_points(id, target_id, false)
+								astar.set_point_weight_scale(target_id, 10)
+
+
+func _is_diagonal_move_valid(from_pos: Vector2i, dx: int, dy: int) -> bool:
+	if dy == -1:
+		# diagonal up-right, check for solid tile on right or above
+		if dx > 0: 
+			if (_is_solid(Vector2i(from_pos.x + 1, from_pos.y -1)) or 
+				_is_solid(Vector2i(from_pos.x, from_pos.y - 1))):
+				return false
 			
-			# Check a fixed height (3 tiles) above this position for clearance
-			for h in range(1, 4):
-				var check_tile = Vector2i(x, from_tile.y - h)
-				if check_tile in _used_cells_dict:
-					return false
+		# diagonal up-left, check for solid tile on left or above
+		if dx < 0:
+			if (_is_solid(Vector2i(from_pos.x - 1, from_pos.y - 1)) or 
+				_is_solid(Vector2i(from_pos.x, from_pos.y - 1))):
+				return false
+	
+	if dy == 1:
+		# diagonal down-right
+		if dx > 0: 
+			if (_is_solid(Vector2i(from_pos.x + 1, from_pos.y)) or 
+				_is_solid(Vector2i(from_pos.x + 1, from_pos.y + 1))):
+				return false
+		
+		# down left
+		if dx < 0: 
+			if (_is_solid(Vector2i(from_pos.x - 1, from_pos.y)) or 
+				_is_solid(Vector2i(from_pos.x - 1, from_pos.y + 1))):
+				return false
 	
 	return true
 
 
-func _draw() -> void:
-	if not _show_lines:
-		return
+func _generate_path(start_grid: Vector2i, end_grid: Vector2i, character_width: int = 1, character_height: int = 1) -> Array:
+	# TODO: use character_width and height
+	if not start_grid in grid_to_id:
+		print("Start position not in grid")
+		return []
+	if not end_grid in grid_to_id:
+		print("end position not in grid")
+		return []
+	
+	var start_id = grid_to_id[start_grid]
+	var end_id = grid_to_id[end_grid]
+	var id_path = astar.get_id_path(start_id, end_id, true)
+	
+	if id_path.size() == 0:
+		print("No path found")
+		return []
+	
+	var path = []
+	var rewrite_last_and_skip_this = false # cuz of jumps that end on same y, otherwise we stop in midair
+	for i in range(id_path.size()):
+		var id = id_path[i]
+		var pos = id_to_grid[id]
+		var is_on_surface = _is_on_surface(pos)
+
+		var node = {
+			"position": _tile_map.map_to_local(pos),
+			"grid_pos": pos,
+			"type": "move"
+		}
+		if rewrite_last_and_skip_this:
+			if not is_on_surface:
+				continue
+			if path.size() > 0:
+				var prev_node = path[-1]
+				prev_node["position"] = _tile_map.map_to_local(pos)
+				prev_node["grid_pos"] = pos
+				rewrite_last_and_skip_this = false
+				#print("rewritten with : ", pos, ", on i: ", i)
+				continue
 		
-	var pts = _graph.get_point_ids()
-	for idA in pts:
-		var pA = _graph.get_point_position(idA)
-		var tileA = _pid_to_tile[idA]
 		
-		var connections = _graph.get_point_connections(idA)
-		for idB in connections:
-			var pB = _graph.get_point_position(idB)
-			var tileB = _pid_to_tile[idB]
+		if i > 0:
+			var prev_id = id_path[i-1]
+			var prev_pos = id_to_grid[prev_id]
+			var prev_is_on_surface = _is_on_surface(prev_pos)
 			
-			var dx = tileB.x - tileA.x
-			var dy = tileB.y - tileA.y
-			
-			# Check if its a one-way connection (drop)
-			var is_bidirectional = _graph.are_points_connected(idB, idA)
-			
-			# Color scheme:
-			# Blue: Adjacent walkable tiles (dx=1, same Y)
-			# Red: Requires jump (horizontal gap or up)
-			# Green: Walking down diagonally
-			# Pink: One-way drop connection, probably all the time handled with green
-			
-			var color
-			if not is_bidirectional:
-				color = Color.PINK
-			elif dy == 0 and abs(dx) == 1:
-				color = Color.BLUE
-			elif (dy == 0 and abs(dx) > 1) or dy < 0:
-				color = Color.DARK_RED
-			else:
-				color = Color.GREEN
+			if prev_is_on_surface and pos.y < prev_pos.y:
+				node["type"] = "jump"
 				
-			draw_line(pA, pB, color, 1)
+				var dx = abs(pos.x - prev_pos.x)
+				var dy = prev_pos.y - pos.y
+				
+				node["height"] = dy
+				node["distance"] = dx
+				node["jump_force"] = (
+					190.0 if dy == 1 and dx <= 3 else
+					230.0 if dy == 1 and dx <= 4 else
+					270.0 if dy == 1 and dx <= 5 else
+					340.0 if dy == 1 and dx <= 6 else
+					370.0 if dy == 1 and dx <= 7 else
+					275.0 if dy <= 2 and dx <= 3 else
+					320.0 if dy <= 2 and dx <= 6 else
+					335.0 if dy <= 3 and dx <= 4 else
+					380.0
+				)
+				if not is_on_surface:
+					if (i+1) <= id_path.size():
+						rewrite_last_and_skip_this = true
+						#print("rewrite: ", pos, ", on i: ", i)
+			else:
+				if not is_on_surface: # skip points in the middle of the air
+					continue
+		path.append(node)
+	
+	return path
+
+
+func _is_on_surface(pos: Vector2i) -> bool:
+	return not _is_solid(pos) and _is_solid(Vector2i(pos.x, pos.y + 1))
+
+
+func _can_jump_to(from_pos: Vector2i, to_pos: Vector2i) -> bool:
+	var dx = abs(from_pos.x - to_pos.x)
+	var dy = from_pos.y - to_pos.y  # Positive when moving up, cuz eg -1 - -3 == +2
+	
+	if dy <= 0:
+		return false
+		
+	if dx > _jump_distance:
+		return false
+	
+	var max_height = _get_max_jump_height_for_distance(dx)
+	return dy <= max_height
+
+
+func _get_max_jump_height_for_distance(distance: int) -> int:
+	if distance <= 0:
+		return _max_jump_height + 1
+	elif distance >= _jump_distance:
+		return 0
+	
+	var max_height = 0
+	
+	match distance:
+		1, 2, 3, 4, 5: max_height = 4
+		6: max_height = 3
+		7: max_height = 2
+		8: max_height = 1
+		_: max_height = -1
+	
+	return max_height + 1 # +1 as player height TODO
+
+
+func _is_jump_arc_blocked(from_pos: Vector2i, to_pos: Vector2i, character_width: int = 1, character_height: int = 1) -> bool:
+	var dx = to_pos.x - from_pos.x
+	var dy = to_pos.y - from_pos.y  # Negative when jumping up
+	
+	if abs(dx) <= 1 and abs(dy) <= 1:
+		return false
+	
+	if abs(dx) > _jump_distance or abs(dy) > _max_jump_height:
+		return true
+	
+	var num_points = max(abs(dx) * 10, abs(dy) * 10)
+	var prev_cell = from_pos
+	
+	for i in range(1, num_points + 1):
+		var t = float(i) / num_points
+		
+		var arc_pos = _calculate_jump_arc_point(from_pos, to_pos, t)
+		
+		var check_cells = [
+			Vector2i(int(round(arc_pos.x)), int(round(arc_pos.y))),
+			Vector2i(int(round(arc_pos.x)), int(round(arc_pos.y)) - 1),
+			Vector2i(int(floor(arc_pos.x)), int(round(arc_pos.y))),
+			Vector2i(int(ceil(arc_pos.x)), int(round(arc_pos.y)))
+		]
+		
+		var curr_cell = check_cells[0]
+		
+		if curr_cell == prev_cell:
+			continue
+			
+		for cell in check_cells:
+			if _character_collides_at_position(cell, character_width, character_height):
+				return true
+		
+		# moving diagonally
+		if curr_cell.x != prev_cell.x and curr_cell.y != prev_cell.y:
+			var move_dx = sign(curr_cell.x - prev_cell.x)
+			var move_dy = sign(curr_cell.y - prev_cell.y)
+			
+			var horiz_pos = Vector2i(curr_cell.x, prev_cell.y)
+			if _character_collides_at_position(horiz_pos, character_width, character_height):
+				return true
+		
+		prev_cell = curr_cell
+	return false
+
+
+func _calculate_jump_arc_point(from_pos: Vector2i, to_pos: Vector2i, t: float) -> Vector2:
+	var start_x = float(from_pos.x)
+	var start_y = float(from_pos.y)
+	var end_x = float(to_pos.x)
+	var end_y = float(to_pos.y)
+	
+	var x = lerp(start_x, end_x, t)
+	var y = 0.0
+	var dy = end_y - start_y
+	
+	if dy <= 0:  # jumping
+		y = start_y + dy * t - abs(dy) * 2 * t * (1 - t)
+	else:  # falling
+		y = start_y + dy * t - abs(dy) * 0.5 * t * (1 - t)
+	return Vector2(x, y)
+
+
+func _character_collides_at_position(pos: Vector2i, character_width: int, character_height: int) -> bool:
+	for w in range(character_width):
+		for h in range(character_height):
+			var check_pos = Vector2i(pos.x + w, pos.y - h)
+			if _is_solid(check_pos):
+				return true
+	return false
+
+
+func _is_solid(pos: Vector2i) -> bool:
+	return pos in _used_cells_dict
+
+
+func _draw() -> void:
+	if not _debug_draw or _path_to_draw.size() < 2:
+		return
+	
+	for i in range(1, _path_to_draw.size()):
+		var prev_pos = _path_to_draw[i-1].position
+		var curr_pos = _path_to_draw[i].position
+		
+		var color = Color.BLUE
+		if _path_to_draw[i].has("type"):
+			match _path_to_draw[i].type:
+				"jump":
+					color = Color.RED
+				"waypoint":
+					color = Color.YELLOW
+		
+		draw_line(prev_pos, curr_pos, color, 2.0)
+		
+		draw_circle(curr_pos, 4.0, color)
+		
+		draw_string(ThemeDB.fallback_font, curr_pos + Vector2(5, -5), str(i), 
+					HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color.WHITE)
