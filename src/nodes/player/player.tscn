@@ -1,14 +1,14 @@
 [gd_scene load_steps=23 format=3 uid="uid://cftmvn5pjp8ac"]
 
-[ext_resource type="Script" path="res://nodes/player/player.gd" id="1_8qk58"]
+[ext_resource type="Script" uid="uid://em7hrgt21xi1" path="res://nodes/player/player.gd" id="1_8qk58"]
 [ext_resource type="Texture2D" uid="uid://dsqxdfviphsn" path="res://assets/sprites/player/playerT.png" id="2_ekgkp"]
 [ext_resource type="Resource" uid="uid://d07icyh40egpk" path="res://resources/player/DefaultMovementData.tres" id="2_ssmf6"]
-[ext_resource type="Script" path="res://core/fsm/fsm.gd" id="5_v7uqt"]
-[ext_resource type="Script" path="res://nodes/player/states/state_idle.gd" id="6_vsldh"]
-[ext_resource type="Script" path="res://nodes/player/states/state_run.gd" id="7_md3qu"]
-[ext_resource type="Script" path="res://nodes/player/states/state_jump.gd" id="8_cvfmw"]
-[ext_resource type="Script" path="res://nodes/player/states/state_grappling.gd" id="9_ujpwe"]
-[ext_resource type="Script" path="res://nodes/player/states/state_swinging.gd" id="10_bcgbv"]
+[ext_resource type="Script" uid="uid://bg6ks6vg5kck1" path="res://core/fsm/fsm.gd" id="5_v7uqt"]
+[ext_resource type="Script" uid="uid://r0g4tb3pc65g" path="res://nodes/player/states/state_idle.gd" id="6_vsldh"]
+[ext_resource type="Script" uid="uid://cma1tbhsdou53" path="res://nodes/player/states/state_run.gd" id="7_md3qu"]
+[ext_resource type="Script" uid="uid://catbgibkleug2" path="res://nodes/player/states/state_jump.gd" id="8_cvfmw"]
+[ext_resource type="Script" uid="uid://crk20fe7l5v7t" path="res://nodes/player/states/state_grappling.gd" id="9_ujpwe"]
+[ext_resource type="Script" uid="uid://dvph8ijhe7u05" path="res://nodes/player/states/state_swinging.gd" id="10_bcgbv"]
 [ext_resource type="PackedScene" uid="uid://dmr2mqoiknm8e" path="res://nodes/grappling_hook/GrapplingHook.tscn" id="10_wpntg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g3yig"]
@@ -116,7 +116,7 @@ shape = SubResource("RectangleShape2D_lnte8")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -37)
-zoom = Vector2(0.8, 0.8)
+zoom = Vector2(0.7, 0.7)
 process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 15.0

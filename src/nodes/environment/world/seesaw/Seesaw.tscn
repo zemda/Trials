@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://byxmd74w1etdd"]
 
-[ext_resource type="Script" path="res://nodes/environment/world/seesaw/seesaw.gd" id="1_52tbp"]
+[ext_resource type="Script" uid="uid://yaldntdhatxn" path="res://nodes/environment/world/seesaw/seesaw.gd" id="1_52tbp"]
 [ext_resource type="PackedScene" uid="uid://d2ymo5ydvjncv" path="res://nodes/environment/world/seesaw/Plank.tscn" id="3_ij4hr"]
 [ext_resource type="PackedScene" uid="uid://bjyv05n4r5dl" path="res://nodes/environment/shared/master_chain/segments/ChainSegment.tscn" id="3_ir7ux"]
 [ext_resource type="PackedScene" uid="uid://bka861vxagua" path="res://nodes/environment/shared/master_chain/segments/Hook.tscn" id="4_44lvq"]
