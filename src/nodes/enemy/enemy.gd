@@ -7,8 +7,8 @@ var _current_path: Array = []
 var _current_target: Vector2 = NO_TARGET
 var _go_to_position: Vector2 = NO_TARGET
 
-@export var _speed: float = 160.0
-@export var _jump_force: float = 375.0
+var _speed: float = 160.0
+var _jump_force: float = 375.0
 
 @export var max_jump_height: int = 4
 @export var max_jump_distance: int = 8
@@ -24,38 +24,140 @@ var _stuck_timeout: float = 0.5
 var path_finder: Pathfinder
 @export var debug_draw: bool = true
 
+var _is_hanging: bool = false
+var _gravity_enabled: bool = true
+var _ceiling_position: Vector2 = Vector2.ZERO
+var _approaching_ceiling: bool = false
+var _ready_to_attach: bool = false
+var _max_ceiling_distance: float = 112.0  # 7 tiles -> 7 * 16
 
-func init_pathfinder(finder: Pathfinder) -> void:
-	path_finder = finder
 
 
 func _physics_process(delta: float) -> void:
-	_handle_input()
-	if Input.is_action_just_pressed("ui_cancel"):
-		_clear_path()
-		return
+	if _is_hanging:
+		_process_hanging_state()
+	elif _approaching_ceiling:
+		_process_ceiling_attaching()
 	
-	if _current_target != NO_TARGET:
-		_check_if_stuck(delta)
-		_move_towards_target()
-	else:
-		velocity.x = 0
-		if _go_to_position != NO_TARGET:
-			if abs(_go_to_position.x - position.x) > _finish_padding * 2:
-				print("Velocity 0..., ", position.distance_to(_go_to_position), ", pos: ", position, "go to: ", _go_to_position)
-				_recalculate_path()
-			else:
-				_go_to_position = NO_TARGET
-
-	if not is_on_floor():
-		velocity += get_gravity() * delta
+	if not _is_hanging:
+		_process_normal_movement(delta)
 	
-	move_and_slide()
+	_apply_gravity_and_move(delta)
+	
+	_check_handing_state()
 	
 	if debug_draw:
 		queue_redraw()
 
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("grapple"):
+		var click_pos = get_global_mouse_position()
+		move_to(click_pos)
+	if event.is_action_pressed("ui_cancel"):
+		_toggle_hanging()
+
+
+func _apply_gravity_and_move(delta: float) -> void:
+	if not _is_hanging and not is_on_floor() and _gravity_enabled:
+		velocity += get_gravity() * delta
+	
+	move_and_slide()
+
+
+func init_pathfinder(finder: Pathfinder) -> void:
+	path_finder = finder
+
+
+
+# ----- HANGING -----
+func _toggle_hanging() -> void:
+	if _is_hanging:
+		_stop_hanging()
+	elif not _approaching_ceiling and _current_target == NO_TARGET:
+		var found_ceiling = _find_ceiling()
+		if found_ceiling:
+			_start_hanging()
+
+func _find_ceiling() -> bool:
+	var space_state = get_world_2d().direct_space_state
+	var start_pos = global_position
+	var end_pos = start_pos + Vector2(0, -_max_ceiling_distance)
+	
+	var query = PhysicsRayQueryParameters2D.create(start_pos, end_pos)
+	query.exclude = [self]
+	
+	var result = space_state.intersect_ray(query)
+	
+	if result and result.has("position"):
+		_ceiling_position = result.position
+		return true
+	
+	return false
+
+func _start_hanging() -> void:
+	if _is_hanging or _approaching_ceiling:
+		return
+	
+	_approaching_ceiling = true
+	
+	# TODO: find a ceiling pos, use move_to() under it and attach... or go back to spawn ceiling
+
+func _attach_to_ceiling() -> void:
+	_is_hanging = true
+	_approaching_ceiling = false
+	_ready_to_attach = false
+	_gravity_enabled = false
+	velocity = Vector2.ZERO
+
+func _stop_hanging() -> void:
+	if not _is_hanging:
+		return
+	
+	_is_hanging = false
+	_gravity_enabled = true
+	velocity.y = 10
+	
+	var tween = create_tween()
+	tween.tween_property(self, "rotation_degrees", 0, 0.3)
+
+func _process_hanging_state() -> void:
+	velocity = Vector2.ZERO
+
+func _process_ceiling_attaching() -> void:
+	if _ready_to_attach:
+		if abs(global_position.y - _ceiling_position.y) < 10:
+			_attach_to_ceiling()
+	
+	elif is_on_floor() and abs(global_position.x - _ceiling_position.x) < 16:
+		print("In position below ceiling, jumping up")
+		_ready_to_attach = true
+		velocity.y = -_jump_force * 1.2
+		
+		if abs(global_position.x - _ceiling_position.x) > 5:
+			velocity.x = (_ceiling_position.x - global_position.x) * 3
+		
+		var tween = create_tween()
+		tween.tween_property(self, "rotation_degrees", 180, 0.5)
+	
+	elif _current_target == NO_TARGET and _current_path.size() == 0 and is_on_floor():
+		var pos_below_ceiling = Vector2(_ceiling_position.x, _ceiling_position.y + 32)
+		
+		var direction = sign(pos_below_ceiling.x - global_position.x)
+		velocity.x = direction * _speed
+		
+		if abs(global_position.x - pos_below_ceiling.x) > 48:
+			move_to(pos_below_ceiling)
+
+func _check_handing_state() -> void:
+	if _ready_to_attach and is_on_floor():
+		_ready_to_attach = false
+		
+		if _approaching_ceiling:
+			_start_hanging()
+
+
+# ----- PATHFINDING && MOVING -----
 func _move_towards_target() -> void:
 	if _current_target == NO_TARGET:
 		velocity.x = 0
@@ -72,7 +174,6 @@ func _move_towards_target() -> void:
 	if position.distance_to(_current_target) < _finish_padding and is_on_floor():
 		_next_point()
 		_stuck_timer = 0
-
 
 func _next_point() -> void:
 	if _current_path.size() == 0:
@@ -96,7 +197,6 @@ func _next_point() -> void:
 	
 	_current_target = next_node.position
 
-
 func _check_if_stuck(delta: float) -> void:
 	if _current_path.size() >= 0 and abs(velocity.x) < 10.0 and is_on_floor():
 		_stuck_timer += delta
@@ -107,14 +207,12 @@ func _check_if_stuck(delta: float) -> void:
 	else:
 		_stuck_timer = 0
 
-
 func _clear_path() -> void:
 	_current_target = NO_TARGET
 	_current_path.clear()
 	_go_to_position = NO_TARGET
 	velocity = Vector2.ZERO
 	_stuck_timer = 0
-
 
 func _recalculate_path() -> void:
 	print("Recalculating...")
@@ -132,8 +230,10 @@ func _recalculate_path() -> void:
 		else:
 			_clear_path()
 
-
 func move_to(destination: Vector2) -> void:
+	if _is_hanging:
+		return
+	
 	_go_to_position = destination
 	_current_path.clear()
 	_current_target = NO_TARGET
@@ -153,6 +253,20 @@ func move_to(destination: Vector2) -> void:
 		else:
 			_go_to_position = NO_TARGET
 
+func _process_normal_movement(delta: float) -> void:
+	if _current_target != NO_TARGET:
+		_check_if_stuck(delta)
+		_move_towards_target()
+	else:
+		if not _approaching_ceiling:
+			velocity.x = 0
+			
+		if _go_to_position != NO_TARGET:
+			if abs(_go_to_position.x - position.x) > _finish_padding * 2:
+				_recalculate_path()
+			else:
+				_go_to_position = NO_TARGET
+
 
 func _draw() -> void:
 	if not debug_draw:
@@ -171,10 +285,7 @@ func _draw() -> void:
 		last_pos = node_pos
 
 
-func _handle_input() -> void:
-	if Input.is_action_just_pressed("grapple"):
-		var click_pos = get_global_mouse_position()
-		move_to(click_pos)
+
 
 
 
