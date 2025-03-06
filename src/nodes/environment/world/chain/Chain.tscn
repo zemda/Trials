@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://dfhxu3p84uj6j"]
 
-[ext_resource type="Script" path="res://nodes/environment/world/chain/chain.gd" id="1_wpdeb"]
+[ext_resource type="Script" uid="uid://bd4q8kjra2p2q" path="res://nodes/environment/world/chain/chain.gd" id="1_wpdeb"]
 [ext_resource type="PackedScene" uid="uid://bjyv05n4r5dl" path="res://nodes/environment/shared/master_chain/segments/ChainSegment.tscn" id="2_idnyq"]
 [ext_resource type="PackedScene" uid="uid://bka861vxagua" path="res://nodes/environment/shared/master_chain/segments/Hook.tscn" id="3_c348m"]
 [ext_resource type="Resource" uid="uid://wvuosnkhutxu" path="res://resources/segment/ChainSegmentData.tres" id="4_o45bv"]

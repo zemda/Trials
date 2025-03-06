@@ -1,15 +1,15 @@
 [gd_scene load_steps=7 format=3 uid="uid://0frcrpr5jv3u"]
 
-[ext_resource type="Script" path="res://nodes/enemy/enemy.gd" id="1_y5a76"]
+[ext_resource type="Script" uid="uid://cq2335pg4cyda" path="res://nodes/enemy/enemy.gd" id="1_y5a76"]
 [ext_resource type="Texture2D" uid="uid://ds5xsnxvdh41r" path="res://assets/sprites/enemy/enemy2.png" id="2_ln8ms"]
-[ext_resource type="Script" path="res://nodes/enemy/enemy_base_states/enemy_states.gd" id="2_u8xxy"]
-[ext_resource type="Script" path="res://nodes/enemy/enemy_base_states/state_idle.gd" id="4_vq3yo"]
-[ext_resource type="Script" path="res://nodes/enemy/enemy_base_states/state_alert.gd" id="5_rhvvq"]
+[ext_resource type="Script" uid="uid://cto2o0nncekv7" path="res://nodes/enemy/enemy_base_states/enemy_states.gd" id="2_u8xxy"]
+[ext_resource type="Script" uid="uid://qq0ij00uh1bn" path="res://nodes/enemy/enemy_base_states/state_idle.gd" id="4_vq3yo"]
+[ext_resource type="Script" uid="uid://bkqsqt287evh0" path="res://nodes/enemy/enemy_base_states/state_alert.gd" id="5_rhvvq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oc2r3"]
 radius = 8.0
 
-[node name="Enemy" type="CharacterBody2D"]
+[node name="Enemy" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 8
 script = ExtResource("1_y5a76")
 
@@ -17,6 +17,8 @@ script = ExtResource("1_y5a76")
 texture = ExtResource("2_ln8ms")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+scale = Vector2(0.8, 0.8)
 shape = SubResource("CircleShape2D_oc2r3")
 
 [node name="FSM" type="Node" parent="."]

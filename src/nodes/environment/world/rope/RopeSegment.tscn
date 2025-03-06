@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://drkdfjsc5shbg"]
 
-[ext_resource type="Script" path="res://nodes/environment/world/rope/rope_segment.gd" id="1_pahv5"]
+[ext_resource type="Script" uid="uid://br6wfcd2nkk77" path="res://nodes/environment/world/rope/rope_segment.gd" id="1_pahv5"]
 [ext_resource type="Texture2D" uid="uid://cmjfe0ci0768g" path="res://assets/sprites/player/hook/link.png" id="2_enero"]
 
 [sub_resource type="CapsuleShape2D" id="1"]

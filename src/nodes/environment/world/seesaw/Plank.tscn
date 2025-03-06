@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://d2ymo5ydvjncv"]
 
-[ext_resource type="Script" path="res://nodes/environment/world/seesaw/plank.gd" id="1_76qqq"]
+[ext_resource type="Script" uid="uid://32rtcfrt6b2" path="res://nodes/environment/world/seesaw/plank.gd" id="1_76qqq"]
 [ext_resource type="Texture2D" uid="uid://246xwods8bnq" path="res://assets/sprites/world/plank/plank.png" id="1_ul5wt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yxfdg"]
