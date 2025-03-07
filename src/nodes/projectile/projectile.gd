@@ -1,0 +1,38 @@
+extends CharacterBody2D
+
+
+@export var projectile_speed: float = 2000.0
+@export var arc: float = 10.0
+
+
+func _physics_process(delta: float) -> void:
+	velocity.y += projectile_speed * delta
+	var collision = move_and_collide(velocity * delta)
+	if collision:
+		destroy()
+
+
+func launch(target_position: Vector2) -> void:
+	var arc_height = target_position.y - global_position.y - arc
+	arc_height = min(-arc, arc_height)
+	velocity = _get_arc_velocity(global_position, target_position, arc_height, projectile_speed, projectile_speed)
+	$Area2D.monitoring = true
+
+
+func destroy() -> void:
+	queue_free()
+
+
+func _get_arc_velocity(point_a: Vector2, point_b: Vector2, arc_height: float, up_gravity: float, down_gravity: float) -> Vector2:
+	
+	var velocity := Vector2.ZERO
+	var displacement = point_b - point_a
+	
+	if displacement.y > arc_height:
+		var time_up = sqrt(-2 * arc_height / float(up_gravity))
+		var time_down = sqrt(2 * (displacement.y - arc_height) / float(down_gravity))
+		
+		velocity.y = -sqrt(-2 * up_gravity * arc_height)
+		velocity.x = displacement.x / float(time_up + time_down)
+	
+	return velocity
