@@ -30,3 +30,10 @@ script = ExtResource("4_vq3yo")
 
 [node name="state_alert" type="Node" parent="FSM"]
 script = ExtResource("5_rhvvq")
+
+[node name="PlayerDetection" type="RayCast2D" parent="."]
+position = Vector2(0, -22)
+collision_mask = 2
+
+[node name="WallDetection" type="RayCast2D" parent="."]
+position = Vector2(0, -22)

@@ -1,5 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7511mr2mem34"]
+[gd_scene load_steps=3 format=3 uid="uid://c7511mr2mem34"]
 
 [ext_resource type="PackedScene" uid="uid://0frcrpr5jv3u" path="res://nodes/enemy/Enemy.tscn" id="1_h4utw"]
+[ext_resource type="PackedScene" uid="uid://v1oqu883jhhh" path="res://nodes/projectile/Projectile.tscn" id="2_4x1vv"]
 
 [node name="Spitter" instance=ExtResource("1_h4utw")]
+_projectile_scene = ExtResource("2_4x1vv")

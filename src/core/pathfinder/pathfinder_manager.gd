@@ -31,9 +31,8 @@ func _physics_process(delta: float) -> void:
 
 
 func register_character(enemy: Enemy) -> void:
-	enemy.init_pathfinder(pathfinder)
+	enemy.init_references(pathfinder, player, self)
 	enemies.append(enemy)
-	print("Registered character: ", enemy.name)
 
 
 func unregister_character(character: Enemy) -> void:
