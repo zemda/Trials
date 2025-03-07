@@ -19,7 +19,7 @@ var _used_cells_dict: Dictionary = {}
 var _used_cells_vect: Array[Vector2i] = []
 
 
-func _init(tile_map: TileMapLayer, max_jump_height: int = 4, jump_distance: int = 7):
+func _init(tile_map: TileMapLayer, max_jump_height: int = 4, jump_distance: int = 7) -> void:
 	_tile_map = tile_map
 	_used_cells_vect = _tile_map.get_used_cells()
 	
@@ -86,7 +86,7 @@ func _create_grid(x_min: int, x_max: int, y_min: int, y_max: int) -> void:
 	print("end grid")
 
 
-func _create_connections():
+func _create_connections() -> void:
 	for pos in grid_to_id:
 		var id = grid_to_id[pos]
 		var is_on_surface = _is_on_surface(pos)
@@ -331,9 +331,6 @@ func _is_jump_arc_blocked(from_pos: Vector2i, to_pos: Vector2i, character_width:
 		
 		# moving diagonally
 		if curr_cell.x != prev_cell.x and curr_cell.y != prev_cell.y:
-			var move_dx = sign(curr_cell.x - prev_cell.x)
-			var move_dy = sign(curr_cell.y - prev_cell.y)
-			
 			var horiz_pos = Vector2i(curr_cell.x, prev_cell.y)
 			if _character_collides_at_position(horiz_pos, character_width, character_height):
 				return true
