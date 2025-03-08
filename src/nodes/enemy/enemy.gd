@@ -157,6 +157,10 @@ func init_references(pf: Pathfinder, player: Player, pfm: PathfinderManager) -> 
 	_path_finder_manager = pfm
 
 
+func _handle_shooting() -> void:
+	if can_shoot_at_player():
+		shoot(_player.global_position + Vector2(0.0, -16.0))
+
 
 #region State processing
 func _process_idle_state(delta: float) -> void:
@@ -167,7 +171,6 @@ func _process_idle_state(delta: float) -> void:
 		_tries_to_hang = 0
 	if _tries_to_hang < 15 and _control_mode == ControlMode.AUTO_CHASE:
 		_toggle_hanging()
-	
 
 
 func _process_move_state(delta: float) -> void:
@@ -187,63 +190,30 @@ func _process_move_state(delta: float) -> void:
 
 
 func _process_chase_state(delta: float) -> void:
-	if _control_mode == ControlMode.MANUAL:
-		_change_state(EnemyState.IDLE)
-		return
-		
-	if _player == null:
-		_change_state(EnemyState.IDLE)
+	if not _validate_chase_state():
 		return
 	
-	if _current_target != NO_TARGET:
-		_check_if_stuck(delta)
-		_move_towards_target()
+	_handle_chase_movement(delta)
 	
 	var distance_to_player = global_position.distance_to(_player.global_position)
 	var is_mid_jump = not is_on_floor() and velocity.y != 0
 	
-	if can_shoot_at_player():
-		shoot(_player.global_position + Vector2(0.0, -16.0))
+	_handle_shooting()
 	
 	if _player_visible:
-		if distance_to_player > 130:
-			if (not is_mid_jump) and (_current_target == NO_TARGET or _current_path.size() < 2):
-				if _path_recalculation_timer >= _path_recalculation_interval:
-					print("Chasing visible player - calculating path")
-					move_to(_player.global_position)
-					_path_recalculation_timer = 0.0
-		else:
-			if not is_mid_jump:
-				_clear_path()
+		_handle_visible_player_chase(distance_to_player, is_mid_jump)
 		
 	elif _player_behind_wall and distance_to_player <= _player_chase_distance:
-		if (not is_mid_jump) and (_current_target == NO_TARGET or _current_path.size() < 2):
-			if _path_recalculation_timer >= _path_recalculation_interval:
-				print("Chasing player behind wall - calculating path")
-				move_to(_player.global_position)
-				_path_recalculation_timer = 0.0
-			
+		_handle_player_behind_wall_chase(is_mid_jump)
 	else:
-		if _player_last_known_position != NO_TARGET:
-			print(abs(_player_last_known_position.x - position.x))
-			if not is_mid_jump and _go_to_position != _player_last_known_position:
-				print("Moving to player's last known position")
-				move_to(_player_last_known_position)
-			
-			if abs(_player_last_known_position.x - position.x) < _padding or _current_target == NO_TARGET or _current_path.size() == 0:
-				_player_last_known_position = NO_TARGET
-		elif _current_path.size() == 0 and _current_target == NO_TARGET and not is_mid_jump:
-			_change_state(EnemyState.IDLE)
-			velocity.x = 0
+		_handle_lost_player_chase(is_mid_jump)
 
 
 func _process_hanging_state() -> void:
 	velocity = Vector2.ZERO
-	var angle := 0 if _current_state != EnemyState.HANGING else 180
-	if can_shoot_at_player():
-			shoot(_player.global_position + Vector2(0.0, -16.0))
+	_handle_shooting()
 	
-	elif (_player_behind_wall or _player_visible) and _player != null:
+	if (_player_behind_wall or _player_visible) and _player != null:
 		var distance_to_player = global_position.distance_to(_player.global_position)
 		if distance_to_player <= _player_chase_distance:
 			if randf() < 0.05 * _player_detection_interval:
@@ -274,8 +244,70 @@ func _change_state(new_state: int) -> void:
 #endregion
 
 
+#region Chase processing
+func _validate_chase_state() -> bool:
+	if _control_mode == ControlMode.MANUAL:
+		_change_state(EnemyState.IDLE)
+		return false
+		
+	if _player == null:
+		_change_state(EnemyState.IDLE)
+		return false
+	
+	return true
+
+
+func _handle_chase_movement(delta: float) -> void:
+	if _current_target != NO_TARGET:
+		_check_if_stuck(delta)
+		_move_towards_target()
+
+
+func _handle_visible_player_chase(distance_to_player: float, is_mid_jump: bool) -> void:
+	if distance_to_player > 130: # TODO random num lol
+		_chase_if_path_needs_recalculation(is_mid_jump, "Chasing visible player - calculating path")
+	else:
+		if not is_mid_jump:
+			_clear_path()
+
+
+func _handle_player_behind_wall_chase(is_mid_jump: bool) -> void:
+	_chase_if_path_needs_recalculation(is_mid_jump, "Chasing player behind wall - calculating path")
+
+
+func _handle_lost_player_chase(is_mid_jump: bool) -> void:
+	if _player_last_known_position != NO_TARGET:
+		_chase_last_known_position(is_mid_jump)
+	elif _current_path.size() == 0 and _current_target == NO_TARGET and not is_mid_jump:
+		_change_state(EnemyState.IDLE)
+
+
+func _chase_if_path_needs_recalculation(is_mid_jump: bool, debug_message: String = "") -> void:
+	if (not is_mid_jump) and (_current_target == NO_TARGET or _current_path.size() < 2):
+		if _path_recalculation_timer >= _path_recalculation_interval:
+			if debug_message:
+				print(debug_message)
+			move_to(_player.global_position)
+			_path_recalculation_timer = 0.0
+
+
+func _chase_last_known_position(is_mid_jump: bool) -> void:	
+	if not is_mid_jump and _go_to_position != _player_last_known_position:
+		print("Moving to player's last known position")
+		move_to(_player_last_known_position)
+	
+	if abs(_player_last_known_position.x - position.x) < _padding or \
+			_current_target == NO_TARGET \
+			or _current_path.size() == 0:
+		_player_last_known_position = NO_TARGET
+
+
+
+
+#endregion
+
 #region Player detection processing
-func _update_raycasts() -> void: # TODO when player hanging, vect must be to opposite dir
+func _update_raycasts() -> void:
 	var angle := 0 if _current_state != EnemyState.HANGING else 180
 	var adj := Vector2(0.0, 0.0) if _current_state != EnemyState.HANGING else Vector2(0.0, 48.0)
 	var target_pos = (_player.global_position - global_position).normalized().rotated(deg_to_rad(angle))
@@ -311,7 +343,7 @@ func _update_player_detection(delta: float) -> void:
 				_change_state(EnemyState.CHASE)
 
 
-func _is_player_visible() -> bool: # TODO when hanging vect must be opposite dir
+func _is_player_visible() -> bool:
 	if _player_raycast.is_colliding() and _player_raycast.get_collider() == _player:
 		if _wall_raycast.is_colliding():
 			var wall_distance = _wall_raycast.get_collision_point().distance_to(global_position)
@@ -349,7 +381,7 @@ func can_shoot_at_player() -> bool:
 	return true
 
 
-func shoot(target_position: Vector2) -> void: # TODO add trajectory prediction and check of the shot is possible
+func shoot(target_position: Vector2) -> void: # TODO add trajectory prediction and check if the shot is possible
 	if not _can_shoot or not _projectile_scene:
 		return
 	
