@@ -15,7 +15,6 @@ func _physics_process(delta: float) -> void:
 
 func launch(target_position: Vector2) -> void:
 	var arc_ = arc if not is_shooter_on_ceiling else 1
-	print(arc_)
 	var arc_height = target_position.y - global_position.y - arc_
 	arc_height = min(-arc_, arc_height)
 	velocity = _get_arc_velocity(global_position, target_position, arc_height, projectile_speed, projectile_speed)

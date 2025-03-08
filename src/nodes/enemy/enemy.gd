@@ -226,20 +226,15 @@ func _process_chase_state(delta: float) -> void:
 	else:
 		if _player_last_known_position != NO_TARGET:
 			print(abs(_player_last_known_position.x - position.x))
-			#print("last knwon .. _current_target: ", _current_target, ", my pos: ", position, ", path size: ", _current_path.size())
 			if not is_mid_jump and _go_to_position != _player_last_known_position:
 				print("Moving to player's last known position")
 				move_to(_player_last_known_position)
 			
 			if abs(_player_last_known_position.x - position.x) < _padding or _current_target == NO_TARGET or _current_path.size() == 0:
-				#print("Player pos: ", _player_last_known_position)
-				#print("Enemy pos: ", position, ", global: ", global_position)
-				#print(_current_path.size())
 				_player_last_known_position = NO_TARGET
 		elif _current_path.size() == 0 and _current_target == NO_TARGET and not is_mid_jump:
 			_change_state(EnemyState.IDLE)
 			velocity.x = 0
-		#print("_current_target: ", _current_target, ", my pos: ", position, ", path size: ", _current_path.size())
 
 
 func _process_hanging_state() -> void:
@@ -248,11 +243,11 @@ func _process_hanging_state() -> void:
 	if can_shoot_at_player():
 			shoot(_player.global_position + Vector2(0.0, -16.0))
 	
-	#elif (_player_behind_wall or _player_visible) and _player != null:
-		#var distance_to_player = global_position.distance_to(_player.global_position)
-		#if distance_to_player <= _player_chase_distance:
-			#if randf() < 0.05 * _player_detection_interval:
-				#_change_state(EnemyState.IDLE)
+	elif (_player_behind_wall or _player_visible) and _player != null:
+		var distance_to_player = global_position.distance_to(_player.global_position)
+		if distance_to_player <= _player_chase_distance:
+			if randf() < 0.05 * _player_detection_interval:
+				_change_state(EnemyState.IDLE) # TODO improve transition then to chase
 
 
 func _change_state(new_state: int) -> void:
@@ -308,7 +303,6 @@ func _update_player_detection(delta: float) -> void:
 	
 	if _player_visible or _player_behind_wall:
 		_player_last_known_position = _player.global_position
-		print("updated pos")
 		
 		if (_player_visible or (_player_behind_wall and player_in_chase_range)) and \
 		   _current_state != EnemyState.HANGING and \
@@ -355,7 +349,7 @@ func can_shoot_at_player() -> bool:
 	return true
 
 
-func shoot(target_position: Vector2) -> void:
+func shoot(target_position: Vector2) -> void: # TODO add trajectory prediction and check of the shot is possible
 	if not _can_shoot or not _projectile_scene:
 		return
 	
@@ -388,7 +382,6 @@ func _toggle_hanging() -> void:
 	elif _current_state == EnemyState.IDLE or _control_mode == ControlMode.MANUAL or _current_state:
 		var found_ceiling = _find_ceiling()
 		_tries_to_hang += 1
-		print("tried, ", _tries_to_hang)
 		if found_ceiling:
 			_start_hanging()
 
@@ -417,7 +410,6 @@ func _start_hanging() -> void:
 	if _control_mode == ControlMode.MANUAL:
 		_approaching_ceiling = true
 		_change_state(EnemyState.APPROACHING_CEILING)
-		print("Manual hanging started")
 		return
 	
 	if _player_visible and _current_state == EnemyState.CHASE:
@@ -425,7 +417,6 @@ func _start_hanging() -> void:
 		
 	_approaching_ceiling = true
 	_change_state(EnemyState.APPROACHING_CEILING)
-	print("Auto hanging started")
 
 
 func _attach_to_ceiling() -> void:
@@ -449,14 +440,12 @@ func _stop_hanging() -> void:
 
 
 func _process_ceiling_attaching() -> void:
-	print("trying to ceil")
 	if _ready_to_attach:
 		if abs(global_position.y - _ceiling_position.y) < 10:
 			_attach_to_ceiling()
 			_change_state(EnemyState.HANGING)
 	
 	elif is_on_floor() and abs(global_position.x - _ceiling_position.x) < 16:
-		print("In position below ceiling, jumping up")
 		_ready_to_attach = true
 		velocity.y = -_jump_force * 1.2
 		
@@ -565,7 +554,6 @@ func move_to(destination: Vector2) -> void:
 		_current_path.clear()
 		_current_target = NO_TARGET
 	else:
-		print("Skipping move_to since we are in a jump or we have a path")
 		return
 		
 	_stuck_timer = 0
@@ -595,7 +583,6 @@ func _draw() -> void:
 	if not debug_draw:
 		return
 	
-	# Draw path
 	var last_pos = global_position
 	for node in _current_path:
 		var node_pos = node.position
@@ -626,5 +613,3 @@ func _draw() -> void:
 			status_color = Color.RED
 			
 		draw_circle(Vector2(0, -10), 3.0, status_color)
-	
-	
