@@ -63,6 +63,7 @@ var _ready_to_attach: bool = false
 var _max_ceiling_distance: float = 112.0  # 7 tiles -> 7 * 16
 var _hanging_start_interval: float = 5.0
 var _hanging_start_timer: float = 0.0
+var _tries_to_hang: int = 0
 #endregion
 
 #region Shooting vars
@@ -131,6 +132,7 @@ func _input(event: InputEvent) -> void:
 
 
 func toggle_control_mode() -> void:
+	_tries_to_hang = 0
 	if _control_mode == ControlMode.MANUAL:
 		_control_mode = ControlMode.AUTO_CHASE
 		print("Enemy now in AUTO chase mode")
@@ -162,6 +164,10 @@ func _process_idle_state(delta: float) -> void:
 	
 	if _control_mode == ControlMode.AUTO_CHASE and (_player_visible or _player_behind_wall) and _player != null:
 		_change_state(EnemyState.CHASE)
+		_tries_to_hang = 0
+	if _tries_to_hang < 5 and _control_mode == ControlMode.AUTO_CHASE:
+		_toggle_hanging()
+	
 
 
 func _process_move_state(delta: float) -> void:
@@ -189,12 +195,12 @@ func _process_chase_state(delta: float) -> void:
 		_change_state(EnemyState.IDLE)
 		return
 	
-	if _current_target != NO_TARGET and _current_path.size() > 0:
+	if _current_target != NO_TARGET:
 		_check_if_stuck(delta)
 		_move_towards_target()
 	
 	var distance_to_player = global_position.distance_to(_player.global_position)
-	var is_mid_jump = not is_on_floor() and velocity.y < 0
+	var is_mid_jump = not is_on_floor() and velocity.y != 0
 	
 	if can_shoot_at_player():
 		shoot(_player.global_position + Vector2(0.0, -16.0))
@@ -209,7 +215,6 @@ func _process_chase_state(delta: float) -> void:
 		else:
 			if not is_mid_jump:
 				_clear_path()
-				velocity.x = 0
 		
 	elif _player_behind_wall and distance_to_player <= _player_chase_distance:
 		if (not is_mid_jump) and (_current_target == NO_TARGET or _current_path.size() < 2):
@@ -220,25 +225,34 @@ func _process_chase_state(delta: float) -> void:
 			
 	else:
 		if _player_last_known_position != NO_TARGET:
+			print(abs(_player_last_known_position.x - position.x))
+			#print("last knwon .. _current_target: ", _current_target, ", my pos: ", position, ", path size: ", _current_path.size())
 			if not is_mid_jump and _go_to_position != _player_last_known_position:
 				print("Moving to player's last known position")
 				move_to(_player_last_known_position)
 			
+			if abs(_player_last_known_position.x - position.x) < _padding or _current_target == NO_TARGET or _current_path.size() == 0:
+				#print("Player pos: ", _player_last_known_position)
+				#print("Enemy pos: ", position, ", global: ", global_position)
+				#print(_current_path.size())
+				_player_last_known_position = NO_TARGET
 		elif _current_path.size() == 0 and _current_target == NO_TARGET and not is_mid_jump:
 			_change_state(EnemyState.IDLE)
+			velocity.x = 0
+		#print("_current_target: ", _current_target, ", my pos: ", position, ", path size: ", _current_path.size())
 
 
 func _process_hanging_state() -> void:
 	velocity = Vector2.ZERO
-	
+	var angle := 0 if _current_state != EnemyState.HANGING else 180
 	if can_shoot_at_player():
-			shoot(_player.global_position + Vector2(0.0 , -16.0))
+			shoot(_player.global_position + Vector2(0.0, -16.0))
 	
-	elif _player_behind_wall and _player != null:
-		var distance_to_player = global_position.distance_to(_player.global_position)
-		if distance_to_player <= _player_chase_distance:
-			if randf() < 0.05 * _player_detection_interval:
-				_change_state(EnemyState.IDLE)
+	#elif (_player_behind_wall or _player_visible) and _player != null:
+		#var distance_to_player = global_position.distance_to(_player.global_position)
+		#if distance_to_player <= _player_chase_distance:
+			#if randf() < 0.05 * _player_detection_interval:
+				#_change_state(EnemyState.IDLE)
 
 
 func _change_state(new_state: int) -> void:
@@ -267,9 +281,11 @@ func _change_state(new_state: int) -> void:
 
 #region Player detection processing
 func _update_raycasts() -> void: # TODO when player hanging, vect must be to opposite dir
-	var target_pos = (_player.global_position - global_position).normalized()
-	_player_raycast.target_position = target_pos * 25 * 16
-	_wall_raycast.target_position = target_pos * 25 * 16
+	var angle := 0 if _current_state != EnemyState.HANGING else 180
+	var adj := Vector2(0.0, 0.0) if _current_state != EnemyState.HANGING else Vector2(0.0, 48.0)
+	var target_pos = (_player.global_position - global_position).normalized().rotated(deg_to_rad(angle))
+	_player_raycast.target_position = target_pos * 25 * 16 + adj
+	_wall_raycast.target_position = target_pos * 25 * 16 + adj
 	
 	_player_raycast.force_raycast_update()
 	_wall_raycast.force_raycast_update()
@@ -350,6 +366,7 @@ func shoot(target_position: Vector2) -> void:
 	else:
 		get_parent().add_child(projectile)
 	
+	projectile.is_shooter_on_ceiling = _current_state == EnemyState.HANGING
 	projectile.global_position = global_position
 	projectile.launch(target_position)
 	
@@ -368,8 +385,10 @@ func _update_shooting(delta: float) -> void:
 func _toggle_hanging() -> void:
 	if _current_state == EnemyState.HANGING:
 		_change_state(EnemyState.IDLE)
-	elif _current_state == EnemyState.IDLE or _control_mode == ControlMode.MANUAL:
+	elif _current_state == EnemyState.IDLE or _control_mode == ControlMode.MANUAL or _current_state:
 		var found_ceiling = _find_ceiling()
+		_tries_to_hang += 1
+		print("tried, ", _tries_to_hang)
 		if found_ceiling:
 			_start_hanging()
 
@@ -430,6 +449,7 @@ func _stop_hanging() -> void:
 
 
 func _process_ceiling_attaching() -> void:
+	print("trying to ceil")
 	if _ready_to_attach:
 		if abs(global_position.y - _ceiling_position.y) < 10:
 			_attach_to_ceiling()
@@ -571,138 +591,40 @@ func move_to(destination: Vector2) -> void:
 #endregion
 
 
-#func _draw() -> void:
-	#if not debug_draw:
-		#return
-	#
-	## Draw path
-	#var last_pos = global_position
-	#for node in _current_path:
-		#var node_pos = node.position
-		#var color = Color.GRAY
-		#if node.get("type", "move") == "jump":
-			#color = Color.RED
-		#
-		#draw_line(last_pos - global_position, node_pos - global_position, color, 2.0)
-		#draw_circle(node_pos - global_position, 3.0, color)
-		#last_pos = node_pos
-	#
-	#if _current_target != NO_TARGET:
-		#draw_circle(_current_target - global_position, 5.0, Color.BLUE)
-	#
-	##var debug_text = "Path: " + str(_current_path.size()) 
-	##debug_text += " State: " + str(EnemyState.keys()[_current_state])
-	##debug_text += " Mode: " + str(ControlMode.keys()[_control_mode])
-	##draw_string(ThemeDB.fallback_font, Vector2(-70, -50), debug_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
-	#
-	#if _player != null:
-		## Green = directly visible, Gray = behind wall but chaseable, Red = not visible
-		#var status_color
-		#if _player_visible:
-			#status_color = Color.GREEN
-		#elif _player_behind_wall:
-			#status_color = Color.GRAY
-		#else:
-			#status_color = Color.RED
-			#
-		#draw_circle(Vector2(0, -10), 3.0, status_color)
+func _draw() -> void:
+	if not debug_draw:
+		return
 	
+	# Draw path
+	var last_pos = global_position
+	for node in _current_path:
+		var node_pos = node.position
+		var color = Color.GRAY
+		if node.get("type", "move") == "jump":
+			color = Color.RED
+		
+		draw_line(last_pos - global_position, node_pos - global_position, color, 2.0)
+		draw_circle(node_pos - global_position, 3.0, color)
+		last_pos = node_pos
 	
-var last_target_position = Vector2.ZERO
-var current_trajectory = {"arc": -1, "points": []}
-var has_trajectory = false
-
-func _process(_delta):
-	if Input.is_action_just_pressed("grapple"):
-		var target_position = get_global_mouse_position()
-		last_target_position = target_position
-		current_trajectory = find_valid_trajectory(target_position)
-		has_trajectory = true
-		queue_redraw()
-
-func check_collision(pos_: Vector2) -> bool:
-	var tilemap = $"../Map/base"
-	for x in range(0, 7):
-		for y in range(0, 7):
-			var pos = pos_ + Vector2(x, y)
-			var map_pos = tilemap.local_to_map(pos)
-			if tilemap.get_cell_source_id(map_pos) != -1:
-				print(map_pos)
-				return true
-	return false
-
-func find_valid_trajectory(target_position: Vector2) -> Dictionary:
-	print("finding")
-	var gravity = 2000
-	var valid_arc = -1
-	var valid_points = []
+	if _current_target != NO_TARGET:
+		draw_circle(_current_target - global_position, 5.0, Color.BLUE)
 	
-	for arc in range(1, 151):
-		var arc_height = target_position.y - global_position.y - arc
-		arc_height = min(-arc, arc_height)
-		
-		var velocity = _get_arc_velocity(global_position, target_position, arc_height, gravity, gravity)
-		
-		if velocity == Vector2.ZERO:
-			continue
-		
-		var points = []
-		var pos = global_position
-		var current_velocity = velocity
-		var time_step = 0.001
-		var max_steps = 100000
-		var hit_obstacle = false
-		var reached_target = false
-		
-		points.append(pos)
-		for i in range(max_steps):
-			pos += current_velocity * time_step
-			points.append(pos)
-			
-			if check_collision(pos):
-				hit_obstacle = true
-				break
-			
-			if pos.distance_to(target_position) < 5: # rng
-				reached_target = true
-				break
-			
-			current_velocity.y += gravity * time_step
-		
-		if not hit_obstacle and reached_target:
-			valid_arc = arc
-			valid_points = points
-			print("valid arc: ", valid_arc)
-			break
+	var debug_text = "Path: " + str(_current_path.size()) 
+	debug_text += " State: " + str(EnemyState.keys()[_current_state])
+	debug_text += " Mode: " + str(ControlMode.keys()[_control_mode])
+	draw_string(ThemeDB.fallback_font, Vector2(-70, -50), debug_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
 	
-	return {"arc": valid_arc, "points": valid_points}
-
-func _draw():
-	if has_trajectory:
-		var valid_arc = current_trajectory["arc"]
-		var trajectory_points = current_trajectory["points"]
-		
-		if valid_arc > 0:
-			for i in range(1, trajectory_points.size()):
-				var start_point = to_local(trajectory_points[i-1])
-				var end_point = to_local(trajectory_points[i])
-				
-				draw_line(start_point, end_point, Color.GREEN, 2)
-			
-			draw_circle(to_local(last_target_position), 5, Color.RED)
+	if _player != null:
+		# Green = directly visible, Gray = behind wall but chaseable, Red = not visible
+		var status_color
+		if _player_visible:
+			status_color = Color.GREEN
+		elif _player_behind_wall:
+			status_color = Color.GRAY
 		else:
-			draw_circle(to_local(last_target_position), 5, Color.RED)
-
-func _get_arc_velocity(point_a: Vector2, point_b: Vector2, arc_height: float, up_gravity: float, down_gravity: float) -> Vector2:
+			status_color = Color.RED
+			
+		draw_circle(Vector2(0, -10), 3.0, status_color)
 	
-	var velocity := Vector2.ZERO
-	var displacement = point_b - point_a
 	
-	if displacement.y > arc_height:
-		var time_up = sqrt(-2 * arc_height / float(up_gravity))
-		var time_down = sqrt(2 * (displacement.y - arc_height) / float(down_gravity))
-		
-		velocity.y = -sqrt(-2 * up_gravity * arc_height)
-		velocity.x = displacement.x / float(time_up + time_down)
-	
-	return velocity
