@@ -165,7 +165,7 @@ func _process_idle_state(delta: float) -> void:
 	if _control_mode == ControlMode.AUTO_CHASE and (_player_visible or _player_behind_wall) and _player != null:
 		_change_state(EnemyState.CHASE)
 		_tries_to_hang = 0
-	if _tries_to_hang < 5 and _control_mode == ControlMode.AUTO_CHASE:
+	if _tries_to_hang < 15 and _control_mode == ControlMode.AUTO_CHASE:
 		_toggle_hanging()
 	
 
@@ -247,7 +247,7 @@ func _process_hanging_state() -> void:
 		var distance_to_player = global_position.distance_to(_player.global_position)
 		if distance_to_player <= _player_chase_distance:
 			if randf() < 0.05 * _player_detection_interval:
-				_change_state(EnemyState.IDLE) # TODO improve transition then to chase
+				_change_state(EnemyState.CHASE)
 
 
 func _change_state(new_state: int) -> void:
