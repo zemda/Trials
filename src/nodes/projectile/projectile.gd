@@ -4,6 +4,7 @@ extends CharacterBody2D
 @export var projectile_speed: float = 2000.0
 @export var arc: float = 10.0
 
+var is_shooter_on_ceiling: bool = false
 
 func _physics_process(delta: float) -> void:
 	velocity.y += projectile_speed * delta
@@ -13,8 +14,10 @@ func _physics_process(delta: float) -> void:
 
 
 func launch(target_position: Vector2) -> void:
-	var arc_height = target_position.y - global_position.y - arc
-	arc_height = min(-arc, arc_height)
+	var arc_ = arc if not is_shooter_on_ceiling else 1
+	print(arc_)
+	var arc_height = target_position.y - global_position.y - arc_
+	arc_height = min(-arc_, arc_height)
 	velocity = _get_arc_velocity(global_position, target_position, arc_height, projectile_speed, projectile_speed)
 	$Area2D.monitoring = true
 
