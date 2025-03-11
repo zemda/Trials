@@ -21,9 +21,6 @@ floor_constant_speed = true
 floor_max_angle = 1.0472
 floor_snap_length = 4.0
 
-[node name="Spitter" parent="." instance=ExtResource("9_g7g3q")]
-position = Vector2(251, -519)
-
 [node name="Spikes" parent="." instance=ExtResource("3_60050")]
 position = Vector2(3064, -104)
 
@@ -72,3 +69,6 @@ position = Vector2(1115, -489)
 
 [node name="Seesaw4" parent="." instance=ExtResource("7_3t1aw")]
 position = Vector2(1694, -425)
+
+[node name="Spitter" parent="." instance=ExtResource("9_g7g3q")]
+position = Vector2(328, -496)
