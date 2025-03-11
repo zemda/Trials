@@ -1,10 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://0frcrpr5jv3u"]
+[gd_scene load_steps=10 format=3 uid="uid://0frcrpr5jv3u"]
 
 [ext_resource type="Script" uid="uid://cq2335pg4cyda" path="res://nodes/enemy/enemy.gd" id="1_y5a76"]
 [ext_resource type="Texture2D" uid="uid://ds5xsnxvdh41r" path="res://assets/sprites/enemy/enemy2.png" id="2_ln8ms"]
+[ext_resource type="PackedScene" uid="uid://v1oqu883jhhh" path="res://nodes/projectile/Projectile.tscn" id="2_nn6ob"]
 [ext_resource type="Script" uid="uid://cto2o0nncekv7" path="res://nodes/enemy/enemy_base_states/enemy_states.gd" id="2_u8xxy"]
-[ext_resource type="Script" uid="uid://qq0ij00uh1bn" path="res://nodes/enemy/enemy_base_states/state_idle.gd" id="4_vq3yo"]
-[ext_resource type="Script" uid="uid://bkqsqt287evh0" path="res://nodes/enemy/enemy_base_states/state_alert.gd" id="5_rhvvq"]
+[ext_resource type="Script" uid="uid://qq0ij00uh1bn" path="res://nodes/enemy/enemy_base_states/enemy_base_idle.gd" id="4_vq3yo"]
+[ext_resource type="Script" uid="uid://ejuko3p0anxu" path="res://nodes/enemy/enemy_base_states/enemy_base_chasing.gd" id="5_ldaeq"]
+[ext_resource type="Script" uid="uid://plx12f5ffh0e" path="res://nodes/enemy/enemy_base_states/enemy_base_attaching_ceiling.gd" id="6_nn6ob"]
+[ext_resource type="Script" uid="uid://cxj4xrnfb6nug" path="res://nodes/enemy/enemy_base_states/enemy_base_lurking.gd" id="7_w5sgl"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oc2r3"]
 radius = 8.0
@@ -12,6 +15,7 @@ radius = 8.0
 [node name="Enemy" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 8
 script = ExtResource("1_y5a76")
+_projectile_scene = ExtResource("2_nn6ob")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_ln8ms")
@@ -28,8 +32,14 @@ default_state_path = NodePath("state_idle")
 [node name="state_idle" type="Node" parent="FSM"]
 script = ExtResource("4_vq3yo")
 
-[node name="state_alert" type="Node" parent="FSM"]
-script = ExtResource("5_rhvvq")
+[node name="state_chasing" type="Node" parent="FSM"]
+script = ExtResource("5_ldaeq")
+
+[node name="state_attaching_ceiling" type="Node" parent="FSM"]
+script = ExtResource("6_nn6ob")
+
+[node name="state_lurking" type="Node" parent="FSM"]
+script = ExtResource("7_w5sgl")
 
 [node name="PlayerDetection" type="RayCast2D" parent="."]
 position = Vector2(0, -22)
