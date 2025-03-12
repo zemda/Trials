@@ -1,12 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://dmr2mqoiknm8e"]
+[gd_scene load_steps=6 format=3 uid="uid://dmr2mqoiknm8e"]
 
 [ext_resource type="Script" uid="uid://diyjx6rl8l8w5" path="res://nodes/grappling_hook/grappling_hook.gd" id="1_d2kjb"]
 [ext_resource type="Script" uid="uid://dg6hk8upaeft7" path="res://nodes/grappling_hook/states/states.gd" id="2_ngy56"]
 [ext_resource type="Script" uid="uid://cv3ju1d81vvb7" path="res://nodes/grappling_hook/states/state_idle.gd" id="3_6dl2x"]
 [ext_resource type="Script" uid="uid://ctq1tgkpt63p8" path="res://nodes/grappling_hook/states/state_grapple.gd" id="4_68sbm"]
+[ext_resource type="PackedScene" uid="uid://dypphkblg1bwo" path="res://nodes/grappling_hook/anchor/GrappleAnchor.tscn" id="4_670dg"]
 
 [node name="GrapplingHook" type="Node2D"]
 script = ExtResource("1_d2kjb")
+anchor_scene = ExtResource("4_670dg")
 
 [node name="TargetRay" type="RayCast2D" parent="."]
 
@@ -16,6 +18,7 @@ default_state_path = NodePath("State_idle")
 
 [node name="State_idle" type="Node" parent="States"]
 script = ExtResource("3_6dl2x")
+_anchor_scene = ExtResource("4_670dg")
 
 [node name="State_grapple" type="Node" parent="States"]
 script = ExtResource("4_68sbm")
@@ -24,3 +27,6 @@ script = ExtResource("4_68sbm")
 points = PackedVector2Array(469, 189)
 width = 4.0
 default_color = Color(0.918134, 0.939158, 0.991694, 1)
+joint_mode = 1
+begin_cap_mode = 2
+end_cap_mode = 2

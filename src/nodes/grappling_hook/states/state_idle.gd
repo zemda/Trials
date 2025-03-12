@@ -1,23 +1,35 @@
 extends FSMState
 
-var _hook_target_ray: RayCast2D
+@export var _anchor_scene: PackedScene
+
+var _is_button_held := false
+var _was_button_held := false
 
 
 func _enter() -> void:
-	_hook_target_ray = host.get_node("TargetRay")
+	host.reset_hook_validity()
 
 
 func update(delta: float) -> void:
-	var direction = (host.get_global_mouse_position() - host.global_position).normalized()
-	_hook_target_ray.target_position = direction * 500
-	_hook_target_ray.force_raycast_update()
+	_was_button_held = _is_button_held
+	_is_button_held = Input.is_action_pressed("grapple")
+	
+	if _is_button_held:
+		if not _was_button_held:
+			_shoot_grapple()
+	else:
+		if _was_button_held:
+			if not host.is_hook_valid():
+				host.cleanup_current_hook()
 
 
 func _transition() -> int:
-	if Input.is_action_just_pressed("grapple"):
-		if (_hook_target_ray.is_colliding() and 
-			_hook_target_ray.get_collider().is_in_group("Hookable") and
-			host.get_parent().can_grapple()
-		):
-			return states.GRAPPLE
+	if host.is_hook_valid() and host.get_parent().can_grapple():
+		return states.GRAPPLE
 	return states.NONE
+
+
+func _shoot_grapple() -> void:
+	var start_pos = host.global_position
+	var target_pos = host.get_parent().get_global_mouse_position()
+	host.create_hook(start_pos, target_pos)

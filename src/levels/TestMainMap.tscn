@@ -16,7 +16,7 @@ script = ExtResource("1_6j0a2")
 
 [node name="Player" parent="." groups=["Wrapable"] instance=ExtResource("2_lfv6r")]
 z_index = 2
-position = Vector2(512, -464)
+position = Vector2(416, -928)
 floor_constant_speed = true
 floor_max_angle = 1.0472
 floor_snap_length = 4.0
