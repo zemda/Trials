@@ -69,13 +69,10 @@ func init_references(pf: Pathfinder, player: Player, pfm: PathfinderManager) -> 
 
 
 func update_raycasts() -> void:
-	var angle := 0 if fsm.current_state.state_name != "LURKING" else 180
-	var adj := Vector2(0.0, 0.0) if fsm.current_state.state_name != "LURKING" else Vector2(0.0, 48.0)
-	
 	if _player != null:
-		var target_pos = (_player.global_position - global_position).normalized().rotated(deg_to_rad(angle))
-		_player_raycast.target_position = target_pos * 25 * 16 + adj
-		_wall_raycast.target_position = target_pos * 25 * 16 + adj
+		var target_pos = (_player.global_position - global_position).normalized()
+		_player_raycast.target_position = target_pos * 25 * 16
+		_wall_raycast.target_position = target_pos * 25 * 16
 	
 	_player_raycast.force_raycast_update()
 	_wall_raycast.force_raycast_update()
