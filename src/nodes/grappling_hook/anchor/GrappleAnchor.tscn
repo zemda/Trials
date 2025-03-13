@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://d132mdlvfpbfl" path="res://dot.png" id="2_54ruj"]
 
 [node name="GrappleBullet" type="Node2D"]
+z_index = 2
 script = ExtResource("1_e4ymx")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
