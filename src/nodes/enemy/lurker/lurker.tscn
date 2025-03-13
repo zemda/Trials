@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3 uid="uid://dnrpvdq1krlh0"]
+
+[ext_resource type="Script" uid="uid://cq2335pg4cyda" path="res://nodes/enemy/enemy.gd" id="1_vdllw"]
+[ext_resource type="PackedScene" uid="uid://v1oqu883jhhh" path="res://nodes/projectile/Projectile.tscn" id="2_c8vxq"]
+[ext_resource type="Texture2D" uid="uid://ds5xsnxvdh41r" path="res://assets/sprites/enemy/enemy2.png" id="3_p08ow"]
+[ext_resource type="Script" uid="uid://cto2o0nncekv7" path="res://nodes/enemy/enemy_base_states/enemy_states.gd" id="4_sweu0"]
+[ext_resource type="Script" uid="uid://cadvrt35xxxbr" path="res://nodes/enemy/lurker/lurker_states/lurker_lurking.gd" id="5_0nlyp"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oc2r3"]
+radius = 8.0
+
+[node name="Lurker" type="CharacterBody2D" groups=["Enemies"]]
+collision_layer = 8
+script = ExtResource("1_vdllw")
+_projectile_scene = ExtResource("2_c8vxq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_p08ow")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+scale = Vector2(0.8, 0.8)
+shape = SubResource("CircleShape2D_oc2r3")
+
+[node name="FSM" type="Node" parent="."]
+script = ExtResource("4_sweu0")
+default_state_path = NodePath("state_lurking")
+
+[node name="state_lurking" type="Node" parent="FSM"]
+script = ExtResource("5_0nlyp")
+
+[node name="PlayerDetection" type="RayCast2D" parent="."]
+position = Vector2(0, -22)
+collision_mask = 2
+
+[node name="WallDetection" type="RayCast2D" parent="."]
+position = Vector2(0, -22)

@@ -11,7 +11,7 @@ func _enter() -> void:
 	host.velocity = Vector2.ZERO
 	
 	var tween = host.create_tween()
-	tween.tween_property(host, "rotation_degrees", 180, 0.3)
+	tween.tween_property(host.get_node("Sprite2D"), "rotation_degrees", 180, 0.3)
 
 
 func _exit() -> void:
@@ -19,7 +19,7 @@ func _exit() -> void:
 	host.velocity.y = 10
 	
 	var tween = host.create_tween()
-	tween.tween_property(host, "rotation_degrees", 0, 0.3)
+	tween.tween_property(host.get_node("Sprite2D"), "rotation_degrees", 0, 0.3)
 
 
 func update(delta: float) -> void:
