@@ -49,7 +49,7 @@ func create_chain(add_hook: bool = true) -> void:
 		joint.softness = 0
 		joint.bias = 0.15
 		joint.node_a = previous_body.get_path()
-		joint.node_b = segment.get_path()	
+		joint.node_b = segment.get_path()
 		segment.add_child(joint)
 		
 		previous_body = segment

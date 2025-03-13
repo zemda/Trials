@@ -106,18 +106,15 @@ func _handle_rope_swing_input() -> void:
 	var input_axis = Input.get_axis("move_left", "move_right")
 	if input_axis != 0:
 		var swing_force = Vector2(input_axis * 500, 0)
-		attached_segment.apply_force(swing_force, Vector2.ZERO)
+		attached_segment.apply_central_force(swing_force)
 
 
-func _handle_rope_climb_input() -> void: # TODO: add some slower or something
+func _handle_rope_climb_input() -> void: # TODO: add some timer, but then improve animation to be smooth
 	if _attached_segment_index == -1 or not _player:
 		return
 
 	var up_down = Input.get_axis("move_up", "move_down")
-	if up_down < 0.0:
-		_climb_to_segment(_attached_segment_index - 1)
-	elif up_down > 0.0:
-		_climb_to_segment(_attached_segment_index + 1)
+	_climb_to_segment(_attached_segment_index + 1 * up_down)
 
 
 func _climb_to_segment(new_index: int) -> void:
