@@ -7,8 +7,6 @@ func update(delta: float) -> void:
 	if input_axis:
 		host.update_sprite_flip(input_axis)
 	host.update_animations(0)
-	host.move_and_slide()
-	host.update_wall_state()
 
 
 func _transition() -> int:

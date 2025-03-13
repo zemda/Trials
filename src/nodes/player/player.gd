@@ -5,6 +5,9 @@ class_name Player
 
 var last_wall_normal := Vector2.ZERO
 var is_attached_to_rope := false
+var _knockback_force: float = 100.0
+var _knockback_duration: float = 0.05
+var _knockback_velocity := Vector2.ZERO
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var start_pos = global_position  # TODO: later checkpoint or something
@@ -15,7 +18,22 @@ var is_attached_to_rope := false
 
 func _ready() -> void:
 	fsm.set_host(self)
-  
+
+
+func _physics_process(delta: float) -> void:
+	if _knockback_velocity != Vector2.ZERO:
+		velocity += _knockback_velocity
+	
+	_update_wall_state()
+	move_and_slide()
+
+
+func knockback(direction: Vector2, force: float = _knockback_force) -> void:
+	_knockback_velocity = Vector2(direction.normalized().x, 0) * force
+	
+	var knockback_tween = create_tween()
+	knockback_tween.tween_property(self, "_knockback_velocity", Vector2.ZERO, _knockback_duration)
+
 
 func handle_downward_cast() -> void:
 	downward_cast.force_shapecast_update()
@@ -115,7 +133,7 @@ func update_sprite_flip(input_axis: float) -> void:
 	animated_sprite_2d.flip_h = (input_axis < 0)
 
 
-func update_wall_state() -> void:
+func _update_wall_state() -> void:
 	var was_on_wall = is_on_wall_only()
 	if was_on_wall:
 		last_wall_normal = get_wall_normal()

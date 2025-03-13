@@ -6,8 +6,6 @@ func update(delta: float) -> void:
 	var input_axis = Input.get_axis("move_left", "move_right")
 	host.apply_friction(input_axis, delta)
 	host.update_animations(input_axis)
-	host.move_and_slide()
-	host.update_wall_state()
 	host.handle_downward_cast()
 
 
