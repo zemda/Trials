@@ -3,8 +3,6 @@ extends FSMState
 
 func update(_delta: float) -> void:
 	host.update_animations(0)
-	host.move_and_slide()
-	host.update_wall_state()
 	host.handle_downward_cast()
 
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://d1ascia0wibrl"]
+[gd_scene load_steps=12 format=4 uid="uid://d1ascia0wibrl"]
 
 [ext_resource type="Script" uid="uid://b6mtujlx8pdcd" path="res://levels/test_main_map.gd" id="1_6j0a2"]
 [ext_resource type="PackedScene" uid="uid://cftmvn5pjp8ac" path="res://nodes/player/player.tscn" id="2_lfv6r"]
@@ -9,6 +9,7 @@
 [ext_resource type="Resource" uid="uid://v34kl2206kw5" path="res://resources/segment/SolidSegmentData.tres" id="7_fc0ru"]
 [ext_resource type="PackedScene" uid="uid://dfhxu3p84uj6j" path="res://nodes/environment/world/chain/Chain.tscn" id="7_gbrd8"]
 [ext_resource type="PackedScene" uid="uid://bqt1f14kj1766" path="res://nodes/environment/world/rope/Rope.tscn" id="7_q24tn"]
+[ext_resource type="PackedScene" uid="uid://c7511mr2mem34" path="res://nodes/enemy/spitter/Spitter.tscn" id="9_g7g3q"]
 [ext_resource type="PackedScene" uid="uid://co8xhttk2y34t" path="res://nodes/environment/world/hook_point/HookPoint.tscn" id="10_x53yy"]
 
 [node name="TestMainMap" type="Node2D"]
@@ -16,7 +17,7 @@ script = ExtResource("1_6j0a2")
 
 [node name="Player" parent="." groups=["Wrapable"] instance=ExtResource("2_lfv6r")]
 z_index = 2
-position = Vector2(1832, -472)
+position = Vector2(368, -496)
 floor_constant_speed = true
 floor_max_angle = 1.0472
 floor_snap_length = 4.0
@@ -124,8 +125,7 @@ segment_count = 12
 position = Vector2(1896, -531)
 segment_count = 10
 
-[node name="Rope4" parent="Ropes" instance=ExtResource("7_q24tn")]
-position = Vector2(1456, -720)
-segment_count = 15
-
 [node name="Enemies" type="Node" parent="."]
+
+[node name="Spitter" parent="." instance=ExtResource("9_g7g3q")]
+position = Vector2(576, -480)

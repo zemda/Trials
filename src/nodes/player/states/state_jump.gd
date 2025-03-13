@@ -9,8 +9,6 @@ func update(delta: float) -> void:
 	host.handle_air_acceleration(input_axis, delta)
 	host.apply_air_resistance(input_axis, delta)
 	host.update_animations(input_axis)
-	host.move_and_slide()
-	host.update_wall_state()
 	host.handle_downward_cast()
 
 
