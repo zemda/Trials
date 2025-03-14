@@ -29,7 +29,7 @@ func _physics_process(delta: float) -> void:
 
 
 func knockback(direction: Vector2, force: float = _knockback_force) -> void:
-	_knockback_velocity = Vector2(direction.normalized().x, 0) * force
+	_knockback_velocity = Vector2(direction.normalized().x, 0 if direction.y > 0 else direction.normalized().y) * force
 	
 	var knockback_tween = create_tween()
 	knockback_tween.tween_property(self, "_knockback_velocity", Vector2.ZERO, _knockback_duration)
