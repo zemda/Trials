@@ -24,8 +24,8 @@ func _physics_process(delta: float) -> void:
 	if _knockback_velocity != Vector2.ZERO:
 		velocity += _knockback_velocity
 	
-	_update_wall_state()
 	move_and_slide()
+	_update_wall_state()
 
 
 func knockback(direction: Vector2, force: float = _knockback_force) -> void:
