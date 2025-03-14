@@ -6,19 +6,17 @@
 
 1. Implementace základních herních mechanik:
     - **Pohyb hráče:** Vytvoření ovládání pohybu hráče
-    - **Grappling hook:** Hák k přitahování (na určité body, některé např. jen jednorázové), např některé graplovací body budou jednorázové (zmizí po použití).
+    - **Grappling hook:** Hák k přitahování (na určité body, některé např. jen jednorázové)
 
-2. Nepřátelské prostředí a dynamické pasti:
-    - **Lasery:** Lasery, které se zapínají a vypínají v nějakých intervalech/nebo je spustí hráč
-    - **Padající objekty:** Náhodně padající objekty, které hráče mohou zranit/zabít
+2. Nepřátelé:
+    - **Enemy:** variace enemy, někteří budou hráče pronásledovat, některý bude na něj střílet projektily, některý je jen sleduje a nebo vybouchne při kontaktu s hráčem
+    - **Pathfinding:** pohybující se enemy budou mít pathfinding, pomocí kterého budou moci pronásledovat hráče i napříč platformami a podobně 
+
+4. Prostředí/pasti:
     - **Kolabující platformy:** Platformy, které po krátkém kontaktu zmizí
-
-3. Náhodné mechaniky a status efekty:
-    - Portál, status efekty (např. invertovaný pohyb), atd. TODO
-
-4. Nepřátelé s AI a interakce s hráčem:
-    - **Chytří enemy:** Některé entity budou mít jednoduchý pathfinding
-    - **Hloupí enemy:** Jiní zaútočí jen když hráče vidí na nějakou vzdálenost
+    - **Pohybující se platformy:** Hráč bude muset načasovat skok na platformu, aby se dostal do požadované destinace
+    - **Houpací lano:** Hráč se bude muset na lano uchytit, rozhoupat se a přeskakovat na další lano či platformu
+    - **Seesaw** Překážka podobná houpačce, nutno rychle přejít, jinak se přetočí a hráč spadne
 
 5. Návrh úrovní a struktura mapy:
     - **Design mapy** 
