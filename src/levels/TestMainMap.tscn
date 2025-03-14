@@ -9,16 +9,16 @@
 [ext_resource type="Resource" uid="uid://v34kl2206kw5" path="res://resources/segment/SolidSegmentData.tres" id="7_fc0ru"]
 [ext_resource type="PackedScene" uid="uid://dfhxu3p84uj6j" path="res://nodes/environment/world/chain/Chain.tscn" id="7_gbrd8"]
 [ext_resource type="PackedScene" uid="uid://bqt1f14kj1766" path="res://nodes/environment/world/rope/Rope.tscn" id="7_q24tn"]
-[ext_resource type="PackedScene" uid="uid://c7511mr2mem34" path="res://nodes/enemy/spitter/Spitter.tscn" id="9_g7g3q"]
 [ext_resource type="PackedScene" uid="uid://co8xhttk2y34t" path="res://nodes/environment/world/hook_point/HookPoint.tscn" id="10_x53yy"]
-[ext_resource type="PackedScene" uid="uid://dnrpvdq1krlh0" path="res://nodes/enemy/lurker/lurker.tscn" id="12_luymv"]
+[ext_resource type="PackedScene" uid="uid://dnrpvdq1krlh0" path="res://nodes/enemy/lurker/Lurker.tscn" id="12_luymv"]
+[ext_resource type="PackedScene" uid="uid://cvnue72u1abtj" path="res://nodes/enemy/assassin/Assassin.tscn" id="12_xmb26"]
 
 [node name="TestMainMap" type="Node2D"]
 script = ExtResource("1_6j0a2")
 
 [node name="Player" parent="." groups=["Wrapable"] instance=ExtResource("2_lfv6r")]
 z_index = 2
-position = Vector2(1160, -544)
+position = Vector2(424, -480)
 floor_constant_speed = true
 floor_max_angle = 1.0472
 floor_snap_length = 4.0
@@ -128,8 +128,8 @@ segment_count = 10
 
 [node name="Enemies" type="Node" parent="."]
 
-[node name="Spitter" parent="Enemies" instance=ExtResource("9_g7g3q")]
-position = Vector2(576, -480)
-
 [node name="Lurker" parent="Enemies" instance=ExtResource("12_luymv")]
 position = Vector2(1224, -584)
+
+[node name="Assassin" parent="Enemies" instance=ExtResource("12_xmb26")]
+position = Vector2(704, -448)

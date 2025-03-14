@@ -1,6 +1,7 @@
 class_name EnemyChasing
 extends FSMState
 
+@export var chasing_threshold: float = 130
 
 const NO_TARGET: Vector2 = Vector2(-9999999, -9999999)
 
@@ -61,7 +62,7 @@ func _transition() -> int:
 
 
 func _handle_visible_player_chasing(distance_to_player: float, is_mid_jump: bool) -> void:
-	if distance_to_player > 130:
+	if distance_to_player > chasing_threshold:
 		_chase_if_path_needs_recalculation(is_mid_jump)
 	else:
 		if not is_mid_jump:

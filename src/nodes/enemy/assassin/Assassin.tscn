@@ -1,0 +1,44 @@
+[gd_scene load_steps=8 format=3 uid="uid://cvnue72u1abtj"]
+
+[ext_resource type="Script" uid="uid://cq2335pg4cyda" path="res://nodes/enemy/enemy.gd" id="1_8qebe"]
+[ext_resource type="Texture2D" uid="uid://ds5xsnxvdh41r" path="res://assets/sprites/enemy/enemy2.png" id="2_mqojr"]
+[ext_resource type="Script" uid="uid://cto2o0nncekv7" path="res://nodes/enemy/enemy_base_states/enemy_states.gd" id="3_d6trr"]
+[ext_resource type="Script" uid="uid://cb5ha3avi3ue5" path="res://nodes/enemy/assassin/assassin_states/assassin_idle.gd" id="4_yp53w"]
+[ext_resource type="Script" uid="uid://b1y2niaj8185d" path="res://nodes/enemy/assassin/assassin_states/assassin_chasing.gd" id="5_fs3ke"]
+[ext_resource type="Script" uid="uid://451ch51ixn4w" path="res://nodes/enemy/assassin/assassin_states/assassin_explode.gd" id="6_itfck"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oc2r3"]
+radius = 8.0
+
+[node name="Assassin" type="CharacterBody2D" groups=["Enemies"]]
+collision_layer = 8
+script = ExtResource("1_8qebe")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_mqojr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+scale = Vector2(0.8, 0.8)
+shape = SubResource("CircleShape2D_oc2r3")
+
+[node name="FSM" type="Node" parent="."]
+script = ExtResource("3_d6trr")
+default_state_path = NodePath("state_idle")
+
+[node name="state_idle" type="Node" parent="FSM"]
+script = ExtResource("4_yp53w")
+
+[node name="state_chasing" type="Node" parent="FSM"]
+script = ExtResource("5_fs3ke")
+chasing_threshold = 16.0
+
+[node name="state_explode" type="Node" parent="FSM"]
+script = ExtResource("6_itfck")
+
+[node name="PlayerDetection" type="RayCast2D" parent="."]
+position = Vector2(0, -22)
+collision_mask = 2
+
+[node name="WallDetection" type="RayCast2D" parent="."]
+position = Vector2(0, -22)
