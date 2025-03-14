@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://cb5ha3avi3ue5" path="res://nodes/enemy/assassin/assassin_states/assassin_idle.gd" id="4_yp53w"]
 [ext_resource type="Script" uid="uid://b1y2niaj8185d" path="res://nodes/enemy/assassin/assassin_states/assassin_chasing.gd" id="5_fs3ke"]
 [ext_resource type="Script" uid="uid://451ch51ixn4w" path="res://nodes/enemy/assassin/assassin_states/assassin_explode.gd" id="6_itfck"]
-[ext_resource type="Script" uid="uid://crttgkiygb2un" path="res://nodes/enemy/assassin/assassin_wander.gd" id="7_mqojr"]
+[ext_resource type="Script" uid="uid://crttgkiygb2un" path="res://nodes/enemy/assassin/assassin_states/assassin_wander.gd" id="7_mqojr"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oc2r3"]
 radius = 8.0
