@@ -89,6 +89,6 @@ func _create_loading_screen() -> void:
 func _clean_loading_screen() -> void:
 	if _loading_screen and is_instance_valid(_loading_screen):
 		_loading_screen.hide_loading_screen()
-		await get_tree().create_timer(0.2).timeout
+		await get_tree().create_timer(0.3).timeout
 		_loading_screen.queue_free()
 		_loading_screen = null
