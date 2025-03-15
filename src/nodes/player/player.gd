@@ -1,6 +1,8 @@
 extends CharacterBody2D
 class_name Player
 
+signal player_death
+
 @export var movement_data: PlayerMovementData
 
 var last_wall_normal := Vector2.ZERO
@@ -148,4 +150,4 @@ func can_grapple() -> bool:
 
 
 func _on_hazard_detector_area_entered(area: Area2D) -> void:
-	global_position = start_pos  # TODO: insta "kills" the player, checkpoint or something, or health
+	emit_signal("player_death")
