@@ -2,34 +2,33 @@ extends Node2D
 class_name PathfinderManager
 
 @export var tile_map: TileMapLayer
-var player: Player
-
 @export var debug_draw_path: bool = true
 @export var max_jump_height: int = 4
 @export var max_jump_distance: int = 7 # TODO: might do per enemy
 
-var pathfinder: Pathfinder
-var enemies: Array[Enemy] = []
+var _player: Player
+var _pathfinder: Pathfinder
+var _enemies: Array[Enemy] = []
 
 
 func _ready() -> void:
-	pathfinder = Pathfinder.new(tile_map, max_jump_height, max_jump_distance)
-	add_child(pathfinder)
-	pathfinder._debug_draw = debug_draw_path
+	_pathfinder = Pathfinder.new(tile_map, max_jump_height, max_jump_distance)
+	add_child(_pathfinder)
+	_pathfinder._debug_draw = debug_draw_path
 	register_existing_characters()
 
 
 func set_player(player_ref):
 	if is_instance_valid(player_ref):
-		player = player_ref
+		_player = player_ref
 		return true
 	else:
 		return false
 
 
 func register_character(enemy: Enemy) -> void:
-	enemy.init_references(pathfinder, player, self)
-	enemies.append(enemy)
+	enemy.init_references(_pathfinder, _player, self)
+	_enemies.append(enemy)
 
 
 func register_existing_characters() -> void:
@@ -39,16 +38,16 @@ func register_existing_characters() -> void:
 
 
 func unregister_characters() -> void:
-	enemies.clear()
+	_enemies.clear()
 
 
 func update_pathfinder() -> void:
-	if pathfinder:
-		pathfinder.queue_free()
+	if _pathfinder:
+		_pathfinder.queue_free()
 	
-	pathfinder = Pathfinder.new(tile_map, max_jump_height, max_jump_distance)
-	add_child(pathfinder)
-	pathfinder._debug_draw = debug_draw_path
+	_pathfinder = Pathfinder.new(tile_map, max_jump_height, max_jump_distance)
+	add_child(_pathfinder)
+	_pathfinder._debug_draw = debug_draw_path
 	
-	for enemy in enemies:
-		enemy.init_references(pathfinder, player, self)
+	for enemy in _enemies:
+		enemy.init_references(_pathfinder, _player, self)

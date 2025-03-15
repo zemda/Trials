@@ -1,20 +1,16 @@
 extends CanvasLayer
 
-var _progress_bar: ProgressBar
-var _loading_text: Label
-var _control_node: Control
-var _panel: Panel
+@onready var _progress_bar := $Control/CenterContainer/VBoxContainer/ProgressBar
+@onready var _loading_text := $Control/CenterContainer/VBoxContainer/LoadingText
+@onready var _control_node := $Control
+@onready var _panel := $Control/Panel
 
 var _is_ready: bool = false
+
 
 func _ready():
 	add_to_group("loading_screen")
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	
-	_progress_bar = $Control/CenterContainer/VBoxContainer/ProgressBar
-	_loading_text = $Control/CenterContainer/VBoxContainer/LoadingText
-	_control_node = $Control
-	_panel = $Control/Panel
 	
 	_is_ready = true
 	

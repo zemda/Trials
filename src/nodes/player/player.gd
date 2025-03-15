@@ -19,6 +19,7 @@ var _knockback_velocity := Vector2.ZERO
 
 
 func _ready() -> void:
+	add_to_group("Player")
 	fsm.set_host(self)
 
 
