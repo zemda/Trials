@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3 uid="uid://byg1mwqpc2kcg"]
+
+[ext_resource type="Script" uid="uid://ddf4yipqh1un5" path="res://ui/loading_screen/loading_screen.gd" id="1_qqmno"]
+[ext_resource type="Theme" uid="uid://ckatomkgrjytk" path="res://assets/font,themes/ui_theme.tres" id="2_2dgkf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qqmno"]
+bg_color = Color(0, 0, 0, 0.835294)
+shadow_color = Color(0, 0, 0, 0.2)
+
+[node name="LoadingScreen" type="CanvasLayer"]
+layer = 2
+script = ExtResource("1_qqmno")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qqmno")
+
+[node name="CenterContainer" type="CenterContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/CenterContainer"]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+
+[node name="LoadingText" type="Label" parent="Control/CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_2dgkf")
+
+[node name="ProgressBar" type="ProgressBar" parent="Control/CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_2dgkf")
+rounded = true
+
+[node name="LoadingAnimationTimer" type="Timer" parent="Control"]
+wait_time = 0.5
+
+[connection signal="timeout" from="Control/LoadingAnimationTimer" to="Control" method="_on_loading_animation_timer_timeout"]
