@@ -8,6 +8,7 @@ var _panel: Panel
 var _is_ready: bool = false
 
 func _ready():
+	add_to_group("loading_screen")
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
 	_progress_bar = $Control/CenterContainer/VBoxContainer/ProgressBar

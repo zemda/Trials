@@ -38,11 +38,11 @@ func find_path(start: Vector2, end: Vector2, character_width: int = 1, character
 	var start_grid = _tile_map.local_to_map(start)
 	var end_grid = _tile_map.local_to_map(end)
 	
-	print("Finding path from ", start_grid, " to ", end_grid)
+	#print("Finding path from ", start_grid, " to ", end_grid)
 	
 	end_grid = _find_top_surface_tile(end_grid)
 	if end_grid == Vector2i(-1, -1):
-		print("No valid surface tile found")
+		#print("No valid surface tile found")
 		return []
 
 	var path = _generate_path(start_grid, end_grid, character_width, character_height)
@@ -87,6 +87,7 @@ func _create_grid(x_min: int, x_max: int, y_min: int, y_max: int) -> void:
 
 
 func _create_connections() -> void:
+	print("start connections")
 	for pos in grid_to_id:
 		var id = grid_to_id[pos]
 		var is_on_surface = _is_on_surface(pos)
@@ -150,7 +151,8 @@ func _create_connections() -> void:
 								var target_id = grid_to_id[jump_target]
 								astar.connect_points(id, target_id, false)
 								astar.set_point_weight_scale(target_id, 10)
-
+		
+	print("end connections")
 
 func _is_diagonal_move_valid(from_pos: Vector2i, dx: int, dy: int) -> bool:
 	if dy == -1:
@@ -185,10 +187,10 @@ func _is_diagonal_move_valid(from_pos: Vector2i, dx: int, dy: int) -> bool:
 func _generate_path(start_grid: Vector2i, end_grid: Vector2i, character_width: int = 1, character_height: int = 1) -> Array:
 	# TODO: use character_width and height
 	if not start_grid in grid_to_id:
-		print("Start position not in grid")
+		#print("Start position not in grid")
 		return []
 	if not end_grid in grid_to_id:
-		print("end position not in grid")
+		#print("end position not in grid")
 		return []
 	
 	var start_id = grid_to_id[start_grid]
@@ -196,7 +198,7 @@ func _generate_path(start_grid: Vector2i, end_grid: Vector2i, character_width: i
 	var id_path = astar.get_id_path(start_id, end_id, true)
 	
 	if id_path.size() == 0:
-		print("No path found")
+		#print("No path found")
 		return []
 	
 	var path = []

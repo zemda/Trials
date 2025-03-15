@@ -77,11 +77,10 @@ func _create_loading_screen() -> void:
 		if is_instance_valid(screen):
 			screen.queue_free()
 	
-	var loading_bar = SceneManager.LoadingScreenScene.instantiate()
-	if loading_bar:
-		loading_bar.add_to_group("loading_screen")
-		get_tree().root.call_deferred("add_child", loading_bar)
-		_loading_screen = loading_bar
+	var _loading = SceneManager.get_loading_screen_instance()
+	if _loading:
+		get_tree().root.call_deferred("add_child", _loading)
+		_loading_screen = _loading
 		
 		await get_tree().process_frame
 		_loading_screen.show_loading_screen()
