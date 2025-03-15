@@ -14,7 +14,7 @@ func update(delta: float) -> void:
 	_was_button_held = _is_button_held
 	_is_button_held = Input.is_action_pressed("grapple")
 	
-	if _is_button_held:
+	if _is_button_held and host.get_parent().can_grapple():
 		if not _was_button_held:
 			_shoot_grapple()
 	else:

@@ -11,10 +11,6 @@ func _exit() -> void:
 
 
 func update(delta: float) -> void:
-	if host._player == null:
-		emit_signal("transition_to_default")
-		return
-	
 	if _current_target != NO_TARGET:
 		_check_if_stuck(delta)
 		_move_towards_target()

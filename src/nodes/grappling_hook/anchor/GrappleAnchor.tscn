@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cp3q6auahh6eb" path="res://nodes/grappling_hook/anchor/grapple_anchor.gd" id="1_e4ymx"]
 [ext_resource type="Texture2D" uid="uid://d132mdlvfpbfl" path="res://dot.png" id="2_54ruj"]
 
-[node name="GrappleBullet" type="Node2D"]
+[node name="GrappleAnchor" type="Node2D"]
 z_index = 2
 script = ExtResource("1_e4ymx")
 
