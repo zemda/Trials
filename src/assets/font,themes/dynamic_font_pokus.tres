@@ -1,0 +1,11 @@
+[gd_resource type="FontFile" load_steps=2 format=3 uid="uid://dqxwtpia2u1d"]
+
+[ext_resource type="FontFile" uid="uid://b1ibp7hg5lxo1" path="res://assets/font,themes/fonts/m3x6.ttf" id="1"]
+
+[resource]
+fallbacks = Array[Font]([ExtResource("1")])
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
