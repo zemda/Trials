@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b3jbd55ivjsm"
+path="res://.godot/imported/Jacob McNatt - Tabletop Ambience- Ghosts of the Ice - 02 Hjalbaek Village.ogg-4f47d10aaf7647d8bd9dac6b4d0e28ed.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/effects_sounds/Jacob McNatt - Tabletop Ambience- Ghosts of the Ice - 02 Hjalbaek Village.ogg"
+dest_files=["res://.godot/imported/Jacob McNatt - Tabletop Ambience- Ghosts of the Ice - 02 Hjalbaek Village.ogg-4f47d10aaf7647d8bd9dac6b4d0e28ed.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
