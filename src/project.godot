@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 SceneManager="*res://core/autoloads/scene_manager.gd"
 LoadingScreen="*res://core/autoloads/loading_screen_manager.gd"
 SceneChanger="*res://core/autoloads/scene_changer.gd"
+GameManager="*res://core/autoloads/game_manager.gd"
 Globals="*res://core/autoloads/globals.gd"
 
 [display]
@@ -43,6 +44,7 @@ Player=""
 Plank=""
 Chain=""
 Enemies=""
+Destructible_platforms=""
 Checkpoints=""
 pathfinder_manager=""
 

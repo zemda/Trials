@@ -39,6 +39,7 @@ var _shoot_range: float = 200.0
 
 func _ready() -> void:
 	add_to_group("Enemies")
+	add_to_group("storable")
 	fsm.set_host(self)
 
 
