@@ -1,0 +1,149 @@
+[gd_scene load_steps=3 format=3 uid="uid://di5pg5ab0mckm"]
+
+[ext_resource type="Theme" uid="uid://ckatomkgrjytk" path="res://assets/font,themes/ui_theme.tres" id="1_y3bbx"]
+[ext_resource type="Script" uid="uid://cm57ldxjndo0h" path="res://ui/settings_screen/settings_screen.gd" id="2_ivsrf"]
+
+[node name="SettingsScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_y3bbx")
+script = ExtResource("2_ivsrf")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 16
+tab_alignment = 1
+current_tab = 2
+drag_to_rearrange_enabled = true
+
+[node name="Audio" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_right = 150
+metadata/_tab_index = 0
+
+[node name="Audio" type="GridContainer" parent="VBoxContainer/TabContainer/Audio"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/h_separation = 50
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="MasterLabel" type="Label" parent="VBoxContainer/TabContainer/Audio/Audio"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Master Volume"
+
+[node name="MasterSlider" type="HSlider" parent="VBoxContainer/TabContainer/Audio/Audio"]
+layout_mode = 2
+size_flags_horizontal = 3
+rounded = true
+ticks_on_borders = true
+
+[node name="MusicLabel" type="Label" parent="VBoxContainer/TabContainer/Audio/Audio"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Music Volume"
+
+[node name="MusicSlider" type="HSlider" parent="VBoxContainer/TabContainer/Audio/Audio"]
+layout_mode = 2
+
+[node name="SFXLabel" type="Label" parent="VBoxContainer/TabContainer/Audio/Audio"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "SFX Volume"
+
+[node name="SFXSlider" type="HSlider" parent="VBoxContainer/TabContainer/Audio/Audio"]
+layout_mode = 2
+
+[node name="Video" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_right = 150
+metadata/_tab_index = 1
+
+[node name="Video" type="GridContainer" parent="VBoxContainer/TabContainer/Video"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/h_separation = 50
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="FullscreenLabel" type="Label" parent="VBoxContainer/TabContainer/Video/Video"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Fullscreen"
+
+[node name="FullscreenButton" type="CheckButton" parent="VBoxContainer/TabContainer/Video/Video"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="VSyncLabel" type="Label" parent="VBoxContainer/TabContainer/Video/Video"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "VSync"
+
+[node name="VSyncButton" type="CheckButton" parent="VBoxContainer/TabContainer/Video/Video"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="Controls" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 100
+metadata/_tab_index = 2
+
+[node name="Controls2" type="ScrollContainer" parent="VBoxContainer/TabContainer/Controls"]
+custom_minimum_size = Vector2(300, 150)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="KeybindContainer" type="GridContainer" parent="VBoxContainer/TabContainer/Controls/Controls2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 8
+
+[node name="BottomButtons" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 244.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ResetButton" type="Button" parent="BottomButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Reset"
+
+[node name="ApplyButton" type="Button" parent="BottomButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Apply"
+
+[node name="BackButton" type="Button" parent="BottomButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Back"
