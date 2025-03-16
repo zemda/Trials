@@ -141,8 +141,10 @@ position = Vector2(1163, -423)
 [node name="Spikes" parent="Spikes" instance=ExtResource("3_60050")]
 position = Vector2(688, -432)
 
-[node name="Checkpoint" parent="." instance=ExtResource("14_q5j7s")]
+[node name="Checkpoints" type="Node" parent="."]
+
+[node name="Checkpoint" parent="Checkpoints" instance=ExtResource("14_q5j7s")]
 position = Vector2(1951, -416)
 
-[node name="Checkpoint2" parent="." instance=ExtResource("14_q5j7s")]
+[node name="Checkpoint2" parent="Checkpoints" instance=ExtResource("14_q5j7s")]
 position = Vector2(1195, -528)
