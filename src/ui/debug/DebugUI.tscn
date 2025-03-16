@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bfrn1j42vjp1b"]
+
+[ext_resource type="Script" uid="uid://dt6ppd0t6grya" path="res://ui/debug/debug_ui.gd" id="1_stk02"]
+[ext_resource type="Theme" uid="uid://ckatomkgrjytk" path="res://assets/font,themes/ui_theme.tres" id="2_xepgg"]
+
+[node name="DebugUi" type="CanvasLayer"]
+script = ExtResource("1_stk02")
+
+[node name="DebugLabel" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+theme = ExtResource("2_xepgg")
+theme_override_font_sizes/font_size = 8

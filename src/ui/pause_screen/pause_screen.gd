@@ -62,7 +62,6 @@ func _update_button_focus() -> void:
 
 func show_pause_screen() -> void:
 	_is_paused = true
-	print("PauseScreen: Showing pause screen")
 	_control_node.visible = true
 	
 	_control_node.modulate.a = 0
@@ -73,23 +72,22 @@ func show_pause_screen() -> void:
 	_update_button_focus()
 
 
-func hide_pause_screen() -> void:
+func hide_pause_screen(animation: bool = true) -> void:
 	_is_paused = false
-	print("PauseScreen: Hiding pause screen")
-	
-	var tween = create_tween()
-	tween.tween_property(_control_node, "modulate:a", 0.0, 0.2)
-	await tween.finished
+	if animation:
+		var tween = create_tween()
+		tween.tween_property(_control_node, "modulate:a", 0.0, 0.2)
+		await tween.finished
 	
 	_control_node.visible = false
 
 
 func _on_continue_pressed() -> void:
-	pass
+	GameManager.resume_game()
 
 
 func _on_restart_pressed() -> void:
-	pass
+	GameManager.restart_game()
 
 
 func _on_quit_pressed() -> void:
@@ -97,4 +95,4 @@ func _on_quit_pressed() -> void:
 
 
 # func _on_settings_pressed(): # TODO settings screen
-#   pass
+#    GameManager.show_settings_screen()
