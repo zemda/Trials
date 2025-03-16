@@ -216,3 +216,12 @@ func place_player_in_level(position: Vector2, pvisible: bool = true) -> void:
 func remove_player_from_level() -> void:
 	_player_instance.visible = false
 	_player_instance.global_position = Vector2(-2000, 0)
+
+
+func reset_best_times() -> void:
+	_best_times = {}
+	
+	if FileAccess.file_exists("user://best_times.save"):
+		var dir = DirAccess.open("user://")
+		if dir:
+			dir.remove("user://best_times.save")

@@ -13,9 +13,13 @@ signal settings_closed
 
 @onready var _keybind_container = $VBoxContainer/TabContainer/Controls/Controls2/KeybindContainer
 
+@onready var _delete_config_button = $"VBoxContainer/TabContainer/Delete files/Video/ConfigButton"
+@onready var _delete_besttime_button = $"VBoxContainer/TabContainer/Delete files/Video/BesttimeButton"
 
 var _action_to_change: String = ""
 var _button_to_change: Button = null
+var _binding_index_to_change: int = -1
+var _original_button_text: String = ""
 
 var _default_settings: Dictionary = {
 	"audio": {
@@ -30,6 +34,8 @@ var _default_settings: Dictionary = {
 	"controls": {}
 }
 
+var _editor_default_inputs: Dictionary = {}
+
 var _current_settings: Dictionary = {}
 var _config_path: String = "user://settings.cfg"
 var _config: ConfigFile = ConfigFile.new()
@@ -37,11 +43,11 @@ var _config: ConfigFile = ConfigFile.new()
 var _action_names: Dictionary = {
 	"move_left": "Move Left",
 	"move_right": "Move Right",
-	"jump": "Jump",
+	"move_down": "Move Down",
+	"move_up": "Jump / Move Up",
 	"grapple": "Grapple",
-	"pause": "Pause",
+	"rope": "Rope",
 }
-
 
 func _ready() -> void:
 	visible = false
@@ -50,32 +56,110 @@ func _ready() -> void:
 	$BottomButtons/ResetButton.pressed.connect(_on_reset_pressed)
 	$BottomButtons/BackButton.pressed.connect(_on_back_pressed)
 	
-	_setup_keybind_ui()
+	_delete_config_button.pressed.connect(_on_delete_config_pressed)
+	_delete_besttime_button.pressed.connect(_on_delete_besttime_pressed)
+	
+	_store_editor_defaults()
+	_initialize_current_settings_from_defaults()
 	
 	_load_settings()
 	_apply_settings_to_ui()
 
 
 func _input(event: InputEvent) -> void:
-	if _action_to_change.is_empty() or _button_to_change == null:
+	if _action_to_change.is_empty() or not _button_to_change:
 		return
-	if event is InputEventKey or event is InputEventJoypadButton:
-		if event is InputEventKey and event.keycode == KEY_ESCAPE:
+		
+	if event is InputEventKey or event is InputEventJoypadButton or event is InputEventMouseButton:
+		if event is InputEventKey and event.physical_keycode == KEY_ESCAPE:
 			_cancel_keybind_change()
 			get_viewport().set_input_as_handled()
 			return
 		
-		_change_action_binding(_action_to_change, event)
-		_button_to_change.text = _get_action_key_text(_action_to_change)
+		_change_action_binding(_action_to_change, event, _binding_index_to_change)
+		_button_to_change.text = _get_event_text(event)
 		_button_to_change.set_pressed_no_signal(false)
 		
 		_action_to_change = ""
 		_button_to_change = null
+		_binding_index_to_change = -1
 		get_viewport().set_input_as_handled()
 
 
+func _store_editor_defaults() -> void:
+	print("Storing editor defaults...")
+	for action_name in _action_names.keys():
+		_editor_default_inputs[action_name] = []
+		var events = InputMap.action_get_events(action_name)
+		for event in events:
+			var binding = _create_binding_from_event(event)
+			if not binding.is_empty():
+				_editor_default_inputs[action_name].append(binding)
+
+
+func _initialize_current_settings_from_defaults() -> void:
+	_current_settings.controls = {}
+	
+	for action_name in _editor_default_inputs.keys():
+		_current_settings.controls[action_name] = _editor_default_inputs[action_name].duplicate(true)
+
+
+func _create_binding_from_event(event: InputEvent) -> Dictionary:
+	var binding = {}
+	if event is InputEventKey:
+		binding["type"] = "key"
+		binding["keycode"] = event.physical_keycode
+	elif event is InputEventJoypadButton:
+		binding["type"] = "joypad"
+		binding["button_index"] = event.button_index
+	elif event is InputEventMouseButton:
+		binding["type"] = "mouse"
+		binding["button_index"] = event.button_index
+	return binding
+
+
+func _change_action_binding(action_name: String, event: InputEvent, binding_index: int = -1) -> void:
+	if not _current_settings.controls.has(action_name):
+		_current_settings.controls[action_name] = []
+		
+	var binding = _create_binding_from_event(event)
+	if binding.is_empty():
+		return
+		
+	var events = InputMap.action_get_events(action_name).duplicate()
+	
+	if binding_index == -1:
+		InputMap.action_add_event(action_name, event)
+		_current_settings.controls[action_name].append(binding)
+	else:
+		InputMap.action_erase_events(action_name)
+		
+		for i in range(events.size()):
+			if i == binding_index:
+				InputMap.action_add_event(action_name, event)
+			else:
+				InputMap.action_add_event(action_name, events[i])
+		
+		if binding_index < _current_settings.controls[action_name].size():
+			_current_settings.controls[action_name][binding_index] = binding
+		else:
+			_current_settings.controls[action_name].append(binding)
+	
+	_setup_keybind_ui()
+
+
+func _cancel_keybind_change() -> void:
+	if _button_to_change != null:
+		_button_to_change.text = _original_button_text
+		_button_to_change.set_pressed_no_signal(false)
+		_action_to_change = ""
+		_button_to_change = null
+		_binding_index_to_change = -1
+
+
 func show_settings() -> void:
-	_load_settings()
+	_refresh_keybinds_display()
+	
 	_apply_settings_to_ui()
 	visible = true
 	
@@ -86,6 +170,21 @@ func show_settings() -> void:
 	_tabs_container.grab_focus()
 
 
+func _refresh_keybinds_display() -> void:
+	for action_name in _action_names.keys():
+		var events = InputMap.action_get_events(action_name)
+		var bindings = []
+		
+		for event in events:
+			var binding = _create_binding_from_event(event)
+			if not binding.is_empty():
+				bindings.append(binding)
+		
+		if bindings.size() > 0:
+			if not _current_settings.controls.has(action_name) or _current_settings.controls[action_name].size() != bindings.size():
+				_current_settings.controls[action_name] = bindings
+
+
 func hide_settings() -> void:
 	var tween = create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 0.2)
@@ -94,30 +193,14 @@ func hide_settings() -> void:
 	emit_signal("settings_closed")
 
 
-func _change_action_binding(action_name: String, event: InputEvent) -> void:
-	InputMap.action_erase_events(action_name)
-	InputMap.action_add_event(action_name, event)
-	
-	if not _current_settings.controls.has(action_name):
-		_current_settings.controls[action_name] = {}
-	
-	if event is InputEventKey:
-		_current_settings.controls[action_name]["type"] = "key"
-		_current_settings.controls[action_name]["keycode"] = event.keycode
-	elif event is InputEventJoypadButton:
-		_current_settings.controls[action_name]["type"] = "joypad"
-		_current_settings.controls[action_name]["button_index"] = event.button_index
-
-
-func _cancel_keybind_change() -> void:
-	if _button_to_change != null:
-		_button_to_change.set_pressed_no_signal(false)
-		_action_to_change = ""
-		_button_to_change = null
-
-
 func _load_settings() -> void:
 	_current_settings = _default_settings.duplicate(true)
+	
+	if not _current_settings.has("audio"):
+		_current_settings.audio = _default_settings.audio.duplicate(true)
+	
+	if not _current_settings.has("video"):
+		_current_settings.video = _default_settings.video.duplicate(true)
 	
 	var error = _config.load(_config_path)
 	if error != OK:
@@ -142,7 +225,8 @@ func _load_settings() -> void:
 			if _config.has_section_key("controls", action_name):
 				var key_data = _config.get_value("controls", action_name)
 				_current_settings.controls[action_name] = key_data
-				_apply_keybind(action_name, key_data)
+	
+	_apply_settings_to_game()
 
 
 func _save_settings() -> void:
@@ -168,40 +252,81 @@ func _setup_keybind_ui() -> void:
 	_keybind_container.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	
 	for action_name in _action_names.keys():
-		var hbox = HBoxContainer.new()
-		hbox.add_theme_constant_override("separation", 50)
-		hbox.size_flags_horizontal = Control.SIZE_FILL
+		var action_vbox = VBoxContainer.new()
+		action_vbox.add_theme_constant_override("separation", 5)
 		
-		var label = Label.new()
-		label.text = _action_names[action_name]
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		label.add_theme_font_size_override("font_size", 16)
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		# Action name label
+		var name_hbox = HBoxContainer.new()
+		var action_label = Label.new()
+		action_label.text = _action_names[action_name]
+		action_label.add_theme_font_size_override("font_size", 16)
+		action_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_hbox.add_child(action_label)
 		
-		var button = Button.new()
-		button.custom_minimum_size = Vector2(100, 0)
-		button.text = _get_action_key_text(action_name)
-		button.size_flags_horizontal = Control.SIZE_SHRINK_END
-		button.toggle_mode = true
-		button.add_theme_font_size_override("font_size", 16)
+		# Add binding button
+		var add_binding_button = Button.new()
+		add_binding_button.text = "+"
+		add_binding_button.tooltip_text = "Add another binding"
+		add_binding_button.add_theme_font_size_override("font_size", 16)
+		add_binding_button.pressed.connect(_on_add_binding_pressed.bind(action_name))
+		name_hbox.add_child(add_binding_button)
 		
-		button.pressed.connect(_on_keybind_button_pressed.bind(action_name, button))
+		action_vbox.add_child(name_hbox)
 		
-		hbox.add_child(label)
-		hbox.add_child(button)
+		# Get all current bindings
+		var events = InputMap.action_get_events(action_name)
 		
-		_keybind_container.add_child(hbox)
+		if events.size() == 0:
+			var binding_hbox = HBoxContainer.new()
+			binding_hbox.add_theme_constant_override("separation", 10)
+			
+			var no_binding_label = Label.new()
+			no_binding_label.text = "No binding set"
+			no_binding_label.add_theme_font_size_override("font_size", 16)
+			no_binding_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			binding_hbox.add_child(no_binding_label)
+			
+			action_vbox.add_child(binding_hbox)
+		else:
+			for i in range(events.size()):
+				var binding_hbox = HBoxContainer.new()
+				binding_hbox.add_theme_constant_override("separation", 10)
+				
+				var binding_button = Button.new()
+				binding_button.custom_minimum_size = Vector2(130, 0)
+				binding_button.text = _get_event_text(events[i])
+				binding_button.toggle_mode = true
+				binding_button.add_theme_font_size_override("font_size", 16)
+				binding_button.pressed.connect(_on_binding_button_pressed.bind(action_name, binding_button, i))
+				binding_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				binding_hbox.add_child(binding_button)
+				
+				var remove_button = Button.new()
+				remove_button.text = "x"
+				remove_button.tooltip_text = "Remove binding"
+				remove_button.add_theme_font_size_override("font_size", 16)
+				remove_button.pressed.connect(_on_remove_binding_pressed.bind(action_name, i))
+				binding_hbox.add_child(remove_button)
+				
+				action_vbox.add_child(binding_hbox)
+		
+		_keybind_container.add_child(action_vbox)
 
 
-func _get_action_key_text(action_name: String) -> String:
-	var events = InputMap.action_get_events(action_name)
-	if events.size() > 0:
-		var event = events[0]
-		if event is InputEventKey:
-			return OS.get_keycode_string(event.keycode)
-		elif event is InputEventJoypadButton:
-			return "Joypad Button " + str(event.button_index)
-	return "Unassigned"
+func _get_event_text(event: InputEvent) -> String:
+	if event is InputEventKey:
+		return OS.get_keycode_string(event.physical_keycode)
+	elif event is InputEventJoypadButton:
+		return "Joypad " + str(event.button_index)
+	elif event is InputEventMouseButton:
+		match event.button_index:
+			MOUSE_BUTTON_LEFT: return "Mouse Left"
+			MOUSE_BUTTON_RIGHT: return "Mouse Right"
+			MOUSE_BUTTON_MIDDLE: return "Mouse Middle" 
+			MOUSE_BUTTON_WHEEL_UP: return "Mouse Wheel Up"
+			MOUSE_BUTTON_WHEEL_DOWN: return "Mouse Wheel Down"
+			_: return "Mouse " + str(event.button_index)
+	return "Unknown"
 
 
 func _apply_settings_to_ui() -> void:
@@ -212,19 +337,11 @@ func _apply_settings_to_ui() -> void:
 	_fullscreen_check.button_pressed = _current_settings.video.fullscreen
 	_vsync_check.button_pressed = _current_settings.video.vsync
 	
-	for button in _keybind_container.get_children():
-		if button is HBoxContainer:
-			var action_label = button.get_child(0) as Label
-			var action_button = button.get_child(1) as Button
-			
-			for action_name in _action_names.keys():
-				if action_label.text == _action_names[action_name]:
-					action_button.text = _get_action_key_text(action_name)
+	_setup_keybind_ui()
 
 
 func _apply_settings_to_game() -> void:
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), 
-		_current_settings.audio.master_volume) # add others
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), _current_settings.audio.master_volume) # TODO rest & test
 	
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if 
 		_current_settings.video.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
@@ -233,23 +350,41 @@ func _apply_settings_to_game() -> void:
 	
 	for action_name in _current_settings.controls.keys():
 		var key_data = _current_settings.controls[action_name]
-		_apply_keybind(action_name, key_data)
+		_apply_keybinds(action_name, key_data)
 
 
-func _apply_keybind(action_name: String, key_data: Dictionary) -> void:
-	if key_data.is_empty():
+func _apply_keybinds(action_name: String, key_data_array) -> void:
+	var data_array = []
+	
+	if key_data_array is Dictionary:
+		if not key_data_array.is_empty():
+			data_array = [key_data_array]
+	elif key_data_array is Array:
+		data_array = key_data_array
+	else:
 		return
 	
+	if data_array.size() == 0:
+		return
+		
 	InputMap.action_erase_events(action_name)
 	
-	if key_data["type"] == "key":
-		var event = InputEventKey.new()
-		event.keycode = key_data["keycode"]
-		InputMap.action_add_event(action_name, event)
-	elif key_data["type"] == "joypad":
-		var event = InputEventJoypadButton.new()
-		event.button_index = key_data["button_index"]
-		InputMap.action_add_event(action_name, event)
+	for key_data in data_array:
+		if key_data.is_empty():
+			continue
+			
+		if key_data["type"] == "key":
+			var event = InputEventKey.new()
+			event.physical_keycode = key_data["keycode"]
+			InputMap.action_add_event(action_name, event)
+		elif key_data["type"] == "joypad":
+			var event = InputEventJoypadButton.new()
+			event.button_index = key_data["button_index"]
+			InputMap.action_add_event(action_name, event)
+		elif key_data["type"] == "mouse":
+			var event = InputEventMouseButton.new()
+			event.button_index = key_data["button_index"]
+			InputMap.action_add_event(action_name, event)
 
 
 func _get_settings_from_ui() -> void:
@@ -264,26 +399,107 @@ func _get_settings_from_ui() -> void:
 func _on_apply_pressed() -> void:
 	_get_settings_from_ui()
 	_save_settings()
-	
+
 
 func _on_reset_pressed() -> void:
-	_current_settings = _default_settings.duplicate(true)
+	for action_name in _action_names.keys():
+		InputMap.action_erase_events(action_name)
+		_current_settings.controls[action_name] = _editor_default_inputs[action_name].duplicate(true)
+		_apply_keybinds(action_name, _editor_default_inputs[action_name])
+	
+	_current_settings.audio = _default_settings.audio.duplicate(true)
+	_current_settings.video = _default_settings.video.duplicate(true)
+	
 	_apply_settings_to_ui()
 	_apply_settings_to_game()
-	
+
 
 func _on_back_pressed() -> void:
 	hide_settings()
 
 
-func _on_keybind_button_pressed(action_name: String, button: Button) -> void:
-	if _action_to_change == action_name:
+func _on_binding_button_pressed(action_name: String, button: Button, binding_index: int) -> void:
+	if _action_to_change == action_name and _binding_index_to_change == binding_index:
 		_cancel_keybind_change()
 		return
 		
 	if _button_to_change != null:
+		_button_to_change.text = _original_button_text
 		_button_to_change.set_pressed_no_signal(false)
 	
 	_action_to_change = action_name
 	_button_to_change = button
+	_binding_index_to_change = binding_index
+	_original_button_text = button.text
 	button.text = "Press any key..."
+
+
+func _on_add_binding_pressed(action_name: String) -> void:
+	var temp_button = Button.new()
+	temp_button.text = "Press any key..."
+	temp_button.visible = false
+	add_child(temp_button)
+	
+	_action_to_change = action_name
+	_button_to_change = temp_button
+	_binding_index_to_change = -1  # -1 means add new binding
+	_original_button_text = ""
+
+
+func _on_remove_binding_pressed(action_name: String, binding_index: int) -> void:
+	var events = InputMap.action_get_events(action_name)
+	
+	if binding_index >= 0 and binding_index < events.size():
+		InputMap.action_erase_event(action_name, events[binding_index])
+		
+		if _current_settings.controls.has(action_name) and binding_index < _current_settings.controls[action_name].size():
+			_current_settings.controls[action_name].remove_at(binding_index)
+	
+	_setup_keybind_ui()
+
+
+func _on_delete_config_pressed() -> void:
+	var dialog = ConfirmationDialog.new()
+	dialog.title = "Delete Configuration"
+	dialog.dialog_text = "Are you sure you want to delete your configuration?"
+	dialog.get_ok_button().text = "Delete"
+	dialog.content_scale_factor = 0.5
+	dialog.max_size = Vector2i(300, 80)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.confirmed.connect(func():
+		if FileAccess.file_exists(_config_path):
+			var dir = DirAccess.open("user://")
+			if dir:
+				dir.remove(_config_path)
+		
+		_current_settings.audio = _default_settings.audio.duplicate(true)
+		_current_settings.video = _default_settings.video.duplicate(true)
+		
+		_current_settings.controls = {}
+		for action_name in _editor_default_inputs.keys():
+			_current_settings.controls[action_name] = _editor_default_inputs[action_name].duplicate(true)
+			
+		_apply_settings_to_game()
+		_apply_settings_to_ui()
+		dialog.queue_free()
+	)
+	
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+func _on_delete_besttime_pressed() -> void:
+	var dialog = ConfirmationDialog.new()
+	dialog.title = "Delete Best Times"
+	dialog.dialog_text = "Are you sure you want to delete all your best times records?"
+	dialog.get_ok_button().text = "Delete"
+	dialog.content_scale_factor = 0.5
+	dialog.max_size = Vector2i(300, 80)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.confirmed.connect(func():
+		GameManager.reset_best_times()
+		dialog.queue_free()
+	)
+	
+	add_child(dialog)
+	dialog.popup_centered()
