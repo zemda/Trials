@@ -48,8 +48,3 @@ theme = ExtResource("2_2dgkf")
 layout_mode = 2
 theme = ExtResource("2_2dgkf")
 rounded = true
-
-[node name="LoadingAnimationTimer" type="Timer" parent="Control"]
-wait_time = 0.5
-
-[connection signal="timeout" from="Control/LoadingAnimationTimer" to="Control" method="_on_loading_animation_timer_timeout"]
