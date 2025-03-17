@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://cvnue72u1abtj"]
 
 [ext_resource type="Script" uid="uid://cq2335pg4cyda" path="res://nodes/enemy/enemy.gd" id="1_8qebe"]
-[ext_resource type="Texture2D" uid="uid://ds5xsnxvdh41r" path="res://assets/sprites/enemy/enemy2.png" id="2_mqojr"]
+[ext_resource type="Texture2D" uid="uid://bvp40ub1xkarh" path="res://assets/sprites/enemy/pixil-frame-0 (1).png" id="2_mqojr"]
 [ext_resource type="Script" uid="uid://cto2o0nncekv7" path="res://nodes/enemy/enemy_base_states/enemy_states.gd" id="3_d6trr"]
 [ext_resource type="Script" uid="uid://cb5ha3avi3ue5" path="res://nodes/enemy/assassin/assassin_states/assassin_idle.gd" id="4_yp53w"]
 [ext_resource type="Script" uid="uid://b1y2niaj8185d" path="res://nodes/enemy/assassin/assassin_states/assassin_chasing.gd" id="5_fs3ke"]

@@ -273,7 +273,6 @@ func _setup_keybind_ui() -> void:
 		
 		action_vbox.add_child(name_hbox)
 		
-		# Get all current bindings
 		var events = InputMap.action_get_events(action_name)
 		
 		if events.size() == 0:

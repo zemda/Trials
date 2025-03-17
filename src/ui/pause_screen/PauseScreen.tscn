@@ -7,7 +7,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cag2w"]
 bg_color = Color(0, 0, 0, 0.560784)
 
-[node name="PauseScreen" type="CanvasLayer"]
+[node name="PauseScreen" type="CanvasLayer" groups=["ui_screen"]]
 script = ExtResource("1_cag2w")
 
 [node name="Panel" type="Panel" parent="."]
