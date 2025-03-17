@@ -26,6 +26,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if _knockback_velocity != Vector2.ZERO:
 		velocity += _knockback_velocity
+		velocity = clamp(velocity, Vector2(-400,-400), Vector2(400, 400)) # TODO test it
 	
 	move_and_slide()
 	_update_wall_state()

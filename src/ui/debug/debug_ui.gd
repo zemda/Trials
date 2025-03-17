@@ -2,7 +2,7 @@ extends CanvasLayer
 
 @onready var debug_label = $DebugLabel
 
-func _ready():
+func _ready() -> void:
 	if OS.is_debug_build():
 		show()
 	else:
@@ -22,8 +22,11 @@ func _process(delta: float) -> void:
 	text += "- Current Level: " + GameManager.current_level + "\n"
 	text += "- Total Game Time: " + str(snapped(GameManager._total_game_time, 0.01)) + "\n"
 	text += "- Level Time: " + str(snapped(GameManager.get_level_time(), 0.01)) + "\n"
+	text += "- Best Level Time: " + str(snapped(GameManager.get_best_time_for_level(GameManager.current_level), 0.01)) + "\n"
+	text += "- Best Run Time: " + str(snapped(GameManager.get_best_run_time(), 0.01)) + "\n"
 	text += "- Timer Paused: " + str(GameManager._timer_paused) + "\n"
 	text += "- Is Loading: " + str(GameManager._is_loading) + "\n"
+	text += "- Completed Levels: " + str(GameManager._completed_levels) + "\n"
 	
 	
 	text += "\nLevelManager Info:\n"

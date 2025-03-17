@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://cwadt7p0ll77h"]
+
+[ext_resource type="Theme" uid="uid://ckatomkgrjytk" path="res://assets/font,themes/ui_theme.tres" id="1_ghxmf"]
+[ext_resource type="Script" uid="uid://b2bsdt8kampky" path="res://ui/timer/timer_ui.gd" id="1_ha4av"]
+
+[node name="TimerUi" type="Control" groups=["ui_screen"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_ghxmf")
+script = ExtResource("1_ha4av")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+alignment = 1
+
+[node name="RunTimeLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="BestRunTimeLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
