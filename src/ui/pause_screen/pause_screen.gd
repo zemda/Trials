@@ -4,6 +4,7 @@ extends CanvasLayer
 @onready var _continue_button = $Control/CenterContainer/VBoxContainer/ContinueButton
 @onready var _settings_button = $Control/CenterContainer/VBoxContainer/SettingsButton
 @onready var _restart_button = $Control/CenterContainer/VBoxContainer/RestartButton
+@onready var _mainmenu_button = $Control/CenterContainer/VBoxContainer/MainButton
 @onready var _quit_button = $Control/CenterContainer/VBoxContainer/QuitButton
 @onready var _settings_container = $SettingsScreen
 
@@ -22,9 +23,10 @@ func _ready() -> void:
 	_continue_button.pressed.connect(_on_continue_pressed)
 	_settings_button.pressed.connect(_on_settings_pressed)
 	_restart_button.pressed.connect(_on_restart_pressed)
+	_mainmenu_button.pressed.connect(_on_mainmenu_pressed)
 	_quit_button.pressed.connect(_on_quit_pressed)
 	
-	_buttons = [_continue_button, _settings_button, _restart_button, _quit_button]
+	_buttons = [_continue_button, _settings_button, _restart_button, _mainmenu_button, _quit_button]
 	
 
 
@@ -113,6 +115,17 @@ func _on_settings_closed() -> void:
 
 func _on_restart_pressed() -> void:
 	GameManager.restart_game()
+
+
+func _on_mainmenu_pressed() -> void:
+	hide_pause_screen(false)
+	
+	if GameManager._is_paused:
+		GameManager._is_paused = false
+		get_tree().paused = false
+	GameManager.remove_player_from_level()
+	GameManager.disable_player_input()
+	SceneChanger.goto_scene(SceneManager.StartScreenPath)
 
 
 func _on_quit_pressed() -> void:
