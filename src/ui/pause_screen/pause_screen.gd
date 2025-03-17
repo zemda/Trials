@@ -10,6 +10,7 @@ extends CanvasLayer
 var _buttons: Array = []
 var _current_button_index: int = 0
 var _is_paused: bool = false
+var _in_pause_screen_context: bool = false
 
 
 func _ready() -> void:
@@ -82,6 +83,7 @@ func hide_pause_screen(animation: bool = true) -> void:
 	_is_paused = false
 	if _settings_container.visible:
 		_settings_container.hide_settings()
+		_in_pause_screen_context = false
 	
 	if animation:
 		var tween = create_tween()
@@ -98,13 +100,15 @@ func _on_continue_pressed() -> void:
 func _on_settings_pressed() -> void:
 	_control_node.visible = false
 	_settings_container.show_settings()
+	_in_pause_screen_context = true
 
 
 func _on_settings_closed() -> void:
-	_control_node.visible = true
-	_current_button_index = 1
-	_update_button_focus()
-	_control_node.visible = true
+	if _in_pause_screen_context:
+		_control_node.visible = true
+		_current_button_index = 1
+		_update_button_focus()
+		_control_node.visible = true
 	
 
 func _on_restart_pressed() -> void:
