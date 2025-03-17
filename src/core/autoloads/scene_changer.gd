@@ -25,6 +25,7 @@ func goto_scene(path: String) -> void:
 		_is_changing_scene = false
 		return
 	
+	GameManager.disable_player_input()
 	LoadingScreen.show_loading_screen()
 	var current_scene = get_tree().current_scene
 	var t = Time.get_ticks_msec()
@@ -43,12 +44,12 @@ func goto_scene(path: String) -> void:
 				var resource = ResourceLoader.load_threaded_get(path)
 				var new_scene = resource.instantiate()
 				
+				if current_scene:
+					current_scene.queue_free()
+				
 				get_tree().root.call_deferred("add_child", new_scene)
 				await get_tree().process_frame
 				get_tree().current_scene = new_scene
-				
-				if current_scene:
-					current_scene.queue_free()
 				
 				LoadingScreen.hide_loading_screen()
 				

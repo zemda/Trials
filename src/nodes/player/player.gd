@@ -23,7 +23,7 @@ func _ready() -> void:
 	fsm.set_host(self)
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if _knockback_velocity != Vector2.ZERO:
 		velocity += _knockback_velocity
 		velocity = clamp(velocity, Vector2(-400,-400), Vector2(400, 400)) # TODO test it
@@ -151,5 +151,5 @@ func can_grapple() -> bool:
 	return not fsm.current_state.name == "state_swinging"
 
 
-func _on_hazard_detector_area_entered(area: Area2D) -> void:
+func _on_hazard_detector_area_entered(_area: Area2D) -> void:
 	emit_signal("player_death")

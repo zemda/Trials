@@ -10,7 +10,7 @@ func _enter() -> void:
 	host.reset_hook_validity()
 
 
-func update(delta: float) -> void:
+func update(_delta: float) -> void:
 	_was_button_held = _is_button_held
 	_is_button_held = Input.is_action_pressed("grapple")
 	

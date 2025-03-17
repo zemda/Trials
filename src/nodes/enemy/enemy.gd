@@ -21,7 +21,7 @@ var _jump_force: float = 375.0
 
 var _player_visible: bool = false
 var _player_behind_wall: bool = false
-var _player_chasing_distance: float = 320.0
+var _player_chasing_distance: float = 320.0 # TODO use this var, test the distances etc
 var _player_last_known_position: Vector2 = Vector2(-9999999, -9999999)  # NO_TARGET constant
 
 
@@ -82,7 +82,7 @@ func update_raycasts() -> void:
 	_player_behind_wall = is_player_behind_walls()
 
 
-func update_player_detection(delta: float) -> void:
+func update_player_detection(_delta: float) -> void:
 	if _player == null:
 		return
 	

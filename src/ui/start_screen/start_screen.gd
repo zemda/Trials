@@ -1,6 +1,5 @@
 extends CanvasLayer
 
-@export_file("*.tscn") var first_level_path: String = ""
 
 @onready var main_container = $Control/CenterContainer
 @onready var settings_container = $Control/SettingsContainer
@@ -14,7 +13,6 @@ extends CanvasLayer
 @onready var leaderboard_button = $Control/CenterContainer/VBoxContainer/LeaderboardButton
 @onready var quit_button = $Control/CenterContainer/VBoxContainer/QuitButton
 
-var _title_tween: Tween
 var _in_start_screen_context: bool = true
 
 var _buttons: Array = []
@@ -39,9 +37,6 @@ func _ready() -> void:
 	
 	settings_container.visible = false
 	leaderboard_container.visible = false
-	
-	if first_level_path.is_empty():
-		first_level_path = SceneManager.BaseGameLevel
 	
 	_update_leaderboard()
 
@@ -193,14 +188,10 @@ func format_time(time_seconds: float) -> String:
 
 
 func _on_new_game_pressed() -> void:
-	if first_level_path.is_empty():
-		push_error("First level path is not set!")
-		return
-	
 	hide_all_screens()
 	
 	GameManager.prepare_for_new_game()
-	SceneChanger.goto_scene(first_level_path)
+	GameManager.load_level(SceneManager.BaseGameLevel)
 
 
 func _on_settings_pressed() -> void:

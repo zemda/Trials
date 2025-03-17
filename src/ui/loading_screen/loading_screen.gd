@@ -3,7 +3,6 @@ extends CanvasLayer
 @onready var _progress_bar := $Control/CenterContainer/VBoxContainer/ProgressBar
 @onready var _loading_text := $Control/CenterContainer/VBoxContainer/LoadingText
 @onready var _control_node := $Control
-@onready var _panel := $Control/Panel
 
 var _current_progress: float = 0.0
 var _target_progress: float = 0.0

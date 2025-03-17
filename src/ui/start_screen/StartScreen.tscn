@@ -6,7 +6,6 @@
 
 [node name="StartScreen" type="CanvasLayer" groups=["ui_screen"]]
 script = ExtResource("1_j518t")
-first_level_path = "uid://d1ascia0wibrl"
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
