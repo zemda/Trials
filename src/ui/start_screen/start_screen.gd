@@ -5,8 +5,8 @@ extends CanvasLayer
 @onready var main_container = $Control/CenterContainer
 @onready var settings_container = $Control/SettingsContainer
 @onready var leaderboard_container = $Control/LeaderboardContainer
-@onready var levels_grid = $Control/LeaderboardContainer/PanelContainer/VBoxContainer/LevelsGrid
-@onready var best_run_label = $Control/LeaderboardContainer/PanelContainer/VBoxContainer/BestRunLabel
+@onready var levels_grid = $Control/LeaderboardContainer/PanelContainer/MarginContainer/VBoxContainer/LevelsGrid
+@onready var best_run_label = $Control/LeaderboardContainer/PanelContainer/MarginContainer/VBoxContainer/BestRunLabel
 @onready var title_label = $Control/CenterContainer/VBoxContainer/TitleLabel
 @onready var control = $Control
 
@@ -21,7 +21,7 @@ func _ready() -> void:
 	$Control/CenterContainer/VBoxContainer/SettingsButton.pressed.connect(_on_settings_pressed)
 	$Control/CenterContainer/VBoxContainer/LeaderboardButton.pressed.connect(_on_leaderboard_pressed)
 	$Control/CenterContainer/VBoxContainer/QuitButton.pressed.connect(_on_quit_pressed)
-	$Control/LeaderboardContainer/PanelContainer/VBoxContainer/BackButton.pressed.connect(_on_back_from_leaderboard_pressed)
+	$Control/LeaderboardContainer/PanelContainer/MarginContainer/VBoxContainer/BackButton.pressed.connect(_on_back_from_leaderboard_pressed)
 	
 	show_main_menu()
 	_animate_title()
@@ -33,6 +33,8 @@ func _ready() -> void:
 	
 	if first_level_path.is_empty():
 		first_level_path = SceneManager.BaseGameLevel
+	
+	_update_leaderboard()
 
 
 func _animate_title() -> void:
@@ -111,7 +113,10 @@ func _update_leaderboard() -> void:
 			if key != "initialized":
 				var level_name = key.get_file().get_basename()
 				if level_name.is_empty():
-					level_name = key
+					var path = key
+					var file = path.get_file()
+					level_name = file.get_basename()
+				
 				var best_time = GameManager.get_best_time_for_level(key)
 				_add_leaderboard_entry(level_name, best_time)
 
