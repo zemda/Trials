@@ -6,13 +6,13 @@ signal game_paused
 signal game_resumed
 signal run_completed
 
+
 var _config_path: String = "user://game_times.cfg"
 var _config: ConfigFile = ConfigFile.new()
 
 var current_level: String = ""
 var _next_level: String = ""
 var _is_loading: bool = false
-var _is_game_over: bool = false
 var _is_paused: bool = false
 
 var _total_game_time: float = 0.0
@@ -22,7 +22,6 @@ var _timer: Timer
 var _completed_levels: Array[String] = []
 
 var _input_disabled: bool = false
-var _input_process_mode_backup = null
 
 var _pause_screen = null
 
@@ -53,7 +52,7 @@ func _on_timer_tick() -> void:
 
 
 func _input(event) -> void:
-	if event.is_action_pressed("pause"):
+	if event.is_action_pressed("pause"): # add also esc later
 		if !_is_loading and !_input_disabled and is_in_gameplay_level():
 			_toggle_pause()
 
@@ -61,8 +60,8 @@ func _input(event) -> void:
 func load_level(level_path: String) -> void:
 	print("GameManager: Loading level: ", level_path)
 	_next_level = level_path
-	
 	_is_loading = true
+	
 	SceneChanger.goto_scene(level_path)
 
 
@@ -70,12 +69,13 @@ func _on_scene_loaded() -> void:
 	_is_loading = false
 	if not is_in_gameplay_level():
 		return
-	
+
 	load_times()
 	current_level = _next_level
 	_level_start_time = _total_game_time
 	enable_player_input()
 	_player_instance.visible = true
+	_resume_timer()
 	
 	if not _completed_levels.has(current_level):
 		_completed_levels.append(current_level)
@@ -228,13 +228,17 @@ func restart_game() -> void:
 	if _is_paused:
 		_is_paused = false
 		get_tree().paused = false
-	
+	_delete_player()
 	current_level = ""
 	_total_game_time = 0.0
 	_completed_levels.clear()
 	
 	load_level(SceneManager.BaseGameLevel)
-	_resume_timer()
+
+
+func _delete_player() -> void:
+	_player_instance.queue_free()
+	_player_initialized = false
 
 
 func prepare_for_new_game() -> void:
@@ -249,28 +253,43 @@ func prepare_for_new_game() -> void:
 	_player_instance.visible = false
 
 
+
 func disable_player_input() -> void:
-	if _input_disabled:
+	if _input_disabled or !_player_initialized:
 		return
-		
+	call_deferred("_deferred_player_input_helper", false)
 	_player_instance.visible = false
 	_input_disabled = true
-	call_deferred("_apply_player_input_state", false)
+
+
+func go_to_main_menu() -> void:
+	if _is_paused:
+		_is_paused = false
+		get_tree().paused = false
+	_delete_player()
+	SceneChanger.goto_scene(SceneManager.StartScreenPath)
+
+
+func _deferred_player_input_helper(enable: bool) -> void:
+	if enable:
+		_player_instance.process_mode = Node.PROCESS_MODE_INHERIT
+		_player_instance.set_physics_process(true)
+		_player_instance.set_process(true)
+		_player_instance.set_process_input(true)
+	else:
+		_player_instance.process_mode = Node.PROCESS_MODE_DISABLED
+		_player_instance.set_physics_process(false)
+		_player_instance.set_process(false)
+		_player_instance.set_process_input(false)
 
 
 func enable_player_input() -> void:
-	if !_input_disabled:
+	if !_input_disabled or !_player_initialized:
 		return
+	call_deferred("_deferred_player_input_helper", true)
 	
 	_player_instance.visible = true
 	_input_disabled = false
-	call_deferred("_apply_player_input_state", true)
-
-
-func _apply_player_input_state(enabled: bool) -> void:
-	if _player_initialized and is_instance_valid(_player_instance):
-		_player_instance.set_process_input(enabled)
-		_player_instance.set_physics_process(enabled)
 
 
 func initialize_player() -> void:
@@ -287,6 +306,8 @@ func initialize_player() -> void:
 
 
 func get_player() -> Player:
+	if not _player_initialized:
+		initialize_player()
 	return _player_instance
 
 
@@ -300,7 +321,6 @@ func place_player_in_level(position: Vector2, pvisible: bool = true) -> void:
 
 
 func remove_player_from_level() -> void:
-	print("nihha hwathgizhi")
 	_player_instance.visible = false
 	_player_instance.global_position = Vector2(-2000, 0)
 	_player_instance.set_physics_process(false)

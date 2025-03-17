@@ -70,9 +70,9 @@ func create_hook(start_pos: Vector2, target_pos: Vector2) -> void:
 	hook_created.emit(_current_anchor)
 
 
-func _on_hit_hookable(position: Vector2, collider: Node2D) -> void:
+func _on_hit_hookable(_position: Vector2, collider: Node2D) -> void:
 	_valid_hook_point = true
-	_hook_position = position
+	_hook_position = _position
 	_hook_collider = collider
 
 

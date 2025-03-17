@@ -119,13 +119,7 @@ func _on_restart_pressed() -> void:
 
 func _on_mainmenu_pressed() -> void:
 	hide_pause_screen(false)
-	
-	if GameManager._is_paused:
-		GameManager._is_paused = false
-		get_tree().paused = false
-	GameManager.remove_player_from_level()
-	GameManager.disable_player_input()
-	SceneChanger.goto_scene(SceneManager.StartScreenPath)
+	GameManager.go_to_main_menu()
 
 
 func _on_quit_pressed() -> void:

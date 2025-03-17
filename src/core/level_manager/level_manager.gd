@@ -34,14 +34,14 @@ func _ready() -> void:
 	if _pathfinder_manager:
 		_pathfinder_manager.set_player(_player)
 	
-	call_deferred("_find_and_register_checkpoints")
 	_place_player_at_start(true)
 	
 	await get_tree().create_timer(0.3).timeout
 	_store_initial_level_state()
+	call_deferred("_find_and_register_checkpoints")
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if _player and _player.global_position.y > respawn_height:
 		_on_player_death()
 	
@@ -151,7 +151,7 @@ func _on_enemies_recreated() -> void:
 func _find_and_register_checkpoints():
 	await get_tree().process_frame
 	
-	_checkpoints = get_tree().get_nodes_in_group("checkpoints") # TODO might register cp from previous level
+	_checkpoints = get_tree().get_nodes_in_group("checkpoints")
 	print("LevelManager: Found ", _checkpoints.size(), " checkpoints")
 	
 	for checkpoint in _checkpoints:
@@ -176,7 +176,6 @@ func _on_checkpoint_activated(checkpoint) -> void:
 
 
 func _complete_level() -> void:
-	GameManager.disable_player_input()
 	GameManager.save_best_time()
 	GameManager.remove_player_from_level()
 	
@@ -184,7 +183,6 @@ func _complete_level() -> void:
 		GameManager.load_level(next_level_path)
 	else:
 		GameManager.complete_game()
-		GameManager.enable_player_input()
 
 
 func _on_level_exit() -> void:
