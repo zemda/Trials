@@ -32,7 +32,7 @@ var _player_initialized: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	
+	prepare_for_new_game()
 	_pause_screen = SceneManager.get_pause_screen_instance()
 	get_tree().root.call_deferred("add_child", _pause_screen)
 	
