@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dt6ppd0t6grya" path="res://ui/debug/debug_ui.gd" id="1_stk02"]
 [ext_resource type="Theme" uid="uid://ckatomkgrjytk" path="res://assets/font,themes/ui_theme.tres" id="2_xepgg"]
 
-[node name="DebugUi" type="CanvasLayer"]
+[node name="DebugUi" type="CanvasLayer" groups=["ui_screen"]]
 script = ExtResource("1_stk02")
 
 [node name="DebugLabel" type="Label" parent="."]

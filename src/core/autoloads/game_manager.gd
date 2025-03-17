@@ -4,20 +4,22 @@ signal level_loaded
 signal level_started
 signal game_paused
 signal game_resumed
+signal run_completed
 
-# Global game state
+var _config_path: String = "user://game_times.cfg"
+var _config: ConfigFile = ConfigFile.new()
+
 var current_level: String = ""
 var _next_level: String = ""
 var _is_loading: bool = false
 var _is_game_over: bool = false
 var _is_paused: bool = false
 
-# Global time tracking
 var _total_game_time: float = 0.0
 var _level_start_time: float = 0.0
 var _timer_paused: bool = false
-var _timer_paused_time: float = 0.0
-var _best_times = {}
+var _timer: Timer
+var _completed_levels: Array[String] = []
 
 var _input_disabled: bool = false
 var _input_process_mode_backup = null
@@ -30,20 +32,28 @@ var _player_initialized: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	initialize_player()
+	
 	_pause_screen = SceneManager.get_pause_screen_instance()
 	get_tree().root.call_deferred("add_child", _pause_screen)
-	load_best_times()
+	
+	_timer = Timer.new()
+	_timer.process_callback = Timer.TIMER_PROCESS_IDLE
+	_timer.wait_time = 0.01
+	_timer.autostart = true
+	_timer.timeout.connect(_on_timer_tick)
+	add_child(_timer)
+	
+	load_times()
 
 
-func _process(delta: float) -> void:
-	if !_timer_paused and !_is_loading and current_level != "":
-		_total_game_time += delta
+func _on_timer_tick() -> void:
+	if !_timer_paused and !_is_loading and current_level != "" and is_in_gameplay_level():
+		_total_game_time += _timer.wait_time
 
 
 func _input(event) -> void:
 	if event.is_action_pressed("pause"):
-		if !_is_loading and !_input_disabled:
+		if !_is_loading and !_input_disabled and is_in_gameplay_level():
 			_toggle_pause()
 
 
@@ -65,8 +75,25 @@ func _on_scene_loaded() -> void:
 	
 	_is_loading = false
 	
+	if is_in_gameplay_level() and not _completed_levels.has(current_level):
+		_completed_levels.append(current_level)
+	
 	emit_signal("level_loaded")
 	emit_signal("level_started")
+
+
+func is_in_gameplay_level() -> bool:
+	var current_scene = get_tree().current_scene
+	if current_scene:
+		return current_scene.is_in_group("gameplay_level")
+	return false
+
+
+func is_in_ui_screen() -> bool:
+	var current_scene = get_tree().current_scene
+	if current_scene:
+		return current_scene.is_in_group("ui_screen")
+	return false
 
 
 func show_loading_screen() -> void:
@@ -78,7 +105,8 @@ func show_loading_screen() -> void:
 func hide_loading_screen() -> void:
 	LoadingScreen.hide_loading_screen()
 	_resume_timer()
-	enable_player_input()
+	if is_in_gameplay_level():
+		enable_player_input()
 
 
 func update_loading_progress(progress: float) -> void:
@@ -88,44 +116,83 @@ func update_loading_progress(progress: float) -> void:
 func _pause_timer() -> void:
 	if !_timer_paused:
 		_timer_paused = true
-		_timer_paused_time = Time.get_ticks_msec() / 1000.0
+		_timer.paused = true
 
 
 func _resume_timer() -> void:
 	if _timer_paused:
 		_timer_paused = false
+		_timer.paused = false
 
 
 func get_level_time() -> float:
-	if current_level == "":
+	if current_level == "" or !is_in_gameplay_level():
 		return 0.0
 	return _total_game_time - _level_start_time
 
 
 func save_best_time() -> bool:
 	var level_time = get_level_time()
-	if !_best_times.has(current_level) or level_time < _best_times[current_level]:
-		_best_times[current_level] = level_time
-		_save_best_times()
+	var best_time = get_best_time_for_level(current_level)
+	
+	if best_time == 0.0 or level_time < best_time:
+		_config.set_value("level_times", current_level, level_time)
+		save_times()
 		return true
 	return false
 
 
-func _save_best_times() -> void:
-	var save_file = FileAccess.open("user://best_times.save", FileAccess.WRITE)
-	save_file.store_var(_best_times)
-	save_file.close()
+func get_best_time_for_level(level: String) -> float:
+	if level == "":
+		return 0.0
+	return _config.get_value("level_times", level, 0.0)
 
 
-func load_best_times() -> void:
-	if FileAccess.file_exists("user://best_times.save"):
-		var save_file = FileAccess.open("user://best_times.save", FileAccess.READ)
-		_best_times = save_file.get_var()
-		save_file.close()
+func get_current_run_time() -> float:
+	if !is_in_gameplay_level():
+		return 0.0
+	return _total_game_time
+
+
+func get_best_run_time() -> float:
+	return _config.get_value("run_times", "best_time", 0.0)
+
+
+func save_run_time() -> bool:
+	var run_time = _total_game_time
+	var best_run_time = get_best_run_time()
+	
+	if best_run_time == 0.0 or run_time < best_run_time:
+		_config.set_value("run_times", "best_time", run_time)
+		save_times()
+		emit_signal("run_completed", run_time)
+		return true
+	return false
+
+
+func save_times() -> void:
+	var error = _config.save(_config_path)
+	if error != OK:
+		print("GameManager: Error saving times: ", error)
+
+
+func load_times() -> void:
+	if FileAccess.file_exists(_config_path):
+		var error = _config.load(_config_path)
+		if error != OK:
+			print("GameManager: Error loading times: ", error)
+	else:
+		_config.set_value("level_times", "initialized", true)
+		_config.set_value("run_times", "initialized", true)
+		save_times()
+
+
+func complete_game() -> void: # TODO end screen or smh
+	save_run_time()
 
 
 func _pause_game() -> void:
-	if !_is_paused:
+	if !_is_paused and is_in_gameplay_level():
 		_pause_timer()
 		_is_paused = true
 		get_tree().paused = true
@@ -155,52 +222,65 @@ func _hide_pause_menu(animation: bool = true) -> void:
 
 
 func restart_game() -> void:
-	_hide_pause_menu(false)	
+	_hide_pause_menu(false)
 	if _is_paused:
 		_is_paused = false
 		get_tree().paused = false
 	
 	current_level = ""
 	_total_game_time = 0.0
+	_completed_levels.clear()
 	
 	load_level(SceneManager.BaseGameLevel)
 	_resume_timer()
 
 
-func disable_player_input() -> void:
+func prepare_for_new_game() -> void:
+	current_level = ""
+	_total_game_time = 0.0
+	_completed_levels.clear()
+	
+	if not _player_initialized:
+		initialize_player()
+	
+	_player_instance.global_position = Vector2(-2000, 0)
 	_player_instance.visible = false
+
+
+func disable_player_input() -> void:
 	if _input_disabled:
 		return
 		
+	_player_instance.visible = false
 	_input_disabled = true
-	
-	if _player_instance and is_instance_valid(_player_instance):
-		call_deferred("_apply_player_input_state", false)
+	call_deferred("_apply_player_input_state", false)
 
 
 func enable_player_input() -> void:
 	if !_input_disabled:
 		return
-		
-	_input_disabled = false
 	
-	if _player_instance and is_instance_valid(_player_instance):
-		call_deferred("_apply_player_input_state", true)
 	_player_instance.visible = true
+	_input_disabled = false
+	call_deferred("_apply_player_input_state", true)
 
 
 func _apply_player_input_state(enabled: bool) -> void:
-	_player_instance.set_process_input(enabled)
-	_player_instance.set_physics_process(enabled)
+	if _player_initialized and is_instance_valid(_player_instance):
+		_player_instance.set_process_input(enabled)
+		_player_instance.set_physics_process(enabled)
 
 
 func initialize_player() -> void:
-	if _player_initialized:
-		return
-	
 	_player_instance = SceneManager.get_player_instance()
 	_player_instance.visible = false
 	get_tree().root.call_deferred("add_child", _player_instance)
+	
+	_player_instance.global_position = Vector2(-2000, 0)
+	
+	_player_instance.set_physics_process(false)
+	_player_instance.set_process_input(false)
+	
 	_player_initialized = true
 
 
@@ -210,18 +290,23 @@ func get_player() -> Player:
 
 func place_player_in_level(position: Vector2, pvisible: bool = true) -> void:
 	_player_instance.global_position = position
-	_player_instance.visible = pvisible
+	_player_instance.visible = pvisible and is_in_gameplay_level()
+	
+	if is_in_gameplay_level() and !_input_disabled:
+		_player_instance.set_physics_process(true)
+		_player_instance.set_process_input(true)
 
 
 func remove_player_from_level() -> void:
 	_player_instance.visible = false
 	_player_instance.global_position = Vector2(-2000, 0)
+	_player_instance.set_physics_process(false)
+	_player_instance.set_process_input(false)
 
 
 func reset_best_times() -> void:
-	_best_times = {}
-	
-	if FileAccess.file_exists("user://best_times.save"):
+	_config = ConfigFile.new()
+	if FileAccess.file_exists(_config_path):
 		var dir = DirAccess.open("user://")
 		if dir:
-			dir.remove("user://best_times.save")
+			dir.remove(_config_path)

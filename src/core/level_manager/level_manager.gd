@@ -183,6 +183,7 @@ func _complete_level() -> void:
 	if next_level_path != "":
 		GameManager.load_level(next_level_path)
 	else:
+		GameManager.complete_game()
 		GameManager.enable_player_input()
 
 

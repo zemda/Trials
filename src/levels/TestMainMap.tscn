@@ -1,6 +1,7 @@
-[gd_scene load_steps=15 format=4 uid="uid://d1ascia0wibrl"]
+[gd_scene load_steps=16 format=4 uid="uid://d1ascia0wibrl"]
 
 [ext_resource type="Script" uid="uid://b6mtujlx8pdcd" path="res://levels/test_main_map.gd" id="1_6j0a2"]
+[ext_resource type="PackedScene" uid="uid://cwadt7p0ll77h" path="res://ui/timer/TimerUI.tscn" id="2_7agju"]
 [ext_resource type="PackedScene" uid="uid://bfrn1j42vjp1b" path="res://ui/debug/DebugUI.tscn" id="2_q5j7s"]
 [ext_resource type="Script" uid="uid://b3uicb7ycsf7s" path="res://levels/test_level.gd" id="2_xmb26"]
 [ext_resource type="PackedScene" uid="uid://5rx7v1h7s0wm" path="res://nodes/environment/traps/spikes.tscn" id="3_60050"]
@@ -15,10 +16,12 @@
 [ext_resource type="PackedScene" uid="uid://cvnue72u1abtj" path="res://nodes/enemy/assassin/Assassin.tscn" id="12_xmb26"]
 [ext_resource type="PackedScene" uid="uid://wigr318n272o" path="res://levels/checkpoint/Checkpoint.tscn" id="14_q5j7s"]
 
-[node name="TestMainMap" type="Node2D"]
+[node name="TestMainMap" type="Node2D" groups=["gameplay_level"]]
 script = ExtResource("1_6j0a2")
 
 [node name="DebugUi" parent="." instance=ExtResource("2_q5j7s")]
+
+[node name="TimerUi" parent="DebugUi" instance=ExtResource("2_7agju")]
 
 [node name="LevelManager" type="Node2D" parent="." node_paths=PackedStringArray("player_start_point")]
 script = ExtResource("2_xmb26")
