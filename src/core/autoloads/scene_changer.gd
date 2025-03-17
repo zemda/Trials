@@ -7,11 +7,11 @@ signal scene_loaded
 var _is_changing_scene: bool = false
 
 
-func _ready():
+func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 
-func goto_scene(path):
+func goto_scene(path: String) -> void:
 	print("SceneChanger: Changing to scene: ", path)
 	
 	if _is_changing_scene:
@@ -26,7 +26,6 @@ func goto_scene(path):
 		return
 	
 	LoadingScreen.show_loading_screen()
-	GameManager.disable_player_input()
 	var current_scene = get_tree().current_scene
 	var t = Time.get_ticks_msec()
 	while Time.get_ticks_msec() - t < max_load_time:
@@ -51,7 +50,6 @@ func goto_scene(path):
 				if current_scene:
 					current_scene.queue_free()
 				
-				GameManager.enable_player_input()
 				LoadingScreen.hide_loading_screen()
 				
 				_is_changing_scene = false

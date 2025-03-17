@@ -32,7 +32,6 @@ var _player_initialized: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	prepare_for_new_game()
 	_pause_screen = SceneManager.get_pause_screen_instance()
 	get_tree().root.call_deferred("add_child", _pause_screen)
 	
@@ -44,6 +43,8 @@ func _ready() -> void:
 	add_child(_timer)
 	
 	load_times()
+	SceneChanger.connect("scene_loaded", Callable(self, "_on_scene_loaded"))
+
 
 
 func _on_timer_tick() -> void:
@@ -62,20 +63,19 @@ func load_level(level_path: String) -> void:
 	_next_level = level_path
 	
 	_is_loading = true
-	
-	if not SceneChanger.is_connected("scene_loaded", Callable(self, "_on_scene_loaded")):
-		SceneChanger.connect("scene_loaded", Callable(self, "_on_scene_loaded"))
-	
 	SceneChanger.goto_scene(level_path)
 
 
 func _on_scene_loaded() -> void:
+	_is_loading = false
+	if not is_in_gameplay_level():
+		return
 	current_level = _next_level
 	_level_start_time = _total_game_time
+	enable_player_input()
+	_player_instance.visible = true
 	
-	_is_loading = false
-	
-	if is_in_gameplay_level() and not _completed_levels.has(current_level):
+	if not _completed_levels.has(current_level):
 		_completed_levels.append(current_level)
 	
 	emit_signal("level_loaded")
@@ -298,6 +298,7 @@ func place_player_in_level(position: Vector2, pvisible: bool = true) -> void:
 
 
 func remove_player_from_level() -> void:
+	print("nihha hwathgizhi")
 	_player_instance.visible = false
 	_player_instance.global_position = Vector2(-2000, 0)
 	_player_instance.set_physics_process(false)
