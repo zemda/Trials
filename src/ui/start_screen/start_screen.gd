@@ -7,24 +7,33 @@ extends CanvasLayer
 @onready var leaderboard_container = $Control/LeaderboardContainer
 @onready var levels_grid = $Control/LeaderboardContainer/PanelContainer/MarginContainer/VBoxContainer/LevelsGrid
 @onready var best_run_label = $Control/LeaderboardContainer/PanelContainer/MarginContainer/VBoxContainer/BestRunLabel
-@onready var title_label = $Control/CenterContainer/VBoxContainer/TitleLabel
 @onready var control = $Control
+
+@onready var new_game_button = $Control/CenterContainer/VBoxContainer/NewGameButton
+@onready var settings_button = $Control/CenterContainer/VBoxContainer/SettingsButton
+@onready var leaderboard_button = $Control/CenterContainer/VBoxContainer/LeaderboardButton
+@onready var quit_button = $Control/CenterContainer/VBoxContainer/QuitButton
 
 var _title_tween: Tween
 var _in_start_screen_context: bool = true
+
+var _buttons: Array = []
+var _current_button_index: int = 0
+var _in_main_menu: bool = false
 
 
 func _ready() -> void:
 	add_to_group("ui_screen")
 	
-	$Control/CenterContainer/VBoxContainer/NewGameButton.pressed.connect(_on_new_game_pressed)
-	$Control/CenterContainer/VBoxContainer/SettingsButton.pressed.connect(_on_settings_pressed)
-	$Control/CenterContainer/VBoxContainer/LeaderboardButton.pressed.connect(_on_leaderboard_pressed)
-	$Control/CenterContainer/VBoxContainer/QuitButton.pressed.connect(_on_quit_pressed)
+	new_game_button.pressed.connect(_on_new_game_pressed)
+	settings_button.pressed.connect(_on_settings_pressed)
+	leaderboard_button.pressed.connect(_on_leaderboard_pressed)
+	quit_button.pressed.connect(_on_quit_pressed)
 	$Control/LeaderboardContainer/PanelContainer/MarginContainer/VBoxContainer/BackButton.pressed.connect(_on_back_from_leaderboard_pressed)
 	
+	_buttons = [new_game_button, settings_button, leaderboard_button, quit_button]
+	
 	show_main_menu()
-	_animate_title()
 	
 	settings_container.connect("settings_closed", _on_settings_closed)
 	
@@ -37,24 +46,57 @@ func _ready() -> void:
 	_update_leaderboard()
 
 
-func _animate_title() -> void:
-	if _title_tween and _title_tween.is_valid():
-		_title_tween.kill()
+func _input(event: InputEvent) -> void:
+	if _in_main_menu:
+		if event.is_action_pressed("ui_up"):
+			_navigate_up()
+		if event.is_action_pressed("ui_down"):
+			_navigate_down()
+		if event.is_action_pressed("ui_accept"):
+			_press_current_button()
+
+
+func _navigate_up() -> void:
+	_current_button_index = (_current_button_index - 1) % _buttons.size()
+	if _current_button_index < 0:
+		_current_button_index = _buttons.size() - 1
+	_update_button_focus()
+
+
+func _navigate_down() -> void:
+	_current_button_index = (_current_button_index + 1) % _buttons.size()
+	_update_button_focus()
+
+
+func _press_current_button() -> void:
+	if _current_button_index >= 0 and _current_button_index < _buttons.size():
+		_buttons[_current_button_index].emit_signal("pressed")
+
+
+func _update_button_focus() -> void:
+	for button in _buttons:
+		button.focus_mode = Control.FOCUS_NONE
+		button.flat = false
 	
-	_title_tween = create_tween()
-	_title_tween.set_loops()
-	_title_tween.tween_property(title_label, "modulate", Color(1, 1, 1, 0.8), 1.5)
-	_title_tween.tween_property(title_label, "modulate", Color(1, 1, 1, 1), 1.5)
+	_buttons[_current_button_index].focus_mode = Control.FOCUS_ALL
+	_buttons[_current_button_index].grab_focus()
+	_buttons[_current_button_index].flat = true
 
 
 func show_main_menu() -> void:
 	main_container.visible = true
+	_in_main_menu = true
 	
 	var tween = create_tween()
 	tween.tween_property(main_container, "modulate", Color(1, 1, 1, 1), 0.3).from(Color(1, 1, 1, 0))
+	
+	_current_button_index = 0
+	_update_button_focus()
 
 
 func hide_main_menu() -> void:
+	_in_main_menu = false
+	
 	var tween = create_tween()
 	tween.tween_property(main_container, "modulate", Color(1, 1, 1, 0), 0.3)
 	tween.tween_callback(func(): main_container.visible = false)
@@ -62,6 +104,7 @@ func hide_main_menu() -> void:
 
 func show_settings() -> void:
 	_in_start_screen_context = true
+	_in_main_menu = false
 	
 	hide_main_menu()
 	hide_leaderboard()
@@ -80,6 +123,8 @@ func _on_settings_closed() -> void:
 
 
 func show_leaderboard() -> void:
+	_in_main_menu = false
+	
 	hide_main_menu()
 	leaderboard_container.visible = true
 	
@@ -94,6 +139,7 @@ func hide_leaderboard() -> void:
 
 
 func hide_all_screens() -> void:
+	_in_main_menu = false
 	main_container.visible = false
 	settings_container.visible = false
 	leaderboard_container.visible = false
