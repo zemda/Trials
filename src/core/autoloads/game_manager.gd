@@ -31,6 +31,7 @@ var _player_initialized: bool = false
 
 
 func _ready() -> void:
+	load_times()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_pause_screen = SceneManager.get_pause_screen_instance()
 	get_tree().root.call_deferred("add_child", _pause_screen)
@@ -42,7 +43,6 @@ func _ready() -> void:
 	_timer.timeout.connect(_on_timer_tick)
 	add_child(_timer)
 	
-	load_times()
 	SceneChanger.connect("scene_loaded", Callable(self, "_on_scene_loaded"))
 
 
@@ -70,6 +70,8 @@ func _on_scene_loaded() -> void:
 	_is_loading = false
 	if not is_in_gameplay_level():
 		return
+	
+	load_times()
 	current_level = _next_level
 	_level_start_time = _total_game_time
 	enable_player_input()
