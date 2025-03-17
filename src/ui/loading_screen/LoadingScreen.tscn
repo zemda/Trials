@@ -7,7 +7,7 @@
 bg_color = Color(0, 0, 0, 0.835294)
 shadow_color = Color(0, 0, 0, 0.2)
 
-[node name="LoadingScreen" type="CanvasLayer"]
+[node name="LoadingScreen" type="CanvasLayer" groups=["ui_screen"]]
 layer = 2
 script = ExtResource("1_qqmno")
 
