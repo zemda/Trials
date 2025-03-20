@@ -39,7 +39,6 @@ enabled=PackedStringArray("res://addons/Todo_Manager/plugin.cfg")
 [global_group]
 
 Hookable="Objects that can be use as a hook point"
-Wrapable=""
 Player=""
 Plank=""
 Chain=""
@@ -49,6 +48,7 @@ Checkpoints=""
 pathfinder_manager=""
 gameplay_level=""
 ui_screen=""
+Wrappable=""
 
 [input]
 
