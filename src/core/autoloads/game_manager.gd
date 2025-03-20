@@ -52,7 +52,7 @@ func _on_timer_tick() -> void:
 
 
 func _input(event) -> void:
-	if event.is_action_pressed("pause"): # add also esc later
+	if event.is_action_pressed("pause"): # TODO add also esc later
 		if !_is_loading and !_input_disabled and is_in_gameplay_level():
 			_toggle_pause()
 
