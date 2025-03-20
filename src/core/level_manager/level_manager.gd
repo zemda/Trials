@@ -3,6 +3,11 @@ class_name LevelManager
 
 signal player_died
 
+@export var camera_limit_left: float = 0
+@export var camera_limit_right: float = 10000
+@export var camera_limit_top: float = 0
+@export var camera_limit_bottom: float = 2000
+
 @export var level_name: String = ""
 @export var next_level_path: String = ""
 
@@ -50,6 +55,7 @@ func _process(_delta: float) -> void:
 
 
 func _place_player_at_start(pvisible: bool = true) -> void:
+	call_deferred("_apply_camera_limits")
 	if _current_checkpoint == null:
 		GameManager.place_player_in_level(player_start_point.global_position, pvisible)
 	else:
@@ -187,3 +193,13 @@ func _complete_level() -> void:
 
 func _on_level_exit() -> void:
 	GameManager.remove_player_from_level()
+
+
+func _apply_camera_limits() -> void:
+	if _player and is_instance_valid(_player):
+		var camera = _player.get_node_or_null("Camera2D")
+		if camera:
+			camera.limit_left = camera_limit_left
+			camera.limit_right = camera_limit_right
+			camera.limit_top = camera_limit_top
+			camera.limit_bottom = camera_limit_bottom
