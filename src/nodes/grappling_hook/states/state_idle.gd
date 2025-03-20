@@ -1,13 +1,7 @@
 extends FSMState
 
-@export var _anchor_scene: PackedScene
-
-var _is_button_held := false
-var _was_button_held := false
-
-
-func _enter() -> void:
-	host.reset_hook_validity()
+var _is_button_held: bool = false
+var _was_button_held: bool = false
 
 
 func update(_delta: float) -> void:
@@ -19,12 +13,12 @@ func update(_delta: float) -> void:
 			_shoot_grapple()
 	else:
 		if _was_button_held:
-			if not host.is_hook_valid():
+			if not host.is_hooked():
 				host.cleanup_current_hook()
 
 
 func _transition() -> int:
-	if host.is_hook_valid() and host.get_parent().can_grapple():
+	if host.is_hooked() and host.get_parent().can_grapple():
 		return states.GRAPPLE
 	return states.NONE
 

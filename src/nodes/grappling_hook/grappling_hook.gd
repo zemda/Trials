@@ -1,32 +1,95 @@
 extends Node2D
 
-signal hook_created(anchor)
-signal hook_destroyed
+@export var anchor_scene: PackedScene
 
-var hooked := false
+
+@onready var fsm: FSM = $States
+@onready var hook_target_ray: RayCast2D = $TargetRay
+@onready var _rope: Line2D = $Rope
+
+var _anchor_stack: Array[Vector2] = []
+var _anchor # Vector2 or Null
+var hooked: bool= false
 var _parent: CharacterBody2D
 var _current_anchor = null
-var _hook_position := Vector2.ZERO
-var _hook_collider = null
-var _valid_hook_point := false
 
-@onready var fsm = $States
-@onready var hook_target_ray: RayCast2D = $TargetRay
-@export var anchor_scene: PackedScene
 
 func _ready() -> void:
 	fsm.set_host(self)
 	_parent = get_parent()
+	_rope.visible = false
 
 
-func apply_grapple_physics(center: Vector2, delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	if _current_anchor:
+		_create_rope()
+
+
+func _create_rope() -> void:
+	if _anchor_stack.is_empty():
+		_anchor = _current_anchor.global_position
+	var points = [global_position, _anchor]
+	_process_wrapping()
+	_process_unwrapping()
+	
+	if _anchor_stack:
+		for a in _anchor_stack:
+			points.insert(2, a)
+		points.append(_current_anchor.global_position)
+	_rope.points = points
+
+
+func _process_wrapping() -> void:
+	hook_target_ray.target_position = hook_target_ray.to_local(_anchor)
+	hook_target_ray.force_raycast_update()
+	if hook_target_ray.is_colliding() and \
+		hook_target_ray.get_collider().is_in_group("Wrappable"):
+		if (hook_target_ray.get_collision_point() - _anchor).length() < 3:
+			return
+		_anchor_stack.append(_anchor)
+		_anchor = hook_target_ray.get_collision_point()
+
+
+func _vector_alignment(vect_a: Vector2, vect_b: Vector2) -> float:
+	if vect_a.length() * vect_b.length() == 0:
+		return 0.0
+	return vect_a.dot(vect_b) / (vect_a.length() * vect_b.length())
+
+
+func _process_unwrapping() -> void:
+	if not _anchor_stack:
+		return
+	
+	hook_target_ray.target_position = hook_target_ray.to_local(_anchor)
+	hook_target_ray.force_raycast_update()
+	
+	if hook_target_ray.is_colliding():
+		if(hook_target_ray.get_collision_point() - _anchor).length() > 3:
+			return
+	
+	hook_target_ray.target_position = hook_target_ray.to_local(_anchor_stack[-1])
+	hook_target_ray.force_raycast_update()
+	
+	if hook_target_ray.is_colliding():
+		if (hook_target_ray.get_collision_point() - _anchor_stack[-1]).length() > 3:
+			return
+	
+	var angle_closeness = _vector_alignment(
+		hook_target_ray.to_local(_anchor), 
+		hook_target_ray.to_local(_anchor_stack[-1])
+	)
+	if angle_closeness > 0.955:
+		_anchor = _anchor_stack.pop_back()
+
+
+func apply_grapple_physics(delta: float) -> void:
 	const DESIRED_RADIAL_SPEED = 400
 	const RADIAL_ACCEL_FACTOR = 0.9
 	const INITIAL_SWING_SPEED = 100
 	const SWING_FORCE_MULTIPLIER = 70
 	const MAX_VELOCITY = Vector2(200, 200)
 
-	var to_center = center - _parent.global_position
+	var to_center = _anchor - _parent.global_position
 	var distance = to_center.length()
 	if distance < 1: # TODO: do this smarter, since this doesnt account players size, corners, and so on... 
 		_parent.velocity = Vector2.ZERO
@@ -47,7 +110,6 @@ func apply_grapple_physics(center: Vector2, delta: float) -> void:
 
 
 func create_hook(start_pos: Vector2, target_pos: Vector2) -> void:	
-	_valid_hook_point = false
 	_current_anchor = anchor_scene.instantiate()
 	
 	var root_node = get_tree().get_root()
@@ -67,18 +129,15 @@ func create_hook(start_pos: Vector2, target_pos: Vector2) -> void:
 	_current_anchor.failed.connect(_on_hook_failed)
 	
 	_current_anchor.shoot(start_pos, final_target_pos)
-	hook_created.emit(_current_anchor)
 
 
 func _on_hit_hookable(_position: Vector2, collider: Node2D) -> void:
-	_valid_hook_point = true
-	_hook_position = _position
-	_hook_collider = collider
+	hooked = true
+	_rope.visible = true
 
 
 func _on_hook_failed() -> void:
 	_current_anchor = null
-	_valid_hook_point = false
 
 
 func cleanup_current_hook() -> void:
@@ -91,21 +150,13 @@ func cleanup_current_hook() -> void:
 			
 			_current_anchor.queue_free()
 		
-		_current_anchor = null
-		hook_destroyed.emit()
+	_current_anchor = null
+	_rope.visible = false
+	_rope.clear_points()
+	_anchor_stack.clear()
+	_anchor = null
+	hooked = false
 
 
-func is_hook_valid() -> bool:
-	return _valid_hook_point and is_instance_valid(_current_anchor)
-
-
-func get_hook_data() -> Dictionary:
-	return {
-		"position": _hook_position,
-		"collider": _hook_collider,
-		"anchor": _current_anchor
-	}
-
-
-func reset_hook_validity() -> void:
-	_valid_hook_point = false
+func is_hooked() -> bool:
+	return hooked
