@@ -7,8 +7,9 @@ signal game_resumed
 signal run_completed
 
 
-var _config_path: String = "user://game_times.cfg"
+const _config_path: String = "user://game_times.cfg"
 var _config: ConfigFile = ConfigFile.new()
+const _veri_secret: String = "VeLiCeTaJne h3sl0, n1k0mu h0 nerik3jte pls..."
 
 var current_level: String = ""
 var _next_level: String = ""
@@ -173,14 +174,14 @@ func save_run_time() -> bool:
 
 
 func save_times() -> void:
-	var error = _config.save(_config_path)
+	var error = _config.save_encrypted_pass(_config_path, _veri_secret)
 	if error != OK:
 		print("GameManager: Error saving times: ", error)
 
 
 func load_times() -> void:
 	if FileAccess.file_exists(_config_path):
-		var error = _config.load(_config_path)
+		var error = _config.load_encrypted_pass(_config_path, _veri_secret)
 		if error != OK:
 			print("GameManager: Error loading times: ", error)
 	else:
