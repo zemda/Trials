@@ -190,6 +190,7 @@ func load_times() -> void:
 
 
 func complete_game() -> void: # TODO end screen or smh
+	_pause_timer()
 	save_run_time()
 
 
@@ -233,7 +234,7 @@ func restart_game() -> void:
 	_total_game_time = 0.0
 	_completed_levels.clear()
 	
-	load_level(SceneManager.BaseGameLevel)
+	load_level(SceneManager.Level01Path)
 
 
 func _delete_player() -> void:

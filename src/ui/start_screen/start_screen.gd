@@ -191,7 +191,7 @@ func _on_new_game_pressed() -> void:
 	hide_all_screens()
 	
 	GameManager.prepare_for_new_game()
-	GameManager.load_level(SceneManager.BaseGameLevel)
+	GameManager.load_level(SceneManager.Level01Path)
 
 
 func _on_settings_pressed() -> void:

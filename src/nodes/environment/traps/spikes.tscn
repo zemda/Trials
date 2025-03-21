@@ -13,6 +13,7 @@ scale = Vector2(2, 2)
 texture = ExtResource("1_41r0m")
 
 [node name="HazardArea" parent="." instance=ExtResource("2_8e5xk")]
+visible = false
 scale = Vector2(2, 2)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HazardArea"]
