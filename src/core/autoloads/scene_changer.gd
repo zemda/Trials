@@ -50,7 +50,7 @@ func goto_scene(path: String) -> void:
 				get_tree().root.call_deferred("add_child", new_scene)
 				await get_tree().process_frame
 				get_tree().current_scene = new_scene
-				
+				await get_tree().process_frame
 				LoadingScreen.hide_loading_screen()
 				
 				_is_changing_scene = false

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://njiev7n6mnue"]
+
+[ext_resource type="Script" uid="uid://c5h11dcim6adf" path="res://levels/level_done_area/level_done_area.gd" id="1_5hqjg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w5hat"]
+size = Vector2(45, 59)
+
+[node name="LevelDoneArea" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_5hqjg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_w5hat")

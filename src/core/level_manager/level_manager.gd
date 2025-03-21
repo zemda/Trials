@@ -56,6 +56,7 @@ func _process(_delta: float) -> void:
 
 func _place_player_at_start(pvisible: bool = true) -> void:
 	call_deferred("_apply_camera_limits")
+	_player.velocity = Vector2.ZERO
 	if _current_checkpoint == null:
 		GameManager.place_player_in_level(player_start_point.global_position, pvisible)
 	else:
@@ -95,7 +96,7 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 		_place_player_at_start(false)
 		GameManager.update_loading_progress(0.3)
 	)
-	tween.tween_interval(0.5)
+	#tween.tween_interval(0.5)
 	
 	# 2 - Clear existing entities
 	tween.tween_callback(func():
@@ -109,7 +110,7 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 		
 		GameManager.update_loading_progress(0.6)
 	)
-	tween.tween_interval(0.5)
+	#tween.tween_interval(0.5)
 	
 	# 3 - Recreate entities
 	tween.tween_callback(func():
@@ -127,14 +128,14 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 		
 		GameManager.update_loading_progress(0.8)
 	)
-	tween.tween_interval(0.5)
+	#tween.tween_interval(0.5)
 	
 	# 4 - Final setup
 	tween.tween_callback(func():
 		_on_enemies_recreated()
 		GameManager.update_loading_progress(1.0)
 	)
-	tween.tween_interval(0.5)
+	#tween.tween_interval(0.5)
 	
 	tween.tween_callback(func():
 		GameManager.hide_loading_screen()
@@ -203,3 +204,10 @@ func _apply_camera_limits() -> void:
 			camera.limit_right = camera_limit_right
 			camera.limit_top = camera_limit_top
 			camera.limit_bottom = camera_limit_bottom
+
+
+func register_level_completed(area: Area2D) -> void:
+	area.body_entered.connect(func(body):
+		if body is Player:
+			_complete_level()
+	)
