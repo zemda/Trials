@@ -22,7 +22,6 @@ var _current_checkpoint = null
 var _checkpoint_data: Dictionary = {}
 
 var _original_nodes_data: Array = [] # stores enemies, TODO will store also one time grappling points, destroyable platforms, ...
-
 var _is_recreating_nodes: bool = false
 
 
