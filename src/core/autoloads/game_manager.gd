@@ -259,6 +259,7 @@ func prepare_for_new_game() -> void:
 func disable_player_input() -> void:
 	if _input_disabled or !_player_initialized:
 		return
+	_player_instance.velocity = Vector2.ZERO
 	call_deferred("_deferred_player_input_helper", false)
 	_player_instance.visible = false
 	_input_disabled = true
