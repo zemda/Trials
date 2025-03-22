@@ -1,4 +1,4 @@
-extends Node2D
+extends Area2D
 
 signal hit_hookable(position, collider)
 signal failed
@@ -51,12 +51,12 @@ func _process(delta: float) -> void:
 		global_position + _direction * 10
 	)
 	query.exclude = [self]
+	query.collide_with_areas = true
 	var result = space_state.intersect_ray(query)
 	
 	if result:
 		global_position = result.position
 		set_process(false)
-		
 		if result.collider.is_in_group("Hookable"):
 			_is_hooked = true
 			hit_hookable.emit(result.position, result.collider)
