@@ -107,7 +107,7 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 		if _pathfinder_manager:
 			_pathfinder_manager.unregister_characters()
 		
-		var current_storable_nodes = get_tree().get_nodes_in_group("storable")		
+		var current_storable_nodes = get_tree().get_nodes_in_group("storable")
 		for node in current_storable_nodes:
 			if is_instance_valid(node):
 				node.queue_free()
@@ -130,6 +130,8 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 					elif instance is DestructiblePlatform:
 						instance.platform_length = data["platform_length"]
 						instance.destruction_time = data["destruction_time"]
+						instance._original_position = data["position"]
+						instance.global_position = data["position"]
 					
 					var parent = get_node_or_null(data["parent_path"])
 					if parent:
@@ -137,7 +139,6 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 					else:
 						get_tree().current_scene.add_child(instance)
 					instance.global_position = data["position"]
-		
 		
 		GameManager.update_loading_progress(0.8)
 	)

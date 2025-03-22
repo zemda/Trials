@@ -4,13 +4,20 @@ class_name DestructiblePlatform
 @export var platform_length: int = 1
 @export var destruction_time: float = 1.5
 @export var tile_fall_delay: float = 0.15
-@export var fall_distance: float = 200.0
+@export var fall_distance: float = 150.0
 @export var fall_duration: float = 0.5
 @export var fade_duration: float = 0.3
+@export var initial_shake_intensity: float = 2.0
+@export var max_shake_intensity: float = 10.0
+@export var warning_particles_color: Color = Color(0.9, 0.6, 0.3, 1.0)
+@export var destruction_particles_color: Color = Color(0.7, 0.7, 0.7, 1.0)
 
 var _destruction_started: bool = false
 var _tile_instances = []
 var start_from_left: bool = true
+var _original_position: Vector2
+var _shake_intensity: float = 0.0
+var _destroyed_tiles_count: int = 0
 
 const SINGLE_TILE_COORDS = Vector2i(3, 0)
 const LEFT_EDGE_COORDS = Vector2i(0, 0)
@@ -28,7 +35,21 @@ func _ready() -> void:
 	_create_platform_tiles()
 	$CollisionShape2D.scale.x = platform_length
 	$CollisionShape2D.position = Vector2(platform_length * 8, -5.0)
+	_original_position = position
 	body_entered.connect(_on_body_entered)
+
+
+func _process(delta: float) -> void:
+	if _destruction_started:
+		var progress_factor = float(_destroyed_tiles_count) / platform_length
+		_shake_intensity = lerp(initial_shake_intensity, max_shake_intensity, progress_factor)
+		
+		position = _original_position + Vector2(
+			randf_range(-_shake_intensity, _shake_intensity),
+			randf_range(-_shake_intensity, _shake_intensity)
+		)
+	else:
+		position = _original_position
 
 
 func _create_platform_tiles() -> void:
@@ -48,9 +69,41 @@ func _on_body_entered(body: Node2D) -> void:
 		
 		var platform_center_x = global_position.x + $CollisionShape2D.position.x
 		start_from_left = body.global_position.x < platform_center_x
+		_shake_intensity = initial_shake_intensity
+		
+		var first_tile_idx = 0 if start_from_left else platform_length - 1
+		var first_coords = _tile_instances[first_tile_idx]
+		_create_warning_particles(first_coords)
 		
 		var timer = get_tree().create_timer(destruction_time)
 		timer.timeout.connect(_start_destruction)
+
+
+func _create_warning_particles(coords: Vector2i) -> void:
+	var tile_layer = $base
+	var particle_pos = tile_layer.map_to_local(coords)
+	particle_pos = tile_layer.to_global(particle_pos)
+	
+	var particles = CPUParticles2D.new()
+	particles.emitting = true
+	particles.amount = 30
+	particles.lifetime = 1.0
+	particles.one_shot = false
+	particles.explosiveness = 0.1
+	particles.randomness = 0.5
+	particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	particles.emission_rect_extents = Vector2(8, 2)
+	particles.direction = Vector2(0, -1)
+	particles.gravity = Vector2(0, 40)
+	particles.initial_velocity_min = 30
+	particles.initial_velocity_max = 50
+	particles.color = warning_particles_color
+	
+	particles.global_position = particle_pos + Vector2(8, 0)
+	get_parent().add_child(particles)
+	
+	var timer = get_tree().create_timer(destruction_time)
+	timer.timeout.connect(func(): particles.queue_free())
 
 
 func _start_destruction() -> void:
@@ -73,6 +126,8 @@ func _destroy_tile(tilemap: TileMapLayer, coords: Vector2i, idx: int) -> void:
 	if not tile_data:
 		return
 	
+	_create_destruction_particles(coords)
+	
 	var sprite = Sprite2D.new()
 	sprite.texture = tilemap.tile_set.get_source(TILE_SOURCE_ID).texture
 	
@@ -89,6 +144,8 @@ func _destroy_tile(tilemap: TileMapLayer, coords: Vector2i, idx: int) -> void:
 	
 	tilemap.set_cell(coords, -1)
 	get_parent().add_child(sprite)
+	
+	_destroyed_tiles_count += 1
 	
 	var tween = create_tween()
 	tween.set_parallel(true)
@@ -108,7 +165,36 @@ func _destroy_tile(tilemap: TileMapLayer, coords: Vector2i, idx: int) -> void:
 			remaining_tiles += 1
 	
 	if remaining_tiles == 0:
+		_destruction_started = false
 		tween.tween_callback(queue_free).set_delay(fall_duration)
+
+
+func _create_destruction_particles(coords: Vector2i) -> void:
+	var tile_layer = $base
+	var particle_pos = tile_layer.map_to_local(coords)
+	particle_pos = tile_layer.to_global(particle_pos)
+	
+	var particles = CPUParticles2D.new()
+	particles.emitting = true
+	particles.amount = 20
+	particles.lifetime = 0.7
+	particles.one_shot = true
+	particles.explosiveness = 1.0
+	particles.randomness = 0.5
+	particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	particles.emission_rect_extents = Vector2(8, 2)
+	particles.direction = Vector2(0, -1)
+	particles.spread = 90
+	particles.gravity = Vector2(0, 100)
+	particles.initial_velocity_min = 50
+	particles.initial_velocity_max = 70
+	particles.color = destruction_particles_color
+	
+	particles.global_position = particle_pos + Vector2(8, 0)
+	get_parent().add_child(particles)
+	
+	var timer = get_tree().create_timer(particles.lifetime * 1.2)
+	timer.timeout.connect(func(): particles.queue_free())
 
 
 func _get_atlas_coords_for_index(idx: int) -> Vector2i:

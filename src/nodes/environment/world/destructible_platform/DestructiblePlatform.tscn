@@ -6,7 +6,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r06hi"]
 size = Vector2(16, 14)
 
-[node name="DestructiblePlatform" type="Area2D"]
+[node name="DestructiblePlatform" type="Area2D" groups=["storable"]]
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_r06hi")
