@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://c8e0sshjlgr22"]
+
+[ext_resource type="Script" uid="uid://dxribcxoh3va8" path="res://levels/teleport_area/teleport_area.gd" id="1_0l5dm"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3vofe"]
+radius = 19.0263
+
+[node name="TeleportArea" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_0l5dm")
+color_bad = Color(0.590011, 0, 0.0812142, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_3vofe")
