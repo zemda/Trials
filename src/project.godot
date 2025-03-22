@@ -49,6 +49,8 @@ pathfinder_manager=""
 gameplay_level=""
 ui_screen=""
 Wrappable=""
+grapple_anchor=""
+storable=""
 
 [input]
 
@@ -113,6 +115,7 @@ pause={
 2d_physics/layer_6="Rope"
 2d_physics/layer_7="Plank"
 2d_physics/layer_8="Projectile"
+2d_physics/layer_10="Grapple_anchor"
 
 [physics]
 
