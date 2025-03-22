@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://wigr318n272o"]
+[gd_scene load_steps=3 format=3 uid="uid://wigr318n272o"]
 
 [ext_resource type="Script" uid="uid://d3er3vyncdadc" path="res://levels/checkpoint/checkpoint.gd" id="1_rw7ui"]
-[ext_resource type="Texture2D" uid="uid://cx8uw4gb4bilp" path="res://assets/sprites/world/flag.png" id="2_osk5p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i2kyq"]
 size = Vector2(26, 36)
@@ -10,11 +9,6 @@ size = Vector2(26, 36)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_rw7ui")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -16)
-texture = ExtResource("2_osk5p")
-flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -17)
