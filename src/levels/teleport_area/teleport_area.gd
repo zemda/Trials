@@ -2,8 +2,6 @@ extends Area2D
 
 
 @export_category("Teleport Settings")
-@export var correct_destination: Vector2 = Vector2(4160, -980)
-@export var fallback_destination: Vector2 = Vector2(4480, -980)
 @export var correct_chance: float = 0.75
 @export var fade_time: float = 0.5
 
@@ -23,10 +21,16 @@ const SHADER_PATH_BALL = "res://assets/shaders/center_ball.gdshader"
 var _teleport_cooldown: float = 5.0
 var _teleport_cooldown_timer: float = 0.0
 var _last_teleported_player = null
+var correct_destination: Vector2 = Vector2.ZERO
+var fallback_destination: Vector2 = Vector2.ZERO
+
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	_create_portal()
+	
+	correct_destination = $HappyPath.global_position
+	fallback_destination = $SadPath.global_position
 
 
 func _process(delta: float) -> void:
