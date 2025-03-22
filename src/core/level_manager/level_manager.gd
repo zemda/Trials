@@ -78,6 +78,9 @@ func _store_initial_level_state() -> void:
 			}
 			if node is HookPoint:
 				data["x_scale"] = node.x_scale
+			if node is DestructiblePlatform:
+				data["platform_length"] = node.platform_length
+				data["destruction_time"] = node.destruction_time
 			_original_nodes_data.append(data)
 
 
@@ -120,14 +123,21 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 				var scene = load(data["scene_path"])
 				if scene:
 					var instance = scene.instantiate()
+					
+					if instance is HookPoint:
+						instance.x_scale = data["x_scale"]
+					
+					elif instance is DestructiblePlatform:
+						instance.platform_length = data["platform_length"]
+						instance.destruction_time = data["destruction_time"]
+					
 					var parent = get_node_or_null(data["parent_path"])
 					if parent:
 						parent.add_child(instance)
 					else:
 						get_tree().current_scene.add_child(instance)
 					instance.global_position = data["position"]
-					if instance is HookPoint:
-						instance.scale.x = data["x_scale"]
+		
 		
 		GameManager.update_loading_progress(0.8)
 	)
