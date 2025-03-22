@@ -13,3 +13,7 @@ color_bad = Color(0.590011, 0, 0.0812142, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_3vofe")
+
+[node name="HappyPath" type="Marker2D" parent="."]
+
+[node name="SadPath" type="Marker2D" parent="."]
