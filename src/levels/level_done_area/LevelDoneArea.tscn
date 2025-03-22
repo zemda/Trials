@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://c5h11dcim6adf" path="res://levels/level_done_area/level_done_area.gd" id="1_5hqjg"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_w5hat"]
-size = Vector2(45, 59)
+[sub_resource type="CircleShape2D" id="CircleShape2D_5hqjg"]
+radius = 31.0161
 
 [node name="LevelDoneArea" type="Area2D"]
 collision_layer = 0
@@ -12,4 +12,4 @@ script = ExtResource("1_5hqjg")
 normal_color = Color(0.509804, 0, 0.737255, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_w5hat")
+shape = SubResource("CircleShape2D_5hqjg")
