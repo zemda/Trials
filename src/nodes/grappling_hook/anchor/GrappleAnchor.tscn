@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://d132mdlvfpbfl" path="res://dot.png" id="2_54ruj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e4ymx"]
-radius = 9.05539
+radius = 1.0
 
 [node name="GrappleAnchor" type="Area2D" groups=["grapple_anchor"]]
 z_index = 2

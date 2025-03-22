@@ -68,7 +68,7 @@ func _place_player_at_start(pvisible: bool = true) -> void:
 
 func _store_initial_level_state() -> void:
 	_original_nodes_data = []
-	var nodes = get_tree().get_nodes_in_group("storable")	
+	var nodes = get_tree().get_nodes_in_group("storable")
 	for node in nodes:
 		if is_instance_valid(node) and node.scene_file_path != "":
 			var data = {
@@ -76,6 +76,8 @@ func _store_initial_level_state() -> void:
 				"position": node.global_position,
 				"parent_path": node.get_parent().get_path()
 			}
+			if node is HookPoint:
+				data["x_scale"] = node.x_scale
 			_original_nodes_data.append(data)
 
 
@@ -124,6 +126,8 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 					else:
 						get_tree().current_scene.add_child(instance)
 					instance.global_position = data["position"]
+					if instance is HookPoint:
+						instance.scale.x = data["x_scale"]
 		
 		GameManager.update_loading_progress(0.8)
 	)
