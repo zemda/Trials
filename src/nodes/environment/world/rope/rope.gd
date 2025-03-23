@@ -71,10 +71,10 @@ func _unlink_player_from_rope() -> void:
 	_player.is_attached_to_rope = false
 	
 	var attached_segment = segments[_attached_segment_index]
-	var boost = Vector2(attached_segment.linear_velocity.x * 1.7, -250)
+	var boost = Vector2(attached_segment.linear_velocity.x * 2, -370)
 	_attached_segment_index = -1
 
-	boost.x = clamp(boost.x, -260, 260)
+	boost.x = clamp(boost.x, -370, 350)
 	_player.velocity = Vector2.ZERO
 	_player.velocity += boost
 
