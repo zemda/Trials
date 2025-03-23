@@ -3,8 +3,8 @@ class_name MovingPlatform
 
 
 @export var platform_length: int = 3
-@export var speed_not_loop: float = 0.2
-@export var loop_speed: float = 0.5
+@export var loop_speed: float = 0.2: set = set_loop_speed
+@export var not_loop_speed: float = 0.5: set = set_not_loop_speed
 @export var loop: bool = false
 
 @onready var _path_follow: PathFollow2D = $PathFollow2D
@@ -18,11 +18,10 @@ const RIGHT_EDGE_COORDS = Vector2i(2, 0)
 const TILE_SOURCE_ID = 1
 
 
-
 func _ready() -> void:
 	if not loop:
 		_animation_player.play("move")
-		_animation_player.speed_scale = loop_speed
+		_animation_player.speed_scale = not_loop_speed
 		set_process(false)
 	
 	_path_follow.loop = loop
@@ -32,7 +31,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	_path_follow.progress += speed_not_loop
+	_path_follow.progress += loop_speed
 
 
 func _create_platform_tiles() -> void:
@@ -52,3 +51,20 @@ func _create_platform_tiles() -> void:
 			atlas_coords = MIDDLE_TILE_COORDS
 			
 		tile_layer.set_cell(coords, TILE_SOURCE_ID, atlas_coords)
+
+
+func set_loop_speed(value: float) -> void:
+	loop_speed = value
+
+
+func set_not_loop_speed(value: float) -> void:
+	not_loop_speed = value
+	if _animation_player and _animation_player.is_playing():
+		_animation_player.speed_scale = value
+
+
+func set_speed(value: float) -> void:
+	if loop:
+		loop_speed = value
+	else:
+		not_loop_speed = value
