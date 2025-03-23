@@ -1,13 +1,22 @@
-[gd_scene load_steps=7 format=3 uid="uid://ddwmjl0fmc1x2"]
+[gd_scene load_steps=6 format=3 uid="uid://ddwmjl0fmc1x2"]
 
 [ext_resource type="Script" uid="uid://cplv2dequt4sm" path="res://nodes/environment/world/moving_platform/moving_platform.gd" id="1_suuvb"]
 [ext_resource type="PackedScene" uid="uid://fsxe3pnrpvr5" path="res://levels/level_tile_map.tscn" id="2_7yu8l"]
 
-[sub_resource type="Curve2D" id="Curve2D_suuvb"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 42, -37, 0, 0, 0, 0, 58, -34)
+[sub_resource type="Animation" id="Animation_eyibi"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PathFollow2D:progress_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
 }
-point_count = 2
 
 [sub_resource type="Animation" id="Animation_7yu8l"]
 resource_name = "move"
@@ -26,21 +35,6 @@ tracks/0/keys = {
 "values": [0.0, 1.0]
 }
 
-[sub_resource type="Animation" id="Animation_eyibi"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PathFollow2D:progress_ratio")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ih2ra"]
 _data = {
 &"RESET": SubResource("Animation_eyibi"),
@@ -48,11 +42,9 @@ _data = {
 }
 
 [node name="MovingPlatform" type="Path2D"]
-curve = SubResource("Curve2D_suuvb")
 script = ExtResource("1_suuvb")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
-position = Vector2(42, -37)
 rotates = false
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="PathFollow2D"]
@@ -65,6 +57,5 @@ libraries = {
 }
 
 [node name="base" parent="." groups=["Wrappable"] instance=ExtResource("2_7yu8l")]
-position = Vector2(42, -37)
 tile_map_data = PackedByteArray(0, 0, 0, 0, 0, 0, 1, 0, 3, 0, 0, 0, 0, 0)
 use_kinematic_bodies = true
