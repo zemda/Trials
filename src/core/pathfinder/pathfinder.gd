@@ -23,14 +23,20 @@ func _init(tile_map: TileMapLayer, max_jump_height: int = 4, jump_distance: int 
 	_tile_map = tile_map
 	_used_cells_vect = _tile_map.get_used_cells()
 	
+	var max_x: int = 0
+	var min_y: int = 0
+	
 	for c in _used_cells_vect:
+		if c.x > max_x:
+			max_x = c.x
+		if c.y < min_y:
+			min_y = c.y
 		_used_cells_dict[c] = true
 	
 	_max_jump_height = max_jump_height
 	_jump_distance = jump_distance
 	print("PathFinder initialized")
-	
-	_create_grid(0, 200, -100, -1) # TODO, use map size
+	_create_grid(0, max_x, min_y, -1)
 	_create_connections()
 
 
@@ -42,11 +48,11 @@ func find_path(start: Vector2, end: Vector2, character_width: int = 1, character
 	
 	end_grid = _find_top_surface_tile(end_grid)
 	if end_grid == Vector2i(-1, -1):
-		#print("No valid surface tile found")
+		print("No valid surface tile found")
 		return []
 
 	var path = _generate_path(start_grid, end_grid, character_width, character_height)
-	
+
 	_path_to_draw = path
 	queue_redraw()
 	return path
