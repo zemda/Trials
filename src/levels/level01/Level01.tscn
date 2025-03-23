@@ -28,7 +28,7 @@ player_start_point = NodePath("../PlayerStartPoint")
 respawn_height = 200.0
 
 [node name="PlayerStartPoint" type="Marker2D" parent="."]
-position = Vector2(64, -96)
+position = Vector2(53, -141)
 
 [node name="Pathfinder" type="Node2D" parent="." node_paths=PackedStringArray("tile_map") groups=["pathfinder_manager"]]
 script = ExtResource("4_haklp")
@@ -150,7 +150,7 @@ position = Vector2(2752, -896)
 [node name="Checkpoints" type="Node" parent="."]
 
 [node name="Checkpoint" parent="Checkpoints" instance=ExtResource("12_uxcem")]
-position = Vector2(1688, -848)
+position = Vector2(1688, -867)
 
 [node name="LevelDoneArea" parent="." instance=ExtResource("13_fiyq6")]
 position = Vector2(2536, -1200)
