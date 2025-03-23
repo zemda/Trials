@@ -99,10 +99,10 @@ size = Vector2(14.5, 31.5)
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 2
-collision_mask = 113
+collision_mask = 1137
 platform_on_leave = 2
-platform_floor_layers = 4278190192
-platform_wall_layers = 64
+platform_floor_layers = 4278191217
+platform_wall_layers = 65
 script = ExtResource("1_8qk58")
 movement_data = ExtResource("2_ssmf6")
 
@@ -124,7 +124,7 @@ shape = SubResource("RectangleShape2D_lnte8")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -37)
-zoom = Vector2(0.4, 0.4)
+zoom = Vector2(0.6, 0.6)
 process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 1.0

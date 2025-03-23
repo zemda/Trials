@@ -141,7 +141,6 @@ func _update_wall_state() -> void:
 	var was_on_wall = is_on_wall_only()
 	if was_on_wall:
 		last_wall_normal = get_wall_normal()
-	move_and_slide()
 	var just_left_wall = was_on_wall and not is_on_wall()
 	if just_left_wall:
 		wall_jump_timer.start()

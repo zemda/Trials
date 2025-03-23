@@ -116,6 +116,7 @@ pause={
 2d_physics/layer_7="Plank"
 2d_physics/layer_8="Projectile"
 2d_physics/layer_10="Grapple_anchor"
+2d_physics/layer_11="Moving_platforms"
 
 [physics]
 
