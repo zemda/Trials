@@ -23,7 +23,7 @@ camera_limit_right = 2928.0
 camera_limit_top = -1500.0
 camera_limit_bottom = 0.0
 level_name = "Level 01"
-next_level_path = "res://levels/Level02.tscn"
+next_level_path = "res://levels/level02/Level02.tscn"
 player_start_point = NodePath("../PlayerStartPoint")
 respawn_height = 200.0
 
