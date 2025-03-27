@@ -10,6 +10,7 @@ signal settings_closed
 
 @onready var _fullscreen_check = $VBoxContainer/TabContainer/Video/Video/FullscreenButton
 @onready var _vsync_check = $VBoxContainer/TabContainer/Video/Video/VSyncButton
+@onready var _resolution_option = $VBoxContainer/TabContainer/Video/Video/ResolutionOption
 
 @onready var _keybind_container = $VBoxContainer/TabContainer/Controls/Controls2/KeybindContainer
 
@@ -21,6 +22,19 @@ var _button_to_change: Button = null
 var _binding_index_to_change: int = -1
 var _original_button_text: String = ""
 
+var _resolution_timer: Timer = null
+var _previous_resolution_index: int = -1
+var _is_changing_resolution: bool = false
+
+var _resolutions: Array = [
+	Vector2i(1280, 720),   # HD
+	Vector2i(1366, 768),   # HD+
+	Vector2i(1600, 900),   # HD+
+	Vector2i(1920, 1080),  # FHD
+	Vector2i(2560, 1440),  # QHD
+	Vector2i(3840, 2160)   # 4k
+]
+
 var _default_settings: Dictionary = {
 	"audio": {
 		"master_volume": 0.8,
@@ -30,6 +44,7 @@ var _default_settings: Dictionary = {
 	"video": {
 		"fullscreen": false,
 		"vsync": true,
+		"resolution_index": -1, # -1 means default
 	},
 	"controls": {}
 }
@@ -58,7 +73,9 @@ func _ready() -> void:
 	
 	_delete_config_button.pressed.connect(_on_delete_config_pressed)
 	_delete_besttime_button.pressed.connect(_on_delete_besttime_pressed)
+	_fullscreen_check.toggled.connect(_on_fullscreen_toggled)
 	
+	_setup_resolution_dropdown()
 	_store_editor_defaults()
 	_initialize_current_settings_from_defaults()
 	
@@ -86,8 +103,49 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+func _setup_resolution_dropdown() -> void:
+	_resolution_option.clear()
+
+	var screen_size = DisplayServer.screen_get_size()
+	_resolution_option.add_item("Default", 0)
+	
+	for i in range(_resolutions.size()):
+		var res = _resolutions[i]
+		if res.x <= screen_size.x and res.y <= screen_size.y:
+			_resolution_option.add_item("%dx%d" % [res.x, res.y], i + 1)
+			
+	if not _resolution_option.item_selected.is_connected(_on_resolution_selected):
+		_resolution_option.item_selected.connect(_on_resolution_selected)
+
+
+func _get_best_resolution_for_screen() -> int:
+	var screen_size = DisplayServer.screen_get_size()
+	
+	if screen_size.x >= 1920 and screen_size.x < 2560:
+		for i in range(_resolutions.size()):
+			if _resolutions[i].x == 1280 and _resolutions[i].y == 720:
+				return i + 1
+	
+	elif screen_size.x >= 2560 and screen_size.x < 3840:
+		for i in range(_resolutions.size()):
+			if _resolutions[i].x == 1600 and _resolutions[i].y == 900:
+				return i + 1
+	
+	elif screen_size.x >= 3840:
+		for i in range(_resolutions.size()):
+			if _resolutions[i].x == 1920 and _resolutions[i].y == 1080:
+				return i + 1
+	
+	var best_index = 0
+	for i in range(_resolutions.size()):
+		var res = _resolutions[i]
+		if res.x <= screen_size.x and res.y <= screen_size.y:
+			best_index = i + 1
+	
+	return best_index
+
+
 func _store_editor_defaults() -> void:
-	print("Storing editor defaults...")
 	for action_name in _action_names.keys():
 		_editor_default_inputs[action_name] = []
 		var events = InputMap.action_get_events(action_name)
@@ -219,6 +277,8 @@ func _load_settings() -> void:
 			_current_settings.video.fullscreen = _config.get_value("video", "fullscreen")
 		if _config.has_section_key("video", "vsync"):
 			_current_settings.video.vsync = _config.get_value("video", "vsync")
+		if _config.has_section_key("video", "resolution_index"):
+			_current_settings.video.resolution_index = _config.get_value("video", "resolution_index")
 	
 	if _config.has_section("controls"):
 		for action_name in _action_names.keys():
@@ -255,7 +315,6 @@ func _setup_keybind_ui() -> void:
 		var action_vbox = VBoxContainer.new()
 		action_vbox.add_theme_constant_override("separation", 5)
 		
-		# Action name label
 		var name_hbox = HBoxContainer.new()
 		var action_label = Label.new()
 		action_label.text = _action_names[action_name]
@@ -263,7 +322,6 @@ func _setup_keybind_ui() -> void:
 		action_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		name_hbox.add_child(action_label)
 		
-		# Add binding button
 		var add_binding_button = Button.new()
 		add_binding_button.text = "+"
 		add_binding_button.tooltip_text = "Add another binding"
@@ -336,20 +394,57 @@ func _apply_settings_to_ui() -> void:
 	_fullscreen_check.button_pressed = _current_settings.video.fullscreen
 	_vsync_check.button_pressed = _current_settings.video.vsync
 	
+	if _current_settings.video.resolution_index == -1:
+		_resolution_option.selected = 0
+	else:
+		_resolution_option.selected = _current_settings.video.resolution_index
+	
 	_setup_keybind_ui()
 
 
 func _apply_settings_to_game() -> void:
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), _current_settings.audio.master_volume) # TODO rest & test
 	
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if 
-		_current_settings.video.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
+	_apply_resolution_and_fullscreen()
+	
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if 
 		_current_settings.video.vsync else DisplayServer.VSYNC_DISABLED)
 	
 	for action_name in _current_settings.controls.keys():
 		var key_data = _current_settings.controls[action_name]
 		_apply_keybinds(action_name, key_data)
+
+
+func _apply_resolution_and_fullscreen() -> void:
+	var resolution_index = _current_settings.video.resolution_index
+	
+	if resolution_index == -1 or resolution_index == 0:
+		resolution_index = _get_best_resolution_for_screen()
+		if resolution_index == 0:
+			DisplayServer.window_set_size(Vector2i(ProjectSettings.get_setting("display/window/size/viewport_width"), 
+				ProjectSettings.get_setting("display/window/size/viewport_height")))
+		else:
+			DisplayServer.window_set_size(_resolutions[resolution_index - 1])
+	else:
+		var screen_size = DisplayServer.screen_get_size()
+		if resolution_index > 0 and resolution_index <= _resolutions.size():
+			var target_res = _resolutions[resolution_index - 1]
+			if target_res.x <= screen_size.x and target_res.y <= screen_size.y:
+				DisplayServer.window_set_size(target_res)
+			else:
+				var auto_index = _get_best_resolution_for_screen()
+				if auto_index > 0:
+					DisplayServer.window_set_size(_resolutions[auto_index - 1])
+				_current_settings.video.resolution_index = 0
+				if _resolution_option:
+					_resolution_option.selected = 0
+	
+	if not _current_settings.video.fullscreen:
+		DisplayServer.window_set_position(DisplayServer.screen_get_position() + 
+			(DisplayServer.screen_get_size() - DisplayServer.window_get_size()) / 2)
+	
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if 
+		_current_settings.video.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
 
 
 func _apply_keybinds(action_name: String, key_data_array) -> void:
@@ -393,6 +488,7 @@ func _get_settings_from_ui() -> void:
 	
 	_current_settings.video.fullscreen = _fullscreen_check.button_pressed
 	_current_settings.video.vsync = _vsync_check.button_pressed
+	_current_settings.video.resolution_index = _resolution_option.selected
 
 
 func _on_apply_pressed() -> void:
@@ -415,6 +511,20 @@ func _on_reset_pressed() -> void:
 
 func _on_back_pressed() -> void:
 	hide_settings()
+
+
+func _on_resolution_selected(index: int) -> void:
+	_previous_resolution_index = _current_settings.video.resolution_index
+	_current_settings.video.resolution_index = index
+	
+	_apply_resolution_and_fullscreen()
+	_save_settings()
+	
+	
+func _on_fullscreen_toggled(toggled_on: bool) -> void:
+	_current_settings.video.fullscreen = toggled_on
+	_apply_resolution_and_fullscreen()
+	_save_settings()
 
 
 func _on_binding_button_pressed(action_name: String, button: Button, binding_index: int) -> void:

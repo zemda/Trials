@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://di5pg5ab0mckm"]
+[gd_scene load_steps=4 format=3 uid="uid://di5pg5ab0mckm"]
 
 [ext_resource type="Theme" uid="uid://ckatomkgrjytk" path="res://assets/font,themes/ui_theme.tres" id="1_y3bbx"]
 [ext_resource type="Script" uid="uid://cm57ldxjndo0h" path="res://ui/settings_screen/settings_screen.gd" id="2_ivsrf"]
+[ext_resource type="Theme" uid="uid://dblqbcjvfvwwx" path="res://assets/font,themes/ui_theme_16.tres" id="3_1xi8o"]
 
 [node name="SettingsScreen" type="Control" groups=["ui_screen"]]
 layout_mode = 3
@@ -27,7 +28,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 16
 tab_alignment = 1
-current_tab = 3
+current_tab = 1
 drag_to_rearrange_enabled = true
 
 [node name="Audio" type="MarginContainer" parent="VBoxContainer/TabContainer"]
@@ -72,7 +73,6 @@ text = "SFX Volume"
 layout_mode = 2
 
 [node name="Video" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 150
 theme_override_constants/margin_right = 150
@@ -103,6 +103,16 @@ text = "VSync"
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 
+[node name="ResolutionLabel" type="Label" parent="VBoxContainer/TabContainer/Video/Video"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Resolution"
+
+[node name="ResolutionOption" type="OptionButton" parent="VBoxContainer/TabContainer/Video/Video"]
+layout_mode = 2
+theme = ExtResource("3_1xi8o")
+theme_override_font_sizes/font_size = 16
+
 [node name="Controls" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
@@ -123,6 +133,7 @@ theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 8
 
 [node name="Delete files" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 150
 theme_override_constants/margin_right = 150
