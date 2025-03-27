@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=3 uid="uid://cyo0aqvbrd3nf"]
+
+[ext_resource type="Script" uid="uid://5th8fyaskt32" path="res://ui/end_screen/end_screen.gd" id="1_g7leb"]
+[ext_resource type="Theme" uid="uid://ckatomkgrjytk" path="res://assets/font,themes/ui_theme.tres" id="2_lgt8l"]
+
+[node name="EndScreen" type="CanvasLayer"]
+script = ExtResource("1_g7leb")
+
+[node name="MainContent" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_lgt8l")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="MainContent/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 69
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MessageLabel" type="Label" parent="MainContent/VBoxContainer"]
+layout_mode = 2
+
+[node name="RestartLabel" type="Label" parent="MainContent/VBoxContainer"]
+layout_mode = 2
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = 5
+
+[node name="ColorRect" type="ColorRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
