@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://gwtcddpvpmdy"]
+
+[ext_resource type="Shader" uid="uid://dyvtb53nniasg" path="res://assets/shaders/night_sky.gdshader" id="1_cmi8h"]
+[ext_resource type="Script" uid="uid://h7pmpf64ovlq" path="res://levels/background/background.gd" id="2_pf02t"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pf02t"]
+shader = ExtResource("1_cmi8h")
+shader_parameter/time_scale = 0.3
+shader_parameter/scale_factor = 50.0
+shader_parameter/star_color = Color(1, 1, 1, 1)
+shader_parameter/star_density = 0.03
+shader_parameter/star_twinkle_speed = 3.675
+shader_parameter/aurora_color1 = Color(0.1, 0.5, 0.8, 1)
+shader_parameter/aurora_color2 = Color(0.1, 0.8, 0.4, 1)
+shader_parameter/aurora_speed = 2.0
+shader_parameter/aurora_intensity = 0.288
+shader_parameter/aurora_frequency = 0.379
+shader_parameter/milkyway_color = Color(0.5, 0.5, 0.8, 0.2)
+shader_parameter/milkyway_intensity = 1.0
+shader_parameter/milkyway_scale_factor = 1.0
+shader_parameter/shooting_star_chance = 1.0
+shader_parameter/shooting_star_speed = 1.31
+
+[node name="Background" type="ColorRect"]
+material = SubResource("ShaderMaterial_pf02t")
+offset_left = -870.0
+offset_top = -2684.0
+offset_right = 5585.0
+offset_bottom = 553.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("2_pf02t")
