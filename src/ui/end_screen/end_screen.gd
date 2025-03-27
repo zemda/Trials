@@ -62,8 +62,6 @@ func _setup_background_shaders() -> void:
 
 
 func _setup_text() -> void:
-	var main_content = $MainContent
-	var vbox = $MainContent/VBoxContainer
 	var title = $MainContent/VBoxContainer/TitleLabel
 	
 	title.text = TITLE_TEXT

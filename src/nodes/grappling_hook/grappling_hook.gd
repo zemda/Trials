@@ -20,7 +20,7 @@ func _ready() -> void:
 	_rope.visible = false
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if _current_anchor:
 		_create_rope()
 
@@ -131,7 +131,7 @@ func create_hook(start_pos: Vector2, target_pos: Vector2) -> void:
 	_current_anchor.shoot(start_pos, final_target_pos)
 
 
-func _on_hit_hookable(_position: Vector2, collider: Node2D) -> void:
+func _on_hit_hookable(_position: Vector2, _collider: Node2D) -> void:
 	hooked = true
 	_rope.visible = true
 

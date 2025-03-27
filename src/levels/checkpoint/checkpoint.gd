@@ -235,11 +235,11 @@ func _cleanup_particles() -> void:
 			particle.queue_free()
 
 
-func _create_particle_emitter(config: Dictionary, position: Vector2) -> CPUParticles2D:
+func _create_particle_emitter(config: Dictionary, pos: Vector2) -> CPUParticles2D:
 	var particles = CPUParticles2D.new()
 	
 	particles.name = config.get("name", "Particles")
-	particles.position = position
+	particles.position = pos
 	particles.amount = config.get("amount", 10)
 	particles.lifetime = config.get("lifetime", 1.0)
 	particles.randomness = config.get("randomness", 0.5)

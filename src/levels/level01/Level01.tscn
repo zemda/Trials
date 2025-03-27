@@ -1,5 +1,6 @@
-[gd_scene load_steps=13 format=4 uid="uid://d1ascia0wibrl"]
+[gd_scene load_steps=14 format=4 uid="uid://d1ascia0wibrl"]
 
+[ext_resource type="PackedScene" uid="uid://gwtcddpvpmdy" path="res://levels/background/background.tscn" id="1_e8mw7"]
 [ext_resource type="PackedScene" uid="uid://bfrn1j42vjp1b" path="res://ui/debug/DebugUI.tscn" id="2_n24nw"]
 [ext_resource type="Script" uid="uid://b3uicb7ycsf7s" path="res://levels/level01/level01.gd" id="3_2rky8"]
 [ext_resource type="Script" uid="uid://dxt0ves545hee" path="res://core/pathfinder/pathfinder_manager.gd" id="4_haklp"]
@@ -14,6 +15,16 @@
 [ext_resource type="PackedScene" uid="uid://njiev7n6mnue" path="res://levels/level_done_area/LevelDoneArea.tscn" id="13_fiyq6"]
 
 [node name="Level01" type="Node2D" groups=["gameplay_level"]]
+
+[node name="Background" parent="." instance=ExtResource("1_e8mw7")]
+offset_left = -807.0
+offset_bottom = 598.0
+scale_factor = 601.0
+star_twinkle_speed = 1.403
+aurora_intensity = 0.576
+aurora_color1 = Color(0.486275, 0, 0.843137, 1)
+aurora_color2 = Color(0, 1, 0, 1)
+milkyway_intensity = 0.545
 
 [node name="DebugUi" parent="." instance=ExtResource("2_n24nw")]
 

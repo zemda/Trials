@@ -57,7 +57,6 @@ offset_bottom = 598.0
 scale_factor = 601.0
 star_twinkle_speed = 1.403
 aurora_intensity = 0.576
-aurora_speed = 2.0
 aurora_color1 = Color(0.486275, 0, 0.843137, 1)
 aurora_color2 = Color(0, 1, 0, 1)
 milkyway_intensity = 0.545

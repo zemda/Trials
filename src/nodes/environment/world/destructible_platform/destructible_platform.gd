@@ -39,7 +39,7 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if _destruction_started:
 		var progress_factor = float(_destroyed_tiles_count) / platform_length
 		_shake_intensity = lerp(initial_shake_intensity, max_shake_intensity, progress_factor)

@@ -61,12 +61,12 @@ func _add_background_glow(color: Color, size: float) -> void:
 	
 	var shader = load(SHADER_PATH_GLOW)
 	if shader:
-		var material = ShaderMaterial.new()
-		material.shader = shader
-		material.set_shader_parameter("color", color)
-		material.set_shader_parameter("glow_radius", 0.4)
-		material.set_shader_parameter("glow_intensity", 0.5)
-		glow.material = material
+		var _material = ShaderMaterial.new()
+		_material.shader = shader
+		_material.set_shader_parameter("color", color)
+		_material.set_shader_parameter("glow_radius", 0.4)
+		_material.set_shader_parameter("glow_intensity", 0.5)
+		glow.material = _material
 
 
 func _add_checker_area(color: Color, size: float) -> void:
@@ -80,14 +80,14 @@ func _add_checker_area(color: Color, size: float) -> void:
 	
 	var shader = load(SHADER_PATH_CHECKER)
 	if shader:
-		var material = ShaderMaterial.new()
-		material.shader = shader
-		material.set_shader_parameter("color", color)
-		material.set_shader_parameter("background_color", Color(color.r * 0.7, color.g * 0.7, color.b * 0.7, color.a))
-		material.set_shader_parameter("checker_size", 20.0 * scale_factor)
-		material.set_shader_parameter("time_scale", 5.0)
-		material.set_shader_parameter("alpha", 0.9)
-		checker.material = material
+		var _material = ShaderMaterial.new()
+		_material.shader = shader
+		_material.set_shader_parameter("color", color)
+		_material.set_shader_parameter("background_color", Color(color.r * 0.7, color.g * 0.7, color.b * 0.7, color.a))
+		_material.set_shader_parameter("checker_size", 20.0 * scale_factor)
+		_material.set_shader_parameter("time_scale", 5.0)
+		_material.set_shader_parameter("alpha", 0.9)
+		checker.material = _material
 
 
 func _add_power_ring(color: Color, size: float) -> void:
@@ -103,19 +103,19 @@ func _add_power_ring(color: Color, size: float) -> void:
 	
 	var shader = load(SHADER_PATH_RING)
 	if shader:
-		var material = ShaderMaterial.new()
-		material.shader = shader
+		var _material = ShaderMaterial.new()
+		_material.shader = shader
 		
-		material.set_shader_parameter("radius", 0.85)
-		material.set_shader_parameter("thickness", 0.08)
-		material.set_shader_parameter("color", color)
-		material.set_shader_parameter("brightness", 2.0)
-		material.set_shader_parameter("angular_speed", 1.5)
-		material.set_shader_parameter("radial_speed", 0.7)
-		material.set_shader_parameter("alpha", 1.0)
-		material.set_shader_parameter("noise", noise_tex)
+		_material.set_shader_parameter("radius", 0.85)
+		_material.set_shader_parameter("thickness", 0.08)
+		_material.set_shader_parameter("color", color)
+		_material.set_shader_parameter("brightness", 2.0)
+		_material.set_shader_parameter("angular_speed", 1.5)
+		_material.set_shader_parameter("radial_speed", 0.7)
+		_material.set_shader_parameter("alpha", 1.0)
+		_material.set_shader_parameter("noise", noise_tex)
 		
-		ring.material = material
+		ring.material = _material
 
 
 func _create_noise_texture(noise_type: int, size: int, freq: float) -> NoiseTexture2D:
