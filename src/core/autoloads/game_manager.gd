@@ -46,7 +46,6 @@ func _ready() -> void:
 	SceneChanger.connect("scene_loaded", Callable(self, "_on_scene_loaded"))
 
 
-
 func _on_timer_tick() -> void:
 	if !_timer_paused and !_is_loading and current_level != "" and is_in_gameplay_level():
 		_total_game_time += _timer.wait_time
@@ -193,6 +192,7 @@ func load_times() -> void:
 func complete_game() -> void: # TODO end screen or smh
 	_pause_timer()
 	save_run_time()
+	SceneChanger.goto_scene(SceneManager.EndScreenPath)
 
 
 func _pause_game() -> void:
