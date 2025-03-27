@@ -20,7 +20,6 @@ const SHADER_PATH_BALL = "res://assets/shaders/center_ball.gdshader"
 
 var _teleport_cooldown: float = 5.0
 var _teleport_cooldown_timer: float = 0.0
-var _last_teleported_player = null
 var correct_destination: Vector2 = Vector2.ZERO
 var fallback_destination: Vector2 = Vector2.ZERO
 

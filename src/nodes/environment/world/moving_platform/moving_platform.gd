@@ -30,7 +30,7 @@ func _ready() -> void:
 	_create_platform_tiles()
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	_path_follow.progress += loop_speed
 
 

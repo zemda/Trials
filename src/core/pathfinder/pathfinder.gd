@@ -190,7 +190,7 @@ func _is_diagonal_move_valid(from_pos: Vector2i, dx: int, dy: int) -> bool:
 	return true
 
 
-func _generate_path(start_grid: Vector2i, end_grid: Vector2i, character_width: int = 1, character_height: int = 1) -> Array:
+func _generate_path(start_grid: Vector2i, end_grid: Vector2i, _character_width: int = 1, _character_height: int = 1) -> Array:
 	# TODO: use character_width and height
 	if not start_grid in grid_to_id:
 		#print("Start position not in grid")
