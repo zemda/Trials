@@ -11,7 +11,7 @@ signal player_died
 @export var level_name: String = ""
 @export var next_level_path: String = ""
 
-@export var player_start_point: Node2D
+@export var player_start_point: Marker2D
 @export var respawn_height: float = 2000
 
 var _player: Player
@@ -34,7 +34,7 @@ func _ready() -> void:
 	_player = GameManager.get_player()
 	_player.connect("player_death", Callable(self, "_on_player_death"))
 	
-	_pathfinder_manager = get_parent().get_node_or_null("Pathfinder")
+	_pathfinder_manager = get_node("Pathfinder")
 	if _pathfinder_manager:
 		_pathfinder_manager.set_player(_player)
 	
