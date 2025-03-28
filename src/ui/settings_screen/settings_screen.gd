@@ -21,10 +21,7 @@ var _action_to_change: String = ""
 var _button_to_change: Button = null
 var _binding_index_to_change: int = -1
 var _original_button_text: String = ""
-
-var _resolution_timer: Timer = null
 var _previous_resolution_index: int = -1
-var _is_changing_resolution: bool = false
 
 var _resolutions: Array = [
 	Vector2i(1280, 720),   # HD
@@ -32,7 +29,9 @@ var _resolutions: Array = [
 	Vector2i(1600, 900),   # HD+
 	Vector2i(1920, 1080),  # FHD
 	Vector2i(2560, 1440),  # QHD
-	Vector2i(3840, 2160)   # 4k
+	Vector2i(3456, 2234),  # 4k Macbook
+	Vector2i(3840, 2160),  # 4k
+	Vector2i(4112, 2658),  # 4k Macbook
 ]
 
 var _default_settings: Dictionary = {
@@ -78,8 +77,9 @@ func _ready() -> void:
 	_setup_resolution_dropdown()
 	_store_editor_defaults()
 	_initialize_current_settings_from_defaults()
-	
+
 	_load_settings()
+	_apply_resolution_and_fullscreen()
 	_apply_settings_to_ui()
 
 
@@ -116,33 +116,6 @@ func _setup_resolution_dropdown() -> void:
 			
 	if not _resolution_option.item_selected.is_connected(_on_resolution_selected):
 		_resolution_option.item_selected.connect(_on_resolution_selected)
-
-
-func _get_best_resolution_for_screen() -> int:
-	var screen_size = DisplayServer.screen_get_size()
-	
-	if screen_size.x >= 1920 and screen_size.x < 2560:
-		for i in range(_resolutions.size()):
-			if _resolutions[i].x == 1280 and _resolutions[i].y == 720:
-				return i + 1
-	
-	elif screen_size.x >= 2560 and screen_size.x < 3840:
-		for i in range(_resolutions.size()):
-			if _resolutions[i].x == 1600 and _resolutions[i].y == 900:
-				return i + 1
-	
-	elif screen_size.x >= 3840:
-		for i in range(_resolutions.size()):
-			if _resolutions[i].x == 1920 and _resolutions[i].y == 1080:
-				return i + 1
-	
-	var best_index = 0
-	for i in range(_resolutions.size()):
-		var res = _resolutions[i]
-		if res.x <= screen_size.x and res.y <= screen_size.y:
-			best_index = i + 1
-	
-	return best_index
 
 
 func _store_editor_defaults() -> void:
@@ -285,7 +258,7 @@ func _load_settings() -> void:
 			if _config.has_section_key("controls", action_name):
 				var key_data = _config.get_value("controls", action_name)
 				_current_settings.controls[action_name] = key_data
-	
+
 	_apply_settings_to_game()
 
 
@@ -404,9 +377,8 @@ func _apply_settings_to_ui() -> void:
 
 func _apply_settings_to_game() -> void:
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), _current_settings.audio.master_volume) # TODO rest & test
-	
+
 	_apply_resolution_and_fullscreen()
-	
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if 
 		_current_settings.video.vsync else DisplayServer.VSYNC_DISABLED)
 	
@@ -416,25 +388,26 @@ func _apply_settings_to_game() -> void:
 
 
 func _apply_resolution_and_fullscreen() -> void:
+	if _current_settings.video.fullscreen:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		return
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	
 	var resolution_index = _current_settings.video.resolution_index
+	var screen_size = DisplayServer.screen_get_size()
 	
 	if resolution_index == -1 or resolution_index == 0:
-		resolution_index = _get_best_resolution_for_screen()
-		if resolution_index == 0:
-			DisplayServer.window_set_size(Vector2i(ProjectSettings.get_setting("display/window/size/viewport_width"), 
-				ProjectSettings.get_setting("display/window/size/viewport_height")))
-		else:
-			DisplayServer.window_set_size(_resolutions[resolution_index - 1])
+		var half_size = Vector2i(screen_size.x / 2, screen_size.y / 2)
+		DisplayServer.window_set_size(half_size)
 	else:
-		var screen_size = DisplayServer.screen_get_size()
 		if resolution_index > 0 and resolution_index <= _resolutions.size():
 			var target_res = _resolutions[resolution_index - 1]
 			if target_res.x <= screen_size.x and target_res.y <= screen_size.y:
 				DisplayServer.window_set_size(target_res)
 			else:
-				var auto_index = _get_best_resolution_for_screen()
-				if auto_index > 0:
-					DisplayServer.window_set_size(_resolutions[auto_index - 1])
+				var half_size = Vector2i(screen_size.x / 2, screen_size.y / 2)
+				DisplayServer.window_set_size(half_size)
 				_current_settings.video.resolution_index = 0
 				if _resolution_option:
 					_resolution_option.selected = 0
@@ -442,9 +415,6 @@ func _apply_resolution_and_fullscreen() -> void:
 	if not _current_settings.video.fullscreen:
 		DisplayServer.window_set_position(DisplayServer.screen_get_position() + 
 			(DisplayServer.screen_get_size() - DisplayServer.window_get_size()) / 2)
-	
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if 
-		_current_settings.video.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
 
 
 func _apply_keybinds(action_name: String, key_data_array) -> void:
