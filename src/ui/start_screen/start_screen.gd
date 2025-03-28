@@ -37,8 +37,6 @@ func _ready() -> void:
 	
 	settings_container.visible = false
 	leaderboard_container.visible = false
-	
-	_update_leaderboard()
 
 
 func _input(event: InputEvent) -> void:
@@ -119,6 +117,8 @@ func _on_settings_closed() -> void:
 
 func show_leaderboard() -> void:
 	_in_main_menu = false
+	GameManager.load_times()
+	_update_leaderboard()
 	
 	hide_main_menu()
 	leaderboard_container.visible = true
@@ -144,7 +144,7 @@ func hide_all_screens() -> void:
 
 
 func _update_leaderboard() -> void:
-	for i in range(levels_grid.get_child_count() - 1, 1, -1):
+	for i in range(levels_grid.get_child_count()):
 		levels_grid.get_child(i).queue_free()
 	
 	best_run_label.text = "Best Run Time: " + format_time(GameManager.get_best_run_time())
