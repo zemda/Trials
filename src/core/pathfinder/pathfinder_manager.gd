@@ -15,7 +15,6 @@ func _ready() -> void:
 	_pathfinder = Pathfinder.new(tile_map, max_jump_height, max_jump_distance)
 	add_child(_pathfinder)
 	_pathfinder._debug_draw = debug_draw_path
-	register_existing_characters()
 
 
 func set_player(player_ref):

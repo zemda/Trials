@@ -37,6 +37,7 @@ func _ready() -> void:
 	_pathfinder_manager = get_node("Pathfinder")
 	if _pathfinder_manager:
 		_pathfinder_manager.set_player(_player)
+		_pathfinder_manager.register_existing_characters()
 	
 	_place_player_at_start(true)
 	

@@ -12,7 +12,7 @@
 [ext_resource type="Resource" uid="uid://v34kl2206kw5" path="res://resources/segment/SolidSegmentData.tres" id="8_tgmi7"]
 [ext_resource type="PackedScene" uid="uid://bqt1f14kj1766" path="res://nodes/environment/world/rope/Rope.tscn" id="9_k5pw0"]
 [ext_resource type="PackedScene" uid="uid://cvnue72u1abtj" path="res://nodes/enemy/assassin/Assassin.tscn" id="10_abtce"]
-[ext_resource type="PackedScene" uid="uid://dnrpvdq1krlh0" path="res://nodes/enemy/lurker/Lurker.tscn" id="10_ehm7g"]
+[ext_resource type="PackedScene" uid="uid://ch2058mukqhnb" path="res://nodes/enemy/lurker/Lurker.tscn" id="10_ehm7g"]
 [ext_resource type="PackedScene" uid="uid://5rx7v1h7s0wm" path="res://nodes/environment/traps/spikes.tscn" id="11_ow5st"]
 [ext_resource type="PackedScene" uid="uid://wigr318n272o" path="res://levels/checkpoint/Checkpoint.tscn" id="12_3nu0b"]
 [ext_resource type="PackedScene" uid="uid://njiev7n6mnue" path="res://levels/level_done_area/LevelDoneArea.tscn" id="13_uui35"]
@@ -71,7 +71,7 @@ milkyway_intensity = 0.545
 [node name="DebugUi" parent="." instance=ExtResource("2_8pjc3")]
 
 [node name="PlayerStartPoint" type="Marker2D" parent="."]
-position = Vector2(43, -165)
+position = Vector2(2414, -729)
 
 [node name="Pathfinder" type="Node2D" parent="." node_paths=PackedStringArray("tile_map") groups=["pathfinder_manager"]]
 script = ExtResource("4_qjpw8")

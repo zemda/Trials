@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dnrpvdq1krlh0"]
+[gd_scene load_steps=7 format=3 uid="uid://ch2058mukqhnb"]
 
 [ext_resource type="Script" uid="uid://cq2335pg4cyda" path="res://nodes/enemy/enemy.gd" id="1_vdllw"]
 [ext_resource type="PackedScene" uid="uid://v1oqu883jhhh" path="res://nodes/projectile/Projectile.tscn" id="2_c8vxq"]
@@ -30,8 +30,7 @@ default_state_path = NodePath("state_lurking")
 script = ExtResource("5_0nlyp")
 
 [node name="PlayerDetection" type="RayCast2D" parent="."]
-position = Vector2(0, -22)
 collision_mask = 2
 
 [node name="WallDetection" type="RayCast2D" parent="."]
-position = Vector2(0, -22)
+position = Vector2(0, -1)
