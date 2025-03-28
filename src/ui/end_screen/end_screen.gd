@@ -87,6 +87,15 @@ func _setup_text() -> void:
 	message.add_theme_constant_override("outline_size", 4)
 	message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	
+	var gametime = $MainContent/VBoxContainer/GameTimeLabel
+	gametime.text = "Your current run time was: %0.2f seconds" % [GameManager.get_current_run_time()]
+	gametime.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	gametime.add_theme_font_size_override("font_size", 22)
+	gametime.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+	gametime.add_theme_constant_override("outline_size", 2)
+	gametime.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	
+	
 	var restart = $MainContent/VBoxContainer/RestartLabel
 	restart.text = RESTART_TEXT
 	restart.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
