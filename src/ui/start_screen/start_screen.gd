@@ -33,7 +33,7 @@ func _ready() -> void:
 	
 	show_main_menu()
 	
-	settings_container.connect("settings_closed", _on_settings_closed)
+	settings_container.settings_closed.connect(_on_settings_closed)
 	
 	settings_container.visible = false
 	leaderboard_container.visible = false

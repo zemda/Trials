@@ -33,11 +33,11 @@ func set_host(n: Node) -> void:
 
 
 func add_state(state: FSMState) -> void:
-	state.connect("transition_to", change_state_to)
-	state.connect("transition_to_default", change_state_to_default)
-	state.connect("transition_to_last", change_state_to_last)
+	state.transition_to.connect(change_state_to)
+	state.transition_to_default.connect(change_state_to_default)
+	state.transition_to_last.connect(change_state_to_last)
 	
-	state.connect("state_exiting_tree", remove_state)
+	state.state_exiting_tree.connect(remove_state)
 	state.states = states
 	
 	var state_name: StringName = _get_trimmed_name(state.name)
@@ -57,9 +57,9 @@ func add_state(state: FSMState) -> void:
 
 
 func remove_state(state: FSMState) -> void:
-	state.disconnect("transition_to", change_state_to)
-	state.disconnect("transition_to_default", change_state_to_default)
-	state.disconnect("transition_to_last", change_state_to_last)
+	state.transition_to.disconnect(change_state_to)
+	state.transition_to_default.disconnect(change_state_to_default)
+	state.transition_to_last.disconnect(change_state_to_last)
 	
 	states.erase(state.state_name)
 	state_list.erase(state)

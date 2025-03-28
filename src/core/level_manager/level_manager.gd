@@ -32,7 +32,7 @@ func _ready() -> void:
 	print("LevelManager: Initialized ", get_tree().current_scene.scene_file_path)
 	
 	_player = GameManager.get_player()
-	_player.connect("player_death", Callable(self, "_on_player_death"))
+	_player.player_death.connect(_on_player_death)
 	
 	_pathfinder_manager = get_node("Pathfinder")
 	if _pathfinder_manager:
@@ -177,7 +177,7 @@ func _find_and_register_checkpoints():
 	print("LevelManager: Found ", _checkpoints.size(), " checkpoints")
 	
 	for checkpoint in _checkpoints:
-		checkpoint.connect("checkpoint_activated", Callable(self, "_on_checkpoint_activated"))
+		checkpoint.checkpoint_activated.connect(_on_checkpoint_activated)
 		_register_checkpoint(checkpoint)
 
 

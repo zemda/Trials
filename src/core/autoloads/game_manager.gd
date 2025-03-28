@@ -43,7 +43,7 @@ func _ready() -> void:
 	_timer.timeout.connect(_on_timer_tick)
 	add_child(_timer)
 	
-	SceneChanger.connect("scene_loaded", Callable(self, "_on_scene_loaded"))
+	SceneChanger.scene_loaded.connect(_on_scene_loaded)
 
 
 func _on_timer_tick() -> void:

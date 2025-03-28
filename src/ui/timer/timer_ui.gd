@@ -7,9 +7,9 @@ var current_level: String = ""
 
 
 func _ready() -> void:
-	GameManager.connect("level_loaded", Callable(self, "_on_level_loaded"))
-	GameManager.connect("level_started", Callable(self, "_on_level_started"))
-	GameManager.connect("run_completed", Callable(self, "_on_run_completed"))
+	GameManager.level_loaded.connect(_on_level_loaded)
+	GameManager.level_started.connect(_on_level_started)
+	GameManager.run_completed.connect(_on_run_completed)
 	
 	current_level = GameManager.current_level
 	
