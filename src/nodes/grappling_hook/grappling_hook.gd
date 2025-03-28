@@ -143,10 +143,10 @@ func _on_hook_failed() -> void:
 func cleanup_current_hook() -> void:
 	if _current_anchor:
 		if is_instance_valid(_current_anchor):
-			if _current_anchor.is_connected("hit_hookable", _on_hit_hookable):
-				_current_anchor.disconnect("hit_hookable", _on_hit_hookable)
-			if _current_anchor.is_connected("failed", _on_hook_failed):
-				_current_anchor.disconnect("failed", _on_hook_failed)
+			if _current_anchor.hit_hookable.is_connected(_on_hit_hookable):
+				_current_anchor.hit_hookable.disconnect(_on_hit_hookable)
+			if _current_anchor.failed.is_connected(_on_hook_failed):
+				_current_anchor.failed.disconnect(_on_hook_failed)
 			
 			_current_anchor.queue_free()
 		

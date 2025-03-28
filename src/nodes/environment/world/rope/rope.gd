@@ -52,8 +52,8 @@ func _attach_to_rope(delta: float) -> void:
 
 func _connect_segment_signals_to_rope() -> void:
 	for segment in segments:
-		segment.connect("player_entered_segment", Callable(self, "_on_segment_player_entered"))
-		segment.connect("player_exited_segment", Callable(self, "_on_segment_player_exited"))
+		segment.player_entered_segment.connect(_on_segment_player_entered)
+		segment.player_exited_segment.connect(_on_segment_player_exited)
 
 
 func _link_player_to_rope() -> void:
