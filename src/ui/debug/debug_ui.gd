@@ -13,7 +13,7 @@ func _process(_delta: float) -> void:
 	if not visible:
 		return
 	
-	var level_manager = get_tree().get_first_node_in_group("level_manager")
+	var level_manager = get_parent()
 	
 	var text = "Debug Info:\n"
 	text += "-----------------------------------------------\n"

@@ -16,7 +16,7 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	
 	await get_tree().process_frame
-	var lm = get_parent().get_node("LevelManager")
+	var lm = get_parent()
 	lm.register_level_completed(self)
 	
 	_create_visuals()

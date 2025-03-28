@@ -49,7 +49,14 @@ _data = {
 }
 point_count = 2
 
-[node name="Level02" type="Node2D" groups=["gameplay_level"]]
+[node name="Level02" type="Node2D" node_paths=PackedStringArray("player_start_point") groups=["gameplay_level"]]
+script = ExtResource("3_8pjc3")
+camera_limit_right = 4950.0
+camera_limit_top = -2225.0
+camera_limit_bottom = 0.0
+level_name = "Level 02"
+player_start_point = NodePath("PlayerStartPoint")
+respawn_height = 200.0
 
 [node name="Background" parent="." instance=ExtResource("1_482am")]
 offset_left = -807.0
@@ -63,21 +70,13 @@ milkyway_intensity = 0.545
 
 [node name="DebugUi" parent="." instance=ExtResource("2_8pjc3")]
 
-[node name="LevelManager" type="Node2D" parent="." node_paths=PackedStringArray("player_start_point")]
-script = ExtResource("3_8pjc3")
-camera_limit_right = 4900.0
-camera_limit_top = -2224.0
-camera_limit_bottom = 200.0
-level_name = "Level 02"
-player_start_point = NodePath("../PlayerStartPoint")
-respawn_height = 200.0
-
 [node name="PlayerStartPoint" type="Marker2D" parent="."]
 position = Vector2(43, -165)
 
 [node name="Pathfinder" type="Node2D" parent="." node_paths=PackedStringArray("tile_map") groups=["pathfinder_manager"]]
 script = ExtResource("4_qjpw8")
 tile_map = NodePath("../Map/base")
+debug_draw_path = false
 
 [node name="LevelDoneArea" parent="." instance=ExtResource("13_uui35")]
 position = Vector2(4508, -2163)

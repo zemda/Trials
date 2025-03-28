@@ -14,7 +14,15 @@
 [ext_resource type="PackedScene" uid="uid://wigr318n272o" path="res://levels/checkpoint/Checkpoint.tscn" id="12_uxcem"]
 [ext_resource type="PackedScene" uid="uid://njiev7n6mnue" path="res://levels/level_done_area/LevelDoneArea.tscn" id="13_fiyq6"]
 
-[node name="Level01" type="Node2D" groups=["gameplay_level"]]
+[node name="Level01" type="Node2D" node_paths=PackedStringArray("player_start_point") groups=["gameplay_level"]]
+script = ExtResource("3_2rky8")
+camera_limit_right = 2928.0
+camera_limit_top = -1664.0
+camera_limit_bottom = 0.0
+level_name = "Level 01"
+next_level_path = "res://levels/level02/Level02.tscn"
+player_start_point = NodePath("PlayerStartPoint")
+respawn_height = 200.0
 
 [node name="Background" parent="." instance=ExtResource("1_e8mw7")]
 offset_left = -807.0
@@ -28,22 +36,13 @@ milkyway_intensity = 0.545
 
 [node name="DebugUi" parent="." instance=ExtResource("2_n24nw")]
 
-[node name="LevelManager" type="Node2D" parent="." node_paths=PackedStringArray("player_start_point")]
-script = ExtResource("3_2rky8")
-camera_limit_right = 2928.0
-camera_limit_top = -1500.0
-camera_limit_bottom = 0.0
-level_name = "Level 01"
-next_level_path = "res://levels/level02/Level02.tscn"
-player_start_point = NodePath("../PlayerStartPoint")
-respawn_height = 200.0
-
 [node name="PlayerStartPoint" type="Marker2D" parent="."]
 position = Vector2(53, -141)
 
 [node name="Pathfinder" type="Node2D" parent="." node_paths=PackedStringArray("tile_map") groups=["pathfinder_manager"]]
 script = ExtResource("4_haklp")
 tile_map = NodePath("../Map/base")
+debug_draw_path = false
 
 [node name="Map" type="Node" parent="."]
 
