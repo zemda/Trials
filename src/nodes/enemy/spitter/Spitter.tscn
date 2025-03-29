@@ -1,27 +1,143 @@
-[gd_scene load_steps=8 format=3 uid="uid://c7511mr2mem34"]
+[gd_scene load_steps=26 format=3 uid="uid://c7511mr2mem34"]
 
-[ext_resource type="Script" uid="uid://cq2335pg4cyda" path="res://nodes/enemy/enemy.gd" id="1_2oiiv"]
-[ext_resource type="PackedScene" uid="uid://v1oqu883jhhh" path="res://nodes/projectile/Projectile.tscn" id="2_4x1vv"]
-[ext_resource type="Texture2D" uid="uid://ds5xsnxvdh41r" path="res://assets/sprites/enemy/enemy2.png" id="3_mv3qt"]
+[ext_resource type="Script" uid="uid://d4jg8sn0rf427" path="res://nodes/enemy/spitter/spitter.gd" id="1_34f1d"]
+[ext_resource type="PackedScene" uid="uid://v1oqu883jhhh" path="res://nodes/projectile/Projectile.tscn" id="2_bkymu"]
+[ext_resource type="Texture2D" uid="uid://b1y3pu13nms0v" path="res://assets/sprites/enemy/Skeleton/idle/skelet_idle_anim_f1.png" id="3_bkymu"]
+[ext_resource type="Texture2D" uid="uid://qnbo52ifsnri" path="res://assets/sprites/enemy/Skeleton/idle/skelet_idle_anim_f0.png" id="3_e4b7d"]
+[ext_resource type="Texture2D" uid="uid://bixmymvhmrso1" path="res://assets/sprites/enemy/Skeleton/idle/skelet_idle_anim_f2.png" id="4_kiq7x"]
 [ext_resource type="Script" uid="uid://cto2o0nncekv7" path="res://nodes/enemy/enemy_base_states/enemy_states.gd" id="4_x4ddd"]
 [ext_resource type="Script" uid="uid://b3vs6u4fkrxds" path="res://nodes/enemy/spitter/spitter_states/spitter_idle.gd" id="5_e4b7d"]
+[ext_resource type="Texture2D" uid="uid://bunflrktvmdw3" path="res://assets/sprites/enemy/Skeleton/idle/skelet_idle_anim_f3.png" id="5_wu4f5"]
 [ext_resource type="Script" uid="uid://bbbaegfxj5vwa" path="res://nodes/enemy/spitter/spitter_states/spitter_chasing.gd" id="6_2oiiv"]
+[ext_resource type="Texture2D" uid="uid://cixfw1266vs4x" path="res://assets/sprites/enemy/Skeleton2/idle/Skeleton_idle.png" id="6_qpun6"]
+[ext_resource type="Texture2D" uid="uid://cp08s0ug3n2tt" path="res://assets/sprites/enemy/Skeleton/run/skelet_run_anim_f0.png" id="7_h53n4"]
+[ext_resource type="Texture2D" uid="uid://bxx7cxmu0xbor" path="res://assets/sprites/enemy/Skeleton/run/skelet_run_anim_f1.png" id="8_sbrvi"]
+[ext_resource type="Texture2D" uid="uid://b1p4t5whfwym2" path="res://assets/sprites/enemy/Skeleton/run/skelet_run_anim_f2.png" id="9_5ojhf"]
+[ext_resource type="Texture2D" uid="uid://b1ost686qsw1g" path="res://assets/sprites/enemy/Skeleton/run/skelet_run_anim_f3.png" id="10_0sdoa"]
+[ext_resource type="Texture2D" uid="uid://cylrsjjmkseqc" path="res://assets/sprites/enemy/Skeleton2/run/Skeleton_run.png" id="11_otoat"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_oc2r3"]
-radius = 8.0
+[sub_resource type="AtlasTexture" id="AtlasTexture_853h1"]
+atlas = ExtResource("6_qpun6")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1b60m"]
+atlas = ExtResource("6_qpun6")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hq2y1"]
+atlas = ExtResource("6_qpun6")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4q1ih"]
+atlas = ExtResource("6_qpun6")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xsjls"]
+atlas = ExtResource("11_otoat")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5560q"]
+atlas = ExtResource("11_otoat")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ylvff"]
+atlas = ExtResource("11_otoat")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mp7me"]
+atlas = ExtResource("11_otoat")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yq5gp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_e4b7d")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_bkymu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_kiq7x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_wu4f5")
+}],
+"loop": true,
+"name": &"idle1",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_853h1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1b60m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hq2y1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4q1ih")
+}],
+"loop": true,
+"name": &"idle2",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_h53n4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_sbrvi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_5ojhf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_0sdoa")
+}],
+"loop": true,
+"name": &"run1",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xsjls")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5560q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ylvff")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mp7me")
+}],
+"loop": true,
+"name": &"run2",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bkymu"]
+radius = 8.75
 
 [node name="Spitter" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 8
-script = ExtResource("1_2oiiv")
-_projectile_scene = ExtResource("2_4x1vv")
+script = ExtResource("1_34f1d")
+white_sprite = false
+_projectile_scene = ExtResource("2_bkymu")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("3_mv3qt")
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -8)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_yq5gp")
+animation = &"idle1"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 0.5)
+position = Vector2(2.11758e-22, 4.76837e-07)
 scale = Vector2(0.8, 0.8)
-shape = SubResource("CircleShape2D_oc2r3")
+shape = SubResource("CircleShape2D_bkymu")
 
 [node name="FSM" type="Node" parent="."]
 script = ExtResource("4_x4ddd")
@@ -34,8 +150,8 @@ script = ExtResource("5_e4b7d")
 script = ExtResource("6_2oiiv")
 
 [node name="PlayerDetection" type="RayCast2D" parent="."]
-position = Vector2(0, -22)
+position = Vector2(0, -25)
 collision_mask = 2
 
 [node name="WallDetection" type="RayCast2D" parent="."]
-position = Vector2(0, -22)
+position = Vector2(0, -25)
