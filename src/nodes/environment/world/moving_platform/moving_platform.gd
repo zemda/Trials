@@ -1,4 +1,4 @@
-extends Node2D
+extends Path2D
 class_name MovingPlatform
 
 

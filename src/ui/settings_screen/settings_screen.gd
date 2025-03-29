@@ -398,7 +398,7 @@ func _apply_resolution_and_fullscreen() -> void:
 	var screen_size = DisplayServer.screen_get_size()
 	
 	if resolution_index == -1 or resolution_index == 0:
-		var half_size = Vector2i(screen_size.x / 2, screen_size.y / 2)
+		var half_size = Vector2i((screen_size.y / 18) * 16, screen_size.y / 2)
 		DisplayServer.window_set_size(half_size)
 	else:
 		if resolution_index > 0 and resolution_index <= _resolutions.size():
@@ -406,7 +406,7 @@ func _apply_resolution_and_fullscreen() -> void:
 			if target_res.x <= screen_size.x and target_res.y <= screen_size.y:
 				DisplayServer.window_set_size(target_res)
 			else:
-				var half_size = Vector2i(screen_size.x / 2, screen_size.y / 2)
+				var half_size = Vector2i((screen_size.y / 18) * 16, screen_size.y / 2)
 				DisplayServer.window_set_size(half_size)
 				_current_settings.video.resolution_index = 0
 				if _resolution_option:

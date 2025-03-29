@@ -1,7 +1,8 @@
-[gd_scene load_steps=14 format=4 uid="uid://d1ascia0wibrl"]
+[gd_scene load_steps=15 format=4 uid="uid://d1ascia0wibrl"]
 
 [ext_resource type="PackedScene" uid="uid://gwtcddpvpmdy" path="res://levels/background/background.tscn" id="1_e8mw7"]
 [ext_resource type="PackedScene" uid="uid://bfrn1j42vjp1b" path="res://ui/debug/DebugUI.tscn" id="2_n24nw"]
+[ext_resource type="PackedScene" uid="uid://cwadt7p0ll77h" path="res://ui/timer/TimerUI.tscn" id="2_qxntb"]
 [ext_resource type="Script" uid="uid://b3uicb7ycsf7s" path="res://levels/level01/level01.gd" id="3_2rky8"]
 [ext_resource type="Script" uid="uid://dxt0ves545hee" path="res://core/pathfinder/pathfinder_manager.gd" id="4_haklp"]
 [ext_resource type="PackedScene" uid="uid://fsxe3pnrpvr5" path="res://levels/level_tile_map.tscn" id="5_qpdkq"]
@@ -23,6 +24,10 @@ level_name = "Level 01"
 next_level_path = "res://levels/level02/Level02.tscn"
 player_start_point = NodePath("PlayerStartPoint")
 respawn_height = 200.0
+
+[node name="Timer" type="CanvasLayer" parent="."]
+
+[node name="TimerUi" parent="Timer" instance=ExtResource("2_qxntb")]
 
 [node name="Background" parent="." instance=ExtResource("1_e8mw7")]
 offset_left = -807.0
