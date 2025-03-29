@@ -37,7 +37,7 @@ milkyway_intensity = 0.545
 [node name="DebugUi" parent="." instance=ExtResource("2_n24nw")]
 
 [node name="PlayerStartPoint" type="Marker2D" parent="."]
-position = Vector2(2352, -992)
+position = Vector2(56, -136)
 
 [node name="Pathfinder" type="Node2D" parent="." node_paths=PackedStringArray("tile_map") groups=["pathfinder_manager"]]
 script = ExtResource("4_haklp")
