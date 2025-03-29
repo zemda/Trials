@@ -1,7 +1,8 @@
-[gd_scene load_steps=24 format=4 uid="uid://mrwdpiv136xo"]
+[gd_scene load_steps=25 format=4 uid="uid://mrwdpiv136xo"]
 
 [ext_resource type="PackedScene" uid="uid://gwtcddpvpmdy" path="res://levels/background/background.tscn" id="1_482am"]
 [ext_resource type="PackedScene" uid="uid://bfrn1j42vjp1b" path="res://ui/debug/DebugUI.tscn" id="2_8pjc3"]
+[ext_resource type="PackedScene" uid="uid://cwadt7p0ll77h" path="res://ui/timer/TimerUI.tscn" id="2_482am"]
 [ext_resource type="Script" uid="uid://dqj3fc1t2rei4" path="res://levels/level02/level02.gd" id="3_8pjc3"]
 [ext_resource type="Script" uid="uid://dxt0ves545hee" path="res://core/pathfinder/pathfinder_manager.gd" id="4_qjpw8"]
 [ext_resource type="PackedScene" uid="uid://fsxe3pnrpvr5" path="res://levels/level_tile_map.tscn" id="5_dwda4"]
@@ -58,9 +59,15 @@ level_name = "Level 02"
 player_start_point = NodePath("PlayerStartPoint")
 respawn_height = 200.0
 
+[node name="Timer" type="CanvasLayer" parent="."]
+
+[node name="TimerUi" parent="Timer" instance=ExtResource("2_482am")]
+
 [node name="Background" parent="." instance=ExtResource("1_482am")]
-offset_left = -807.0
-offset_bottom = 598.0
+offset_left = -808.0
+offset_top = -2675.0
+offset_right = 5584.0
+offset_bottom = 607.0
 scale_factor = 601.0
 star_twinkle_speed = 1.403
 aurora_intensity = 0.576
@@ -71,12 +78,11 @@ milkyway_intensity = 0.545
 [node name="DebugUi" parent="." instance=ExtResource("2_8pjc3")]
 
 [node name="PlayerStartPoint" type="Marker2D" parent="."]
-position = Vector2(48, -202)
+position = Vector2(59, -218)
 
 [node name="Pathfinder" type="Node2D" parent="." node_paths=PackedStringArray("tile_map") groups=["pathfinder_manager"]]
 script = ExtResource("4_qjpw8")
 tile_map = NodePath("../Map/base")
-debug_draw_path = false
 
 [node name="LevelDoneArea" parent="." instance=ExtResource("13_uui35")]
 position = Vector2(4508, -2163)
