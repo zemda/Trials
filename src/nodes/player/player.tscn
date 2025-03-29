@@ -1,8 +1,9 @@
-[gd_scene load_steps=24 format=3 uid="uid://cftmvn5pjp8ac"]
+[gd_scene load_steps=25 format=3 uid="uid://cftmvn5pjp8ac"]
 
 [ext_resource type="Script" uid="uid://em7hrgt21xi1" path="res://nodes/player/player.gd" id="1_8qk58"]
 [ext_resource type="Texture2D" uid="uid://dsqxdfviphsn" path="res://assets/sprites/player/playerT.png" id="2_ekgkp"]
 [ext_resource type="Resource" uid="uid://d07icyh40egpk" path="res://resources/player/DefaultMovementData.tres" id="2_ssmf6"]
+[ext_resource type="Script" uid="uid://cj107x1oxhp3m" path="res://nodes/player/camera_2d.gd" id="4_1n2qe"]
 [ext_resource type="Script" uid="uid://bg6ks6vg5kck1" path="res://core/fsm/fsm.gd" id="5_v7uqt"]
 [ext_resource type="Script" uid="uid://r0g4tb3pc65g" path="res://nodes/player/states/state_idle.gd" id="6_vsldh"]
 [ext_resource type="Script" uid="uid://cma1tbhsdou53" path="res://nodes/player/states/state_run.gd" id="7_md3qu"]
@@ -123,13 +124,13 @@ position = Vector2(0, -12.5)
 shape = SubResource("RectangleShape2D_lnte8")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(0, -37)
 zoom = Vector2(0.6, 0.6)
 process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 1.0
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
+script = ExtResource("4_1n2qe")
 
 [node name="HazardDetector" type="Area2D" parent="."]
 collision_layer = 0
