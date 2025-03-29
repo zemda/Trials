@@ -54,6 +54,11 @@ func _physics_process(delta: float) -> void:
 	
 	update_shooting(delta)
 	
+	if velocity.x < 0:
+		$Sprite2D.flip_h = true
+	elif velocity.x > 0:
+		$Sprite2D.flip_h = false
+	
 	if debug_draw:
 		queue_redraw()
 

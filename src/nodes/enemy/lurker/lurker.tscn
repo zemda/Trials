@@ -1,21 +1,120 @@
-[gd_scene load_steps=7 format=3 uid="uid://ch2058mukqhnb"]
+[gd_scene load_steps=21 format=3 uid="uid://ch2058mukqhnb"]
 
 [ext_resource type="Script" uid="uid://cq2335pg4cyda" path="res://nodes/enemy/enemy.gd" id="1_vdllw"]
 [ext_resource type="PackedScene" uid="uid://v1oqu883jhhh" path="res://nodes/projectile/Projectile.tscn" id="2_c8vxq"]
-[ext_resource type="Texture2D" uid="uid://ds5xsnxvdh41r" path="res://assets/sprites/enemy/enemy2.png" id="3_p08ow"]
+[ext_resource type="Texture2D" uid="uid://jxviqlqd7oou" path="res://assets/sprites/enemy/slime/slime_idle_spritesheet_monochrome.png" id="3_2c6nf"]
+[ext_resource type="Texture2D" uid="uid://b2yqinnl0w3ae" path="res://assets/sprites/enemy/slime/slime_run_spritesheet_monochrome.png" id="4_2c6nf"]
 [ext_resource type="Script" uid="uid://cto2o0nncekv7" path="res://nodes/enemy/enemy_base_states/enemy_states.gd" id="4_sweu0"]
 [ext_resource type="Script" uid="uid://cadvrt35xxxbr" path="res://nodes/enemy/lurker/lurker_states/lurker_lurking.gd" id="5_0nlyp"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_u88lk"]
+atlas = ExtResource("3_2c6nf")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1ag4h"]
+atlas = ExtResource("3_2c6nf")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6sign"]
+atlas = ExtResource("3_2c6nf")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ksvf5"]
+atlas = ExtResource("3_2c6nf")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yer35"]
+atlas = ExtResource("3_2c6nf")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qrh8p"]
+atlas = ExtResource("3_2c6nf")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vwwfn"]
+atlas = ExtResource("4_2c6nf")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ng4i4"]
+atlas = ExtResource("4_2c6nf")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wu2sp"]
+atlas = ExtResource("4_2c6nf")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_40ewc"]
+atlas = ExtResource("4_2c6nf")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2lcom"]
+atlas = ExtResource("4_2c6nf")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4otk6"]
+atlas = ExtResource("4_2c6nf")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_veeab"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u88lk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1ag4h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6sign")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ksvf5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yer35")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qrh8p")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vwwfn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ng4i4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wu2sp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_40ewc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2lcom")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4otk6")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_oc2r3"]
-radius = 8.0
+radius = 6.28117
 
 [node name="Lurker" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 8
 script = ExtResource("1_vdllw")
 _projectile_scene = ExtResource("2_c8vxq")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("3_p08ow")
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_veeab")
+animation = &"run"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 0.5)

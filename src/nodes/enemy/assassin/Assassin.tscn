@@ -1,25 +1,72 @@
-[gd_scene load_steps=9 format=3 uid="uid://cvnue72u1abtj"]
+[gd_scene load_steps=17 format=3 uid="uid://cvnue72u1abtj"]
 
-[ext_resource type="Script" uid="uid://cq2335pg4cyda" path="res://nodes/enemy/enemy.gd" id="1_8qebe"]
-[ext_resource type="Texture2D" uid="uid://bvp40ub1xkarh" path="res://assets/sprites/enemy/pixil-frame-0 (1).png" id="2_mqojr"]
+[ext_resource type="Script" uid="uid://0o5o22u55i65" path="res://nodes/enemy/assassin/assassin.gd" id="1_a1hb5"]
+[ext_resource type="Texture2D" uid="uid://cpopuh33exisv" path="res://assets/sprites/enemy/necro/idle/necromancer_idle_anim_f0.png" id="2_a1hb5"]
 [ext_resource type="Script" uid="uid://cto2o0nncekv7" path="res://nodes/enemy/enemy_base_states/enemy_states.gd" id="3_d6trr"]
+[ext_resource type="Texture2D" uid="uid://caboqsnworure" path="res://assets/sprites/enemy/necro/idle/necromancer_idle_anim_f1.png" id="3_kscjl"]
+[ext_resource type="Texture2D" uid="uid://gs310xy6cvir" path="res://assets/sprites/enemy/necro/idle/necromancer_idle_anim_f2.png" id="4_vmlx8"]
 [ext_resource type="Script" uid="uid://cb5ha3avi3ue5" path="res://nodes/enemy/assassin/assassin_states/assassin_idle.gd" id="4_yp53w"]
+[ext_resource type="Texture2D" uid="uid://btytnnwce815u" path="res://assets/sprites/enemy/necro/idle/necromancer_idle_anim_f3.png" id="5_d4dvh"]
 [ext_resource type="Script" uid="uid://b1y2niaj8185d" path="res://nodes/enemy/assassin/assassin_states/assassin_chasing.gd" id="5_fs3ke"]
+[ext_resource type="Texture2D" uid="uid://jjp72ix5k5j7" path="res://assets/sprites/enemy/necro/run/necromancer_run_anim_f0.png" id="6_1tpyy"]
 [ext_resource type="Script" uid="uid://451ch51ixn4w" path="res://nodes/enemy/assassin/assassin_states/assassin_explode.gd" id="6_itfck"]
+[ext_resource type="Texture2D" uid="uid://dab4a2cq8gpv7" path="res://assets/sprites/enemy/necro/run/necromancer_run_anim_f1.png" id="7_0a855"]
 [ext_resource type="Script" uid="uid://crttgkiygb2un" path="res://nodes/enemy/assassin/assassin_states/assassin_wander.gd" id="7_mqojr"]
+[ext_resource type="Texture2D" uid="uid://d1d7xl2edlp4t" path="res://assets/sprites/enemy/necro/run/necromancer_run_anim_f2.png" id="8_omeni"]
+[ext_resource type="Texture2D" uid="uid://cr86gr3f5qsal" path="res://assets/sprites/enemy/necro/run/necromancer_run_anim_f3.png" id="9_yhimi"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_r1uoc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_a1hb5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_kscjl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_vmlx8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_d4dvh")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_1tpyy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_0a855")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_omeni")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_yhimi")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oc2r3"]
-radius = 8.0
+radius = 6.25
 
 [node name="Assassin" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 8
-script = ExtResource("1_8qebe")
+script = ExtResource("1_a1hb5")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_mqojr")
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -10)
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_r1uoc")
+animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 0.5)
+position = Vector2(0, 2.98023e-08)
 scale = Vector2(0.8, 0.8)
 shape = SubResource("CircleShape2D_oc2r3")
 
