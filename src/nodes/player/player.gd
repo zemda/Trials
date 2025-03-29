@@ -12,7 +12,6 @@ var _knockback_duration: float = 0.05
 var _knockback_velocity := Vector2.ZERO
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
-@onready var start_pos = global_position  # TODO: later checkpoint or something
 @onready var wall_jump_timer: Timer = $WallJumpTimer
 @onready var fsm: FSM = $FSM
 @onready var downward_cast: ShapeCast2D = $DownwardCast
