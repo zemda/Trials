@@ -20,7 +20,7 @@ func _ready() -> void:
 	first_frame = true
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var current_position = get_parent().global_position
 	
 	if first_frame or current_position.distance_to(previous_parent_position) > teleport_threshold:

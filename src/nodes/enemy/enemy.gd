@@ -32,7 +32,7 @@ var _gravity_enabled: bool = true
 
 @export var _projectile_scene: PackedScene
 var _can_shoot: bool = true
-var _shoot_cooldown: float = 0.3
+@export var _shoot_cooldown: float = 0.3
 var _shoot_timer: float = 0.0
 var _shoot_range: float = 200.0
 
