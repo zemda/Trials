@@ -599,7 +599,7 @@ func move_to(destination: Vector2) -> void:
 
 
 func _draw() -> void:
-	if not debug_draw:
+	if not debug_draw or not OS.is_debug_build():
 		return
 	
 	var last_pos = global_position
