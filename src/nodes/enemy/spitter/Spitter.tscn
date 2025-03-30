@@ -126,6 +126,7 @@ radius = 8.75
 collision_layer = 8
 script = ExtResource("1_34f1d")
 white_sprite = false
+debug_draw = false
 _projectile_scene = ExtResource("2_bkymu")
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]

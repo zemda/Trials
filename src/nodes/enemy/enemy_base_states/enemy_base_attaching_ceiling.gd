@@ -9,7 +9,7 @@ func _enter() -> void:
 	_ready_to_attach = false
 
 
-func update(delta: float) -> void:
+func update(_delta: float) -> void:
 	if _ready_to_attach:
 		if abs(host.global_position.y - host._ceiling_position.y) < 10:
 			emit_signal("transition_to", states.LURKING)
@@ -22,11 +22,11 @@ func update(delta: float) -> void:
 				host.velocity.x = (host._ceiling_position.x - host.global_position.x) * 3
 			
 			var tween = host.create_tween()
-			tween.tween_property(host, "rotation_degrees", 180, 0.3)
+			tween.tween_property(host.get_node("Sprite2D"), "rotation_degrees", 180, 0.3)
 
 
 func _exit() -> void:
-	pass
+	host._ceiling_position = Vector2.ZERO
 
 
 func _transition() -> int:

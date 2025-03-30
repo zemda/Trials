@@ -58,6 +58,7 @@ radius = 6.25
 [node name="Assassin" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 8
 script = ExtResource("1_a1hb5")
+debug_draw = false
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -10)
