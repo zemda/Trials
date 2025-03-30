@@ -182,7 +182,7 @@ func find_ceiling() -> bool:
 
 
 func _draw() -> void:
-	if not debug_draw:
+	if not debug_draw or not OS.is_debug_build():
 		return
 	
 	var debug_text = "State: " + str(fsm.current_state.state_name)

@@ -378,7 +378,7 @@ func _is_solid(pos: Vector2i) -> bool:
 
 
 func _draw() -> void:
-	if not _debug_draw or _path_to_draw.size() < 2:
+	if not _debug_draw or _path_to_draw.size() < 2 or not OS.is_debug_build():
 		return
 	
 	for i in range(1, _path_to_draw.size()):
