@@ -26,6 +26,7 @@ player_start_point = NodePath("PlayerStartPoint")
 respawn_height = 200.0
 
 [node name="Timer" type="CanvasLayer" parent="."]
+layer = 0
 
 [node name="TimerUi" parent="Timer" instance=ExtResource("2_qxntb")]
 
