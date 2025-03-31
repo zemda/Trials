@@ -111,7 +111,7 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_oc2r3"]
 radius = 6.28117
 
-[node name="Lurker" type="CharacterBody2D" groups=["Enemies"]]
+[node name="lurker" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 8
 script = ExtResource("1_fo7qf")
 debug_draw = false
