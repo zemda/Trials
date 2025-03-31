@@ -143,7 +143,7 @@ segment_count = 8
 [node name="Ropes" type="Node" parent="."]
 
 [node name="Rope" parent="Ropes" instance=ExtResource("9_k5pw0")]
-position = Vector2(899, -239)
+position = Vector2(882, -240)
 segment_count = 10
 
 [node name="Rope2" parent="Ropes" instance=ExtResource("9_k5pw0")]

@@ -321,6 +321,7 @@ func place_player_in_level(position: Vector2, pvisible: bool = true) -> void:
 	if is_in_gameplay_level() and !_input_disabled:
 		_player_instance.set_physics_process(true)
 		_player_instance.set_process_input(true)
+	_player_instance.velocity = Vector2.ZERO
 
 
 func remove_player_from_level() -> void:

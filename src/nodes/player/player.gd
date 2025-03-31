@@ -76,7 +76,7 @@ func _apply_force_to_plank(plank: RigidBody2D, collision_point: Vector2) -> void
 	if direction_to_player.y > 0: # player is not on the plank, dont apply force
 		return
 	
-	var force = Vector2(0, -1)
+	var force = Vector2(0, -0.8)
 	plank.apply_impulse(force, plank.global_position - collision_point)
 
 
