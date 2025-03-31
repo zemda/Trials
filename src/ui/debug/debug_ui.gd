@@ -17,7 +17,7 @@ func _process(_delta: float) -> void:
 	
 	var text = "Debug Info:\n"
 	text += "-----------------------------------------------\n"
-	
+	text += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\n\n"
 	text += "GameManager Info:\n"
 	text += "- Current Level: " + GameManager.current_level + "\n"
 	text += "- Total Game Time: " + str(snapped(GameManager._total_game_time, 0.01)) + "\n"
