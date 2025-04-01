@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://cftmvn5pjp8ac"]
+[gd_scene load_steps=26 format=3 uid="uid://cftmvn5pjp8ac"]
 
 [ext_resource type="Script" uid="uid://em7hrgt21xi1" path="res://nodes/player/player.gd" id="1_8qk58"]
 [ext_resource type="Texture2D" uid="uid://dsqxdfviphsn" path="res://assets/sprites/player/playerT.png" id="2_ekgkp"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://crk20fe7l5v7t" path="res://nodes/player/states/state_grappling.gd" id="9_ujpwe"]
 [ext_resource type="Script" uid="uid://dvph8ijhe7u05" path="res://nodes/player/states/state_swinging.gd" id="10_bcgbv"]
 [ext_resource type="PackedScene" uid="uid://dmr2mqoiknm8e" path="res://nodes/grappling_hook/GrapplingHook.tscn" id="10_wpntg"]
+[ext_resource type="Script" uid="uid://bgw10w860h865" path="res://nodes/player/states/state_knockback.gd" id="11_eiqky"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g3yig"]
 atlas = ExtResource("2_ekgkp")
@@ -166,6 +167,9 @@ script = ExtResource("9_ujpwe")
 
 [node name="state_swinging" type="Node" parent="FSM"]
 script = ExtResource("10_bcgbv")
+
+[node name="state_knockback" type="Node" parent="FSM"]
+script = ExtResource("11_eiqky")
 
 [node name="GrapplingHook" parent="." instance=ExtResource("10_wpntg")]
 position = Vector2(0, -13)

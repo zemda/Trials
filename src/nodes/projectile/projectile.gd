@@ -2,18 +2,29 @@ extends CharacterBody2D
 
 
 @export var projectile_speed: float = 2000.0
-@export var knockback_force: float = 200.0
+@export var knockback_force: float = 20.0
 @export var arc: float = 10.0
 
 var is_shooter_on_ceiling: bool = false
 
+
 func _physics_process(delta: float) -> void:
 	velocity.y += projectile_speed * delta
 	var collision = move_and_collide(velocity * delta)
+	
 	if collision:
 		var collider = collision.get_collider()
-		if collider.is_in_group("Player"):
-			var knockback_direction = (collider.global_position - global_position).normalized()
+		if collider is Player:
+			var base_direction = (collider.global_position - global_position).normalized()
+			var knockback_direction = base_direction
+			
+			var hitting_from_above = global_position.y < collider.global_position.y
+			
+			if hitting_from_above:
+				knockback_direction = Vector2(base_direction.x, 0.0).normalized()
+			else:
+				knockback_direction = Vector2(base_direction.x, -0.8).normalized()
+			
 			collider.knockback(knockback_direction, knockback_force)
 			
 		destroy()
