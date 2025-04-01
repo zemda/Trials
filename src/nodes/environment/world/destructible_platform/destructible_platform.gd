@@ -98,12 +98,16 @@ func _create_warning_particles(coords: Vector2i) -> void:
 	particles.initial_velocity_min = 30
 	particles.initial_velocity_max = 50
 	particles.color = warning_particles_color
+	particles.add_to_group("debris")
 	
 	particles.global_position = particle_pos + Vector2(8, 0)
 	get_parent().add_child(particles)
 	
 	var timer = get_tree().create_timer(destruction_time)
-	timer.timeout.connect(func(): particles.queue_free())
+	timer.timeout.connect(func(): 
+		if is_instance_valid(particles):
+			particles.queue_free()
+	)
 
 
 func _start_destruction() -> void:
@@ -141,6 +145,7 @@ func _destroy_tile(tilemap: TileMapLayer, coords: Vector2i, idx: int) -> void:
 	var tile_position = tilemap.map_to_local(coords)
 	sprite.global_position = tilemap.to_global(tile_position)
 	sprite.centered = false
+	sprite.add_to_group("debris")
 	
 	tilemap.set_cell(coords, -1)
 	get_parent().add_child(sprite)
@@ -157,7 +162,10 @@ func _destroy_tile(tilemap: TileMapLayer, coords: Vector2i, idx: int) -> void:
 	
 	tween.tween_property(sprite, "modulate:a", 0.0, fade_duration).set_delay(fall_duration - fade_duration)
 	
-	tween.tween_callback(sprite.queue_free).set_delay(fall_duration)
+	tween.tween_callback(func(): 
+		if is_instance_valid(sprite):
+			sprite.queue_free()
+	).set_delay(fall_duration)
 	
 	var remaining_tiles = 0
 	for c in _tile_instances:
@@ -166,7 +174,10 @@ func _destroy_tile(tilemap: TileMapLayer, coords: Vector2i, idx: int) -> void:
 	
 	if remaining_tiles == 0:
 		_destruction_started = false
-		tween.tween_callback(queue_free).set_delay(fall_duration)
+		tween.tween_callback(func():
+			if is_instance_valid(self):
+				queue_free()
+		).set_delay(fall_duration)
 
 
 func _create_destruction_particles(coords: Vector2i) -> void:
@@ -189,12 +200,16 @@ func _create_destruction_particles(coords: Vector2i) -> void:
 	particles.initial_velocity_min = 50
 	particles.initial_velocity_max = 70
 	particles.color = destruction_particles_color
+	particles.add_to_group("debris")
 	
 	particles.global_position = particle_pos + Vector2(8, 0)
 	get_parent().add_child(particles)
 	
 	var timer = get_tree().create_timer(particles.lifetime * 1.2)
-	timer.timeout.connect(func(): particles.queue_free())
+	timer.timeout.connect(func(): 
+		if is_instance_valid(particles):
+			particles.queue_free()
+	)
 
 
 func _get_atlas_coords_for_index(idx: int) -> Vector2i:
