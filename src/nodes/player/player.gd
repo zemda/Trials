@@ -28,7 +28,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func knockback(direction: Vector2, force: float = _knockback_force, should_push_up: bool = false) -> void:
-	if fsm.current_state.state_name != "GRAPPLING" or fsm.current_state.state_name != "SWINGING":
+	if fsm.current_state.state_name not in ["GRAPPLING", "SWINGING"]:
 		fsm.change_state_to(5)
 	
 	_is_in_knockback = true
@@ -39,7 +39,6 @@ func knockback(direction: Vector2, force: float = _knockback_force, should_push_
 		knockback_dir = knockback_dir.normalized()
 	
 	_knockback_velocity = knockback_dir * force
-	print(_knockback_velocity)
 	var knockback_tween = create_tween()
 	knockback_tween.tween_property(self, "_knockback_velocity", Vector2.ZERO, 0.2)
 	knockback_tween.tween_callback(func(): _is_in_knockback = false)
