@@ -79,6 +79,9 @@ func _store_initial_level_state() -> void:
 			}
 			if node is HookPoint:
 				data["x_scale"] = node.x_scale
+				data["is_one_time_use"] = node.is_one_time_use
+				data["one_time_use_chance"] = node.one_time_use_chance
+				data["rotation"] = node.rotation
 			if node is DestructiblePlatform:
 				data["platform_length"] = node.platform_length
 				data["destruction_time"] = node.destruction_time
@@ -127,6 +130,10 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 					
 					if instance is HookPoint:
 						instance.x_scale = data["x_scale"]
+						instance.x_scale = data["x_scale"]
+						instance.is_one_time_use = data["is_one_time_use"]
+						instance.one_time_use_chance = data["one_time_use_chance"]
+						instance.rotation = data["rotation"]
 					
 					elif instance is DestructiblePlatform:
 						instance.platform_length = data["platform_length"]
