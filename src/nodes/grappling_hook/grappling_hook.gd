@@ -17,12 +17,18 @@ var _current_anchor = null
 func _ready() -> void:
 	fsm.set_host(self)
 	_parent = get_parent()
+	_parent.player_death.connect(_on_player_death)
 	_rope.visible = false
 
 
 func _physics_process(_delta: float) -> void:
 	if _current_anchor:
 		_create_rope()
+
+
+func _on_player_death() -> void:
+	cleanup_current_hook()
+	fsm.change_state_to_default()
 
 
 func _create_rope() -> void:
