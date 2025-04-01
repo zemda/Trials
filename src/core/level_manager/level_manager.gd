@@ -112,6 +112,7 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 			_pathfinder_manager.unregister_characters()
 		
 		var current_storable_nodes = get_tree().get_nodes_in_group("storable")
+		current_storable_nodes += get_tree().get_nodes_in_group("debris")
 		for node in current_storable_nodes:
 			if is_instance_valid(node):
 				node.queue_free()
