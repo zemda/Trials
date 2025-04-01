@@ -1,7 +1,6 @@
 extends FSMState
 
 
-var _knockback_force: float = 500.0
 var _explosion_animation_started: bool = false
 
 
@@ -26,17 +25,17 @@ func _explode() -> void:
 	var knockback_direction: Vector2
 	
 	if direction_vector.length_squared() < 0.001:
-		if host.velocity.x != 0:
-			knockback_direction = Vector2(sign(host.velocity.x), -0.5).normalized()
-		else:
-			knockback_direction = Vector2(1, 0).normalized()
+		knockback_direction = Vector2(0, -1) 
 	else:
 		knockback_direction = direction_vector.normalized()
+		knockback_direction.y -= 0.5
+		knockback_direction = knockback_direction.normalized()
 	
-	host._player.knockback(knockback_direction, _knockback_force)
+	var knockback_force = 100.0
+	
+	host._player.knockback(knockback_direction, knockback_force, true)
 	
 	var tween = host.create_tween()
-	tween.tween_property(host, "scale", Vector2(1.5, 1.5), 0.2)
-	tween.tween_property(host, "scale", Vector2(0.2, 0.2), 0.1)
-	
+	tween.tween_property(host, "scale", Vector2(1.8, 1.8), 0.2)
+	tween.tween_property(host, "scale", Vector2(0.1, 0.1), 0.1)
 	tween.tween_callback(host.queue_free)

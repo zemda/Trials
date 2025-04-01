@@ -8,8 +8,8 @@ signal player_death
 var last_wall_normal := Vector2.ZERO
 var is_attached_to_rope := false
 var _knockback_force: float = 100.0
-var _knockback_duration: float = 0.05
 var _knockback_velocity := Vector2.ZERO
+var _is_in_knockback: bool = false
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var wall_jump_timer: Timer = $WallJumpTimer
@@ -23,19 +23,26 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if _knockback_velocity != Vector2.ZERO:
-		velocity += _knockback_velocity
-		velocity = clamp(velocity, Vector2(-400,-400), Vector2(400, 400)) # TODO test it
-	
 	move_and_slide()
 	_update_wall_state()
 
 
-func knockback(direction: Vector2, force: float = _knockback_force) -> void:
-	_knockback_velocity = Vector2(direction.normalized().x, 0 if direction.y > 0 else direction.normalized().y) * force
+func knockback(direction: Vector2, force: float = _knockback_force, should_push_up: bool = false) -> void:
+	if fsm.current_state.state_name != "GRAPPLING" or fsm.current_state.state_name != "SWINGING":
+		fsm.change_state_to(5)
 	
+	_is_in_knockback = true
+	var knockback_dir = direction.normalized()
+	
+	if is_on_floor() and should_push_up:
+		knockback_dir.y = -0.8
+		knockback_dir = knockback_dir.normalized()
+	
+	_knockback_velocity = knockback_dir * force
+	print(_knockback_velocity)
 	var knockback_tween = create_tween()
-	knockback_tween.tween_property(self, "_knockback_velocity", Vector2.ZERO, _knockback_duration)
+	knockback_tween.tween_property(self, "_knockback_velocity", Vector2.ZERO, 0.2)
+	knockback_tween.tween_callback(func(): _is_in_knockback = false)
 
 
 func handle_downward_cast() -> void:
