@@ -140,6 +140,9 @@ func save_best_time() -> bool:
 	if best_time == 0.0 or level_time < best_time:
 		_config.set_value("level_times", current_level, level_time)
 		save_times()
+		
+		GameAnalytics.track_best_time(current_level, level_time, true)
+		call_deferred("_submit_level_time_to_leaderboard", current_level, level_time)
 		return true
 	return false
 
@@ -189,11 +192,17 @@ func load_times() -> void:
 		save_times()
 
 
-func complete_game() -> void: # TODO end screen or smh
+func complete_game() -> void:
 	_pause_timer()
-	save_run_time()
+	var is_new_best = save_run_time()
+	
+	GameAnalytics.track_game_completed(_total_game_time, is_new_best)
+	call_deferred("_submit_game_time_to_leaderboard", _total_game_time)
+	
 	SceneChanger.goto_scene(SceneManager.EndScreenPath)
 
+func _submit_level_time_to_leaderboard(level_name: String, time_seconds: float) -> void:
+	await LeaderboardManager.submit_level_time(level_name, time_seconds)
 
 func _pause_game() -> void:
 	if !_is_paused and is_in_gameplay_level():

@@ -22,6 +22,9 @@ LoadingScreen="*res://core/autoloads/loading_screen_manager.gd"
 SceneChanger="*res://core/autoloads/scene_changer.gd"
 GameManager="*res://core/autoloads/game_manager.gd"
 Globals="*res://core/autoloads/globals.gd"
+Talo="*res://addons/talo/talo_manager.gd"
+GameAnalytics="*res://core/autoloads/game_analytics.gd"
+LeaderboardManager="*res://core/autoloads/laderboard_manager.gd"
 
 [display]
 
@@ -34,7 +37,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Todo_Manager/plugin.cfg")
+enabled=PackedStringArray("res://addons/Todo_Manager/plugin.cfg", "res://addons/talo/plugin.cfg")
 
 [global_group]
 
