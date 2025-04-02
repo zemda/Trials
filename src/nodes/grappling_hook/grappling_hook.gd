@@ -97,7 +97,7 @@ func apply_grapple_physics(delta: float) -> void:
 
 	var to_center = _anchor - _parent.global_position
 	var distance = to_center.length()
-	if distance < 1: # TODO: do this smarter, since this doesnt account players size, corners, and so on... 
+	if distance < 1:
 		_parent.velocity = Vector2.ZERO
 		return
 
@@ -106,12 +106,17 @@ func apply_grapple_physics(delta: float) -> void:
 	var tangential_vel = _parent.velocity - dir * radial_vel
 
 	if tangential_vel == Vector2.ZERO:
-		tangential_vel = Vector2(dir.x, -dir.y) * INITIAL_SWING_SPEED
+		var hook_direction = sign(dir.x)
+		tangential_vel = Vector2(dir.x, -dir.y) * INITIAL_SWING_SPEED * hook_direction
 
-	tangential_vel += Vector2(dir.x, -dir.y) * Input.get_axis("move_left", "move_right") * SWING_FORCE_MULTIPLIER * delta
+	var input_axis = Input.get_axis("move_left", "move_right")
+	if input_axis == 0:
+		input_axis = sign(dir.x)
+	
+	tangential_vel += Vector2(dir.x, -dir.y) * input_axis * SWING_FORCE_MULTIPLIER * delta
 	var radial_accel = (DESIRED_RADIAL_SPEED - radial_vel) * RADIAL_ACCEL_FACTOR * delta
 	_parent.velocity = dir * radial_vel + tangential_vel + dir * radial_accel
-	_parent.velocity = _parent.velocity.clamp(-MAX_VELOCITY,MAX_VELOCITY)
+	_parent.velocity = _parent.velocity.clamp(-MAX_VELOCITY, MAX_VELOCITY)
 	_parent.move_and_slide()
 
 
