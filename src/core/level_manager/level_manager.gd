@@ -170,6 +170,8 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 
 
 func _on_player_death() -> void:
+	if _player and is_instance_valid(_player):
+		GameAnalytics.track_player_death(level_name, _player.global_position)
 	_recreate_nodes()
 
 
@@ -206,7 +208,13 @@ func _on_checkpoint_activated(checkpoint) -> void:
 
 
 func _complete_level() -> void:
-	GameManager.save_best_time()
+	var level_time = GameManager.get_level_time()
+	var is_new_best = GameManager.save_best_time()
+	
+	var completion_method = "skipped" if Input.is_action_just_pressed("ui_cancel") else "normal"
+	#if completion_method == "normal":
+	GameAnalytics.track_level_completed(level_name, completion_method, level_time)
+	
 	GameManager.remove_player_from_level()
 	
 	if next_level_path != "":
