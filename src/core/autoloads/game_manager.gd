@@ -201,8 +201,12 @@ func complete_game() -> void:
 	
 	SceneChanger.goto_scene(SceneManager.EndScreenPath)
 
+
 func _submit_level_time_to_leaderboard(level_name: String, time_seconds: float) -> void:
 	await LeaderboardManager.submit_level_time(level_name, time_seconds)
+
+func _submit_game_time_to_leaderboard(time_seconds: float) -> void:
+	await LeaderboardManager.submit_game_time(time_seconds)
 
 func _pause_game() -> void:
 	if !_is_paused and is_in_gameplay_level():
@@ -243,7 +247,7 @@ func restart_game() -> void:
 	current_level = ""
 	_total_game_time = 0.0
 	_completed_levels.clear()
-	
+	LeaderboardManager.clear_skip_detection()
 	load_level(SceneManager.Level01Path)
 
 

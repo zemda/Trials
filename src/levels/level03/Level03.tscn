@@ -61,7 +61,6 @@ tile_map_data = PackedByteArray("AAAAAM//AQACAAEAAAAAAM7/AQACAAEAAAAAAM3/AQACAAE
 
 [node name="HookPoint" parent="HookPoints" instance=ExtResource("8_ndbhf")]
 position = Vector2(528, -324)
-is_one_time_use = false
 x_scale = 2
 
 [node name="HookPoint2" parent="HookPoints" instance=ExtResource("8_ndbhf")]
