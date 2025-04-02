@@ -129,5 +129,8 @@ pause={
 
 textures/canvas_textures/default_texture_filter=0
 textures/vram_compression/import_etc2_astc=true
+limits/global_shader_variables/buffer_size=300000
+limits/opengl/max_renderable_lights=64
+limits/opengl/max_lights_per_object=16
 environment/defaults/default_clear_color=Color(0.0773615, 0.0773615, 0.0773615, 0.870588)
 viewport/transparent_background=true

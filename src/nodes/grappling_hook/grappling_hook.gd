@@ -5,25 +5,35 @@ extends Node2D
 
 @onready var fsm: FSM = $States
 @onready var hook_target_ray: RayCast2D = $TargetRay
-@onready var _rope: Line2D = $Rope
 
 var _anchor_stack: Array[Vector2] = []
-var _anchor # Vector2 or Null
+var _anchor
 var hooked: bool= false
 var _parent: CharacterBody2D
 var _current_anchor = null
+
+var _rope_points: Array = []
+var _rope_visible: bool = false
+var _rope_color: Color = Color(0.9, 0.9, 0.9)
+var _rope_width: float = 2.0
 
 
 func _ready() -> void:
 	fsm.set_host(self)
 	_parent = get_parent()
 	_parent.player_death.connect(_on_player_death)
-	_rope.visible = false
+	_rope_visible = false
 
 
 func _physics_process(_delta: float) -> void:
 	if _current_anchor:
 		_create_rope()
+
+
+func _draw() -> void:
+	if _rope_visible and _rope_points.size() > 1:
+		for i in range(_rope_points.size() - 1):
+			draw_line(to_local(_rope_points[i]), to_local(_rope_points[i + 1]), _rope_color, _rope_width)
 
 
 func _on_player_death() -> void:
@@ -42,7 +52,9 @@ func _create_rope() -> void:
 		for a in _anchor_stack:
 			points.insert(2, a)
 		points.append(_current_anchor.global_position)
-	_rope.points = points
+	
+	_rope_points = points
+	queue_redraw()
 
 
 func _process_wrapping() -> void:
@@ -106,17 +118,14 @@ func apply_grapple_physics(delta: float) -> void:
 	var tangential_vel = _parent.velocity - dir * radial_vel
 
 	if tangential_vel == Vector2.ZERO:
-		var hook_direction = sign(dir.x)
-		tangential_vel = Vector2(dir.x, -dir.y) * INITIAL_SWING_SPEED * hook_direction
-
+		tangential_vel = Vector2(dir.x, -dir.y) * INITIAL_SWING_SPEED
 	var input_axis = Input.get_axis("move_left", "move_right")
 	if input_axis == 0:
 		input_axis = sign(dir.x)
-	
 	tangential_vel += Vector2(dir.x, -dir.y) * input_axis * SWING_FORCE_MULTIPLIER * delta
 	var radial_accel = (DESIRED_RADIAL_SPEED - radial_vel) * RADIAL_ACCEL_FACTOR * delta
 	_parent.velocity = dir * radial_vel + tangential_vel + dir * radial_accel
-	_parent.velocity = _parent.velocity.clamp(-MAX_VELOCITY, MAX_VELOCITY)
+	_parent.velocity = _parent.velocity.clamp(-MAX_VELOCITY,MAX_VELOCITY)
 	_parent.move_and_slide()
 
 
@@ -144,7 +153,7 @@ func create_hook(start_pos: Vector2, target_pos: Vector2) -> void:
 
 func _on_hit_hookable(_position: Vector2, _collider: Node2D) -> void:
 	hooked = true
-	_rope.visible = true
+	_rope_visible = true
 
 
 func _on_hook_failed() -> void:
@@ -162,8 +171,8 @@ func cleanup_current_hook() -> void:
 			_current_anchor.queue_free()
 		
 	_current_anchor = null
-	_rope.visible = false
-	_rope.clear_points()
+	_rope_visible = false
+	_rope_points.clear()
 	_anchor_stack.clear()
 	_anchor = null
 	hooked = false

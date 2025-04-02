@@ -11,15 +11,6 @@ z_index = 15
 script = ExtResource("1_d2kjb")
 anchor_scene = ExtResource("4_670dg")
 
-[node name="Rope" type="Line2D" parent="."]
-top_level = true
-points = PackedVector2Array(469, 189)
-width = 4.0
-default_color = Color(0.918134, 0.939158, 0.991694, 1)
-joint_mode = 1
-begin_cap_mode = 2
-end_cap_mode = 2
-
 [node name="TargetRay" type="RayCast2D" parent="."]
 
 [node name="States" type="Node" parent="."]
