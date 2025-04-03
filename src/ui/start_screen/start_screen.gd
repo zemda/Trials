@@ -12,6 +12,8 @@ extends CanvasLayer
 @onready var leaderboard_button = $Control/CenterContainer/VBoxContainer/LeaderboardButton
 @onready var quit_button = $Control/CenterContainer/VBoxContainer/QuitButton
 
+@onready var version_label = $Control/VersionLabel
+
 var _in_start_screen_context: bool = true
 
 var _buttons: Array = []
@@ -40,6 +42,8 @@ func _ready() -> void:
 	
 	stats_container.back_pressed.connect(_on_back_from_stats_pressed)
 	leaderboard_container.back_pressed.connect(_on_back_from_leaderboard_pressed)
+	
+	version_label.text = Version.get_full_version_string()
 
 
 func _input(event: InputEvent) -> void:
@@ -81,6 +85,7 @@ func _update_button_focus() -> void:
 
 func show_main_menu() -> void:
 	main_container.visible = true
+	version_label.visible = true
 	_in_main_menu = true
 	
 	leaderboard_container.visible = false
@@ -109,6 +114,7 @@ func show_settings() -> void:
 	hide_main_menu()
 	hide_stats()
 	hide_leaderboard()
+	version_label.visible = false
 	settings_container.visible = true
 	
 	settings_container.modulate.a = 0.0
@@ -130,6 +136,7 @@ func show_stats() -> void:
 	hide_main_menu()
 	stats_container.visible = true
 	stats_container.update_stats()
+	version_label.visible = false
 	
 	var tween = create_tween()
 	tween.tween_property(stats_container, "position", Vector2.ZERO, 0.3).from(Vector2(-get_viewport().get_visible_rect().size.x, 0))
@@ -144,6 +151,7 @@ func show_leaderboard() -> void:
 	leaderboard_container.position = Vector2(-get_viewport().get_visible_rect().size.x, 0)
 	leaderboard_container.visible = true
 	leaderboard_container.initialize()
+	version_label.visible = false
 	
 	var tween = create_tween()
 	tween.tween_property(leaderboard_container, "position", Vector2.ZERO, 0.3)
