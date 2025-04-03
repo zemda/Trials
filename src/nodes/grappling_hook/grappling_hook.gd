@@ -8,7 +8,7 @@ extends Node2D
 
 var _anchor_stack: Array[Vector2] = []
 var _anchor
-var hooked: bool= false
+var hooked: bool = false
 var _parent: CharacterBody2D
 var _current_anchor = null
 

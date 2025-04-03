@@ -43,7 +43,7 @@ func _ready() -> void:
 	stats_container.back_pressed.connect(_on_back_from_stats_pressed)
 	leaderboard_container.back_pressed.connect(_on_back_from_leaderboard_pressed)
 	
-	version_label.text = Version.get_full_version_string()
+	version_label.text = VersionInfo.get_full_version_string()
 
 
 func _input(event: InputEvent) -> void:

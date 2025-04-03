@@ -1,4 +1,4 @@
-name: "Publish to GitHub Pages"
+name: "Deploy Game"
 
 env:
   GODOT_VERSION: 4.4
@@ -11,60 +11,41 @@ on:
 
 jobs:
   deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+    
     container:
       image: barichello/godot-ci:4.4
       # https://hub.docker.com/r/barichello/godot-ci/tags
-
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      
+      - name: Mark repository as safe
+        run: git config --global --add safe.directory /__w/Bachelor-Thesis/Bachelor-Thesis
 
-      - name: Setup Git
-        run: |
-          git config --global user.name "github-ci[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Increment Version
+      - name: Generate Build Version
         id: version
+        shell: bash
         run: |
-          if [ ! -f "version.txt" ]; then
-            echo "v0.0.1" > version.txt
-          fi
+          BUILD_DATE=$(date +"%Y%m%d")
+          BUILD_NUMBER=$(date +"%H%M")
+          BUILD_VERSION="v${BUILD_DATE}.${BUILD_NUMBER}"
+          echo "build_version=$BUILD_VERSION" >> $GITHUB_OUTPUT
           
-          VERSION=$(cat version.txt)
-          echo "Current version: $VERSION"
+          echo "Using build version: $BUILD_VERSION"
+          sed -i "s/const VERSION = \".*\"/const VERSION = \"$BUILD_VERSION\"/" src/version_info.gd
           
-          VERSION_NUM=${VERSION#v}
-          
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_NUM"
-          
-          PATCH=$((PATCH + 1))
-          
-          if [ "$PATCH" -gt 9 ]; then
-            PATCH=0
-            MINOR=$((MINOR + 1))
-            
-            if [ "$MINOR" -gt 9 ]; then
-              MINOR=0
-              MAJOR=$((MAJOR + 1))
-            fi
-          fi
-          
-          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
-          echo "New version: $NEW_VERSION"
-          echo "$NEW_VERSION" > version.txt
-          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Updated version_info.gd:"
+          cat src/version_info.gd
 
       - name: Move export templates into position
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mv /root/.local/share/godot/export_templates/4.4.stable ~/.local/share/godot/export_templates/4.4.stable
       
       - name: Create staging directory
         run: mkdir -v -p build/web
@@ -77,12 +58,6 @@ jobs:
           git clone https://github.com/gzuidhof/coi-serviceworker.git
           mv coi-serviceworker/coi-serviceworker.js build/web/coi-serviceworker.js
           sed -i '3 i <script src="coi-serviceworker.js"></script>' build/web/index.html
-      
-      - name: Commit version change
-        run: |
-          git add version.txt
-          git commit -m "Auto-increment version to ${{ steps.version.outputs.new_version }}" || echo "No changes to commit"
-          git push || echo "No changes to push"
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3.9.3
@@ -92,4 +67,4 @@ jobs:
           force_orphan: true
           user_name: "github-ci[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_message: "Publish to gh-pages (version ${{ steps.version.outputs.new_version }})"
+          commit_message: "Publish to gh-pages (version ${{ steps.version.outputs.build_version }})"
