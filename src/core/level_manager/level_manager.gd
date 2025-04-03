@@ -89,9 +89,7 @@ func _store_initial_level_state() -> void:
 			_original_nodes_data.append(data)
 
 
-func _recreate_nodes() -> void: # TODO remove fake loading time
-	print("LevelManager: Respawning player & nodes")
-	
+func _recreate_nodes() -> void:
 	if _is_recreating_nodes:
 		return
 	_is_recreating_nodes = true
@@ -171,8 +169,7 @@ func _recreate_nodes() -> void: # TODO remove fake loading time
 
 
 func _on_player_death() -> void:
-	if _player and is_instance_valid(_player):
-		GameAnalytics.track_player_death(level_name, _player.global_position)
+	GameAnalytics.track_player_death(level_name, _player.global_position)
 	_recreate_nodes()
 
 
@@ -185,7 +182,7 @@ func _find_and_register_checkpoints():
 	await get_tree().process_frame
 	
 	_checkpoints = get_tree().get_nodes_in_group("checkpoints")
-	print("LevelManager: Found ", _checkpoints.size(), " checkpoints")
+	#print("LevelManager: Found ", _checkpoints.size(), " checkpoints")
 	
 	for checkpoint in _checkpoints:
 		checkpoint.checkpoint_activated.connect(_on_checkpoint_activated)
@@ -195,7 +192,7 @@ func _find_and_register_checkpoints():
 func _register_checkpoint(checkpoint_node, data = {}):
 	var checkpoint_id = checkpoint_node.get_path()
 	_checkpoint_data[checkpoint_id] = data
-	print("LevelManager: Registered checkpoint at ", checkpoint_id)
+	#print("LevelManager: Registered checkpoint at ", checkpoint_id)
 
 
 func _on_checkpoint_activated(checkpoint) -> void:
