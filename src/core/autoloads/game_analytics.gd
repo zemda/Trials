@@ -87,10 +87,9 @@ func _load_credentials() -> Dictionary:
 
 # === TRACKING METHODS === 
 
-func track_level_completed(level_name: String, completion_method: String, time_seconds: float) -> void:
+func track_level_completed(level_name: String, time_seconds: float) -> void:
 	Talo.events.track("level_completed", {
 		"level_name": level_name,
-		"completion_method": completion_method,  # "normal" or "skipped"
 		"time_seconds": time_seconds
 	})
 
@@ -104,7 +103,7 @@ func track_player_death(level_name: String, death_position: Vector2) -> void:
 	})
 
 
-func track_best_time(level_name: String, time_seconds: float, is_new_best: bool) -> void:
+func track_level_time(level_name: String, time_seconds: float, is_new_best: bool) -> void:
 	Talo.events.track("level_best_time", {
 		"level_name": level_name,
 		"time_seconds": time_seconds,

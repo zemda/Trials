@@ -51,6 +51,7 @@ func _process(_delta: float) -> void:
 		_on_player_death()
 	
 	if Input.is_action_just_pressed("ui_cancel"): # TODO just for test
+		LeaderboardManager.set_skip_detection(true)
 		_complete_level()
 
 
@@ -209,13 +210,11 @@ func _on_checkpoint_activated(checkpoint) -> void:
 
 func _complete_level() -> void:
 	var level_time = GameManager.get_level_time()
-	var is_new_best = GameManager.save_best_time()
 	
 	var completion_method = "skipped" if Input.is_action_just_pressed("ui_cancel") else "normal"
-	if completion_method == "normal":
-		GameAnalytics.track_level_completed(level_name, completion_method, level_time)
-	else:
-		LeaderboardManager.set_skip_detection(true)
+	if not LeaderboardManager.was_skipped():
+		GameManager.save_level_time()
+		GameAnalytics.track_level_completed(level_name, level_time)
 	
 	GameManager.remove_player_from_level()
 	
