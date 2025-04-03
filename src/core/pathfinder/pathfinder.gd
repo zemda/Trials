@@ -35,7 +35,7 @@ func _init(tile_map: TileMapLayer, max_jump_height: int = 4, jump_distance: int 
 	
 	_max_jump_height = max_jump_height
 	_jump_distance = jump_distance
-	print("PathFinder initialized")
+	#print("PathFinder initialized")
 	_create_grid(0, max_x, min_y, -1)
 	_create_connections()
 
@@ -48,7 +48,7 @@ func find_path(start: Vector2, end: Vector2, character_width: int = 1, character
 	
 	end_grid = _find_top_surface_tile(end_grid)
 	if end_grid == Vector2i(-1, -1):
-		print("No valid surface tile found")
+		#print("No valid surface tile found")
 		return []
 
 	var path = _generate_path(start_grid, end_grid, character_width, character_height)
@@ -71,7 +71,7 @@ func _find_top_surface_tile(pos: Vector2i) -> Vector2i:
 
 func _create_grid(x_min: int, x_max: int, y_min: int, y_max: int) -> void:
 	astar = AStar2D.new()
-	print("start grid")
+	#print("start grid")
 
 	grid_to_id = {}
 	id_to_grid = {}
@@ -89,11 +89,11 @@ func _create_grid(x_min: int, x_max: int, y_min: int, y_max: int) -> void:
 			astar.add_point(id, Vector2(pos.x, pos.y))
 			grid_to_id[pos] = id
 			id_to_grid[id] = pos
-	print("end grid")
+	#print("end grid")
 
 
 func _create_connections() -> void:
-	print("start connections")
+	#print("start connections")
 	for pos in grid_to_id:
 		var id = grid_to_id[pos]
 		var is_on_surface = _is_on_surface(pos)
@@ -158,7 +158,7 @@ func _create_connections() -> void:
 								astar.connect_points(id, target_id, false)
 								astar.set_point_weight_scale(target_id, 10)
 		
-	print("end connections")
+	#print("end connections")
 
 func _is_diagonal_move_valid(from_pos: Vector2i, dx: int, dy: int) -> bool:
 	if dy == -1:

@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://dypphkblg1bwo" path="res://nodes/grappling_hook/anchor/GrappleAnchor.tscn" id="4_670dg"]
 
 [node name="GrapplingHook" type="Node2D"]
-z_index = 15
 script = ExtResource("1_d2kjb")
 anchor_scene = ExtResource("4_670dg")
 

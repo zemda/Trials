@@ -104,9 +104,11 @@ func _create_warning_particles(coords: Vector2i) -> void:
 	get_parent().add_child(particles)
 	
 	var timer = get_tree().create_timer(destruction_time)
+	var particles_ref = weakref(particles)
 	timer.timeout.connect(func(): 
-		if is_instance_valid(particles):
-			particles.queue_free()
+		var p = particles_ref.get_ref()
+		if p:
+			p.queue_free()
 	)
 
 
@@ -161,10 +163,11 @@ func _destroy_tile(tilemap: TileMapLayer, coords: Vector2i, idx: int) -> void:
 	tween.tween_property(sprite, "rotation", rotation_dir * PI/4, fall_duration).set_ease(Tween.EASE_IN)
 	
 	tween.tween_property(sprite, "modulate:a", 0.0, fade_duration).set_delay(fall_duration - fade_duration)
-	
+	var sprite_ref = weakref(sprite)
 	tween.tween_callback(func(): 
-		if is_instance_valid(sprite):
-			sprite.queue_free()
+		var p = sprite_ref.get_ref()
+		if p:
+			p.queue_free()
 	).set_delay(fall_duration)
 	
 	var remaining_tiles = 0
@@ -205,10 +208,13 @@ func _create_destruction_particles(coords: Vector2i) -> void:
 	particles.global_position = particle_pos + Vector2(8, 0)
 	get_parent().add_child(particles)
 	
+	
 	var timer = get_tree().create_timer(particles.lifetime * 1.2)
+	var particles_ref = weakref(particles)
 	timer.timeout.connect(func(): 
-		if is_instance_valid(particles):
-			particles.queue_free()
+		var p = particles_ref.get_ref()
+		if p:
+			p.queue_free()
 	)
 
 
