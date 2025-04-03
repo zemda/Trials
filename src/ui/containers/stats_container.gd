@@ -2,12 +2,16 @@ extends Control
 
 @onready var levels_grid = $PanelContainer/MarginContainer/VBoxContainer/LevelsGrid
 @onready var best_run_label = $PanelContainer/MarginContainer/VBoxContainer/BestRunLabel
-@onready var back_button = $PanelContainer/MarginContainer/VBoxContainer/BackButton
+@onready var back_button = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/BackButton
+@onready var reset_stats_button = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ResetStatsButton
 
 signal back_pressed
 
+
 func _ready() -> void:
 	back_button.pressed.connect(_on_back_pressed)
+	reset_stats_button.pressed.connect(_on_reset_stats_pressed)
+
 
 func update_stats() -> void:
 	for i in range(levels_grid.get_child_count()):
@@ -27,6 +31,7 @@ func update_stats() -> void:
 				var best_time = GameManager.get_best_time_for_level(key)
 				_add_stats_entry(level_name, best_time)
 
+
 func _add_stats_entry(level_name: String, time: float) -> void:
 	var name_label = Label.new()
 	name_label.text = level_name
@@ -40,6 +45,7 @@ func _add_stats_entry(level_name: String, time: float) -> void:
 	levels_grid.add_child(name_label)
 	levels_grid.add_child(time_label)
 
+
 func format_time(time_seconds: float) -> String:
 	if time_seconds <= 0:
 		return "--:--:--"
@@ -50,5 +56,12 @@ func format_time(time_seconds: float) -> String:
 	
 	return "%02d:%02d.%02d" % [minutes, seconds, milliseconds]
 
+
 func _on_back_pressed() -> void:
 	emit_signal("back_pressed")
+
+
+func _on_reset_stats_pressed() -> void:
+	GameManager.reset_best_times()
+	update_stats()
+	

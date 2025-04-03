@@ -156,4 +156,6 @@ func can_grapple() -> bool:
 
 
 func _on_hazard_detector_area_entered(_area: Area2D) -> void:
+	_is_in_knockback = false
+	_knockback_velocity = Vector2.ZERO
 	emit_signal("player_death")

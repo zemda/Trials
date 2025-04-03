@@ -28,7 +28,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 16
 tab_alignment = 1
-current_tab = 1
+current_tab = 2
 drag_to_rearrange_enabled = true
 
 [node name="Audio" type="MarginContainer" parent="VBoxContainer/TabContainer"]
@@ -73,6 +73,7 @@ text = "SFX Volume"
 layout_mode = 2
 
 [node name="Video" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 150
 theme_override_constants/margin_right = 150
@@ -114,7 +115,6 @@ theme = ExtResource("3_1xi8o")
 theme_override_font_sizes/font_size = 16
 
 [node name="Controls" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 100
 metadata/_tab_index = 2
@@ -131,40 +131,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 8
-
-[node name="Delete files" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-visible = false
-layout_mode = 2
-theme_override_constants/margin_left = 150
-theme_override_constants/margin_right = 150
-metadata/_tab_index = 3
-
-[node name="Video" type="GridContainer" parent="VBoxContainer/TabContainer/Delete files"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_constants/h_separation = 50
-theme_override_constants/v_separation = 8
-columns = 2
-
-[node name="ConfigLabel" type="Label" parent="VBoxContainer/TabContainer/Delete files/Video"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "Control cfg"
-
-[node name="ConfigButton" type="Button" parent="VBoxContainer/TabContainer/Delete files/Video"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "delete"
-
-[node name="BesttimeLabel" type="Label" parent="VBoxContainer/TabContainer/Delete files/Video"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "Best time"
-
-[node name="BesttimeButton" type="Button" parent="VBoxContainer/TabContainer/Delete files/Video"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "delete"
 
 [node name="BottomButtons" type="HBoxContainer" parent="."]
 custom_minimum_size = Vector2(100, 0)

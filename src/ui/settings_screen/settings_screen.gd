@@ -14,8 +14,6 @@ signal settings_closed
 
 @onready var _keybind_container = $VBoxContainer/TabContainer/Controls/Controls2/KeybindContainer
 
-@onready var _delete_config_button = $"VBoxContainer/TabContainer/Delete files/Video/ConfigButton"
-@onready var _delete_besttime_button = $"VBoxContainer/TabContainer/Delete files/Video/BesttimeButton"
 
 var _action_to_change: String = ""
 var _button_to_change: Button = null
@@ -70,8 +68,6 @@ func _ready() -> void:
 	$BottomButtons/ResetButton.pressed.connect(_on_reset_pressed)
 	$BottomButtons/BackButton.pressed.connect(_on_back_pressed)
 	
-	_delete_config_button.pressed.connect(_on_delete_config_pressed)
-	_delete_besttime_button.pressed.connect(_on_delete_besttime_pressed)
 	_fullscreen_check.toggled.connect(_on_fullscreen_toggled)
 	
 	_setup_resolution_dropdown()
@@ -467,6 +463,10 @@ func _on_apply_pressed() -> void:
 
 
 func _on_reset_pressed() -> void:
+	if FileAccess.file_exists(_config_path):
+			var dir = DirAccess.open("user://")
+			if dir:
+				dir.remove(_config_path)
 	for action_name in _action_names.keys():
 		InputMap.action_erase_events(action_name)
 		_current_settings.controls[action_name] = _editor_default_inputs[action_name].duplicate(true)
@@ -535,50 +535,3 @@ func _on_remove_binding_pressed(action_name: String, binding_index: int) -> void
 			_current_settings.controls[action_name].remove_at(binding_index)
 	
 	_setup_keybind_ui()
-
-
-func _on_delete_config_pressed() -> void:
-	var dialog = ConfirmationDialog.new()
-	dialog.title = "Delete Configuration"
-	dialog.dialog_text = "Are you sure you want to delete your configuration?"
-	dialog.get_ok_button().text = "Delete"
-	dialog.content_scale_factor = 0.5
-	dialog.max_size = Vector2i(300, 80)
-	dialog.canceled.connect(dialog.queue_free)
-	dialog.confirmed.connect(func():
-		if FileAccess.file_exists(_config_path):
-			var dir = DirAccess.open("user://")
-			if dir:
-				dir.remove(_config_path)
-		
-		_current_settings.audio = _default_settings.audio.duplicate(true)
-		_current_settings.video = _default_settings.video.duplicate(true)
-		
-		_current_settings.controls = {}
-		for action_name in _editor_default_inputs.keys():
-			_current_settings.controls[action_name] = _editor_default_inputs[action_name].duplicate(true)
-			
-		_apply_settings_to_game()
-		_apply_settings_to_ui()
-		dialog.queue_free()
-	)
-	
-	add_child(dialog)
-	dialog.popup_centered()
-
-
-func _on_delete_besttime_pressed() -> void:
-	var dialog = ConfirmationDialog.new()
-	dialog.title = "Delete Best Times"
-	dialog.dialog_text = "Are you sure you want to delete all your best times records?"
-	dialog.get_ok_button().text = "Delete"
-	dialog.content_scale_factor = 0.5
-	dialog.max_size = Vector2i(300, 80)
-	dialog.canceled.connect(dialog.queue_free)
-	dialog.confirmed.connect(func():
-		GameManager.reset_best_times()
-		dialog.queue_free()
-	)
-	
-	add_child(dialog)
-	dialog.popup_centered()

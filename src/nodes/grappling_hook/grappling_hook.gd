@@ -15,7 +15,7 @@ var _current_anchor = null
 var _rope_points: Array = []
 var _rope_visible: bool = false
 var _rope_color: Color = Color(0.9, 0.9, 0.9)
-var _rope_width: float = 2.0
+var _rope_width: float = 4.0
 
 
 func _ready() -> void:
