@@ -22,6 +22,44 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "github-ci[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Increment Version
+        id: version
+        run: |
+          if [ ! -f "version.txt" ]; then
+            echo "v0.0.1" > version.txt
+          fi
+          
+          VERSION=$(cat version.txt)
+          echo "Current version: $VERSION"
+          
+          VERSION_NUM=${VERSION#v}
+          
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_NUM"
+          
+          PATCH=$((PATCH + 1))
+          
+          if [ "$PATCH" -gt 9 ]; then
+            PATCH=0
+            MINOR=$((MINOR + 1))
+            
+            if [ "$MINOR" -gt 9 ]; then
+              MINOR=0
+              MAJOR=$((MAJOR + 1))
+            fi
+          fi
+          
+          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+          echo "New version: $NEW_VERSION"
+          echo "$NEW_VERSION" > version.txt
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
       - name: Move export templates into position
         run: |
@@ -40,6 +78,12 @@ jobs:
           mv coi-serviceworker/coi-serviceworker.js build/web/coi-serviceworker.js
           sed -i '3 i <script src="coi-serviceworker.js"></script>' build/web/index.html
       
+      - name: Commit version change
+        run: |
+          git add version.txt
+          git commit -m "Auto-increment version to ${{ steps.version.outputs.new_version }}" || echo "No changes to commit"
+          git push || echo "No changes to push"
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3.9.3
         with:
@@ -48,4 +92,4 @@ jobs:
           force_orphan: true
           user_name: "github-ci[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_message: "Publish to gh-pages"
+          commit_message: "Publish to gh-pages (version ${{ steps.version.outputs.new_version }})"
