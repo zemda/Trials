@@ -6,6 +6,7 @@ extends CharacterBody2D
 @export var arc: float = 10.0
 
 var is_shooter_on_ceiling: bool = false
+var shooter_position: Vector2 = Vector2.ZERO
 
 
 func _physics_process(delta: float) -> void:
@@ -15,7 +16,7 @@ func _physics_process(delta: float) -> void:
 	if collision:
 		var collider = collision.get_collider()
 		if collider is Player:
-			var base_direction = (collider.global_position - global_position).normalized()
+			var base_direction = (collider.global_position - shooter_position).normalized()
 			var knockback_direction = base_direction
 			
 			var hitting_from_above = global_position.y < collider.global_position.y
@@ -30,9 +31,10 @@ func _physics_process(delta: float) -> void:
 		destroy()
 
 
-func launch(target_position: Vector2) -> void:
+func launch(target_position: Vector2, shooter_pos: Vector2) -> void:
 	var arc_ = arc if not is_shooter_on_ceiling else 1
 	var arc_height = target_position.y - global_position.y - arc_
+	shooter_position = shooter_pos
 	arc_height = min(-arc_, arc_height)
 	velocity = _get_arc_velocity(global_position, target_position, arc_height, projectile_speed, projectile_speed)
 	$Area2D.monitoring = true

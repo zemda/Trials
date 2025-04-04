@@ -146,7 +146,7 @@ func shoot(target_position: Vector2) -> void:
 	
 	projectile.is_shooter_on_ceiling = fsm.current_state.state_name == "LURKING"
 	projectile.global_position = global_position
-	projectile.launch(target_position)
+	projectile.launch(target_position, global_position)
 	
 	_can_shoot = false
 	_shoot_timer = 0.0
