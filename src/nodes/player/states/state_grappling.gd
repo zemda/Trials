@@ -27,8 +27,10 @@ func _transition() -> int:
 
 func _switch_collisions() -> void:
 	host.velocity.y += -2
+	
 	var coll = host.find_child("CollisionShape2D")
-	coll.set_disabled(!coll.is_disabled())
+	coll.set_deferred("disabled", !coll.is_disabled())
+	
 	var grapp_coll = host.find_child("grappleCollision")
-	grapp_coll.set_disabled(!grapp_coll.is_disabled())
+	grapp_coll.set_deferred("disabled", !grapp_coll.is_disabled())
 	
