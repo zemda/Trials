@@ -116,7 +116,7 @@ collision_layer = 8
 script = ExtResource("1_fo7qf")
 debug_draw = false
 _projectile_scene = ExtResource("2_c8vxq")
-_shoot_cooldown = 1.0
+_shoot_cooldown = 3.0
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_veeab")
