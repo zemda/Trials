@@ -6,6 +6,9 @@ func _enter() -> void:
 
 
 func update(delta: float) -> void:
+	if host.is_dead:
+		emit_signal("transition_to_default")
+		return
 	if host._knockback_velocity != Vector2.ZERO:
 		host.velocity += host._knockback_velocity
 		
@@ -27,7 +30,6 @@ func update(delta: float) -> void:
 	host.apply_air_resistance(input_axis, delta)
 	host.update_animations(input_axis)
 	host.handle_downward_cast()
-
 
 
 func _transition() -> int:

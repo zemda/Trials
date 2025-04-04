@@ -10,6 +10,7 @@ var is_attached_to_rope := false
 var _knockback_force: float = 100.0
 var _knockback_velocity := Vector2.ZERO
 var _is_in_knockback: bool = false
+var is_dead: bool = false
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var wall_jump_timer: Timer = $WallJumpTimer
@@ -28,6 +29,8 @@ func _physics_process(_delta: float) -> void:
 
 
 func knockback(direction: Vector2, force: float = _knockback_force, should_push_up: bool = false) -> void:
+	if is_dead:
+		return
 	if fsm.current_state.state_name not in ["GRAPPLING", "SWINGING"]:
 		fsm.change_state_to(5)
 	
@@ -158,4 +161,6 @@ func can_grapple() -> bool:
 func _on_hazard_detector_area_entered(_area: Area2D) -> void:
 	_is_in_knockback = false
 	_knockback_velocity = Vector2.ZERO
+	fsm.change_state_to_default()
+	is_dead = true
 	emit_signal("player_death")
