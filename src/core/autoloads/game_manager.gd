@@ -337,6 +337,7 @@ func place_player_in_level(position: Vector2, pvisible: bool = true) -> void:
 		_player_instance.set_physics_process(true)
 		_player_instance.set_process_input(true)
 	_player_instance.velocity = Vector2.ZERO
+	_player_instance.is_dead = false
 
 
 func remove_player_from_level() -> void:

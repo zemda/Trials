@@ -27,6 +27,7 @@ layer = 0
 [node name="TimerUi" parent="Timer" instance=ExtResource("2_gipkp")]
 
 [node name="Background" parent="." instance=ExtResource("3_ds385")]
+z_index = -5
 offset_left = -808.0
 offset_top = -2675.0
 offset_right = 5584.0
@@ -64,18 +65,18 @@ position = Vector2(528, -324)
 x_scale = 2
 
 [node name="HookPoint2" parent="HookPoints" instance=ExtResource("8_ndbhf")]
-position = Vector2(253, -351)
+position = Vector2(252, -351)
 rotation = -1.5708
 is_one_time_use = false
 x_scale = 3
 
 [node name="HookPoint3" parent="HookPoints" instance=ExtResource("8_ndbhf")]
-position = Vector2(369, -562)
+position = Vector2(368, -564)
 is_one_time_use = false
 x_scale = 4
 
 [node name="HookPoint4" parent="HookPoints" instance=ExtResource("8_ndbhf")]
-position = Vector2(594, -831)
+position = Vector2(592, -836)
 is_one_time_use = false
 x_scale = 3
 
@@ -89,14 +90,14 @@ x_scale = 3
 [node name="SolidChains" type="Node" parent="."]
 
 [node name="Chain" parent="SolidChains" instance=ExtResource("10_57y70")]
-position = Vector2(3313, -961)
+position = Vector2(3421, -962)
 segment_settings_resource = ExtResource("11_pmbxn")
 segment_count = 8
 
 [node name="NotsolidChains" type="Node" parent="."]
 
 [node name="Chain2" parent="NotsolidChains" instance=ExtResource("10_57y70")]
-position = Vector2(2762, -945)
+position = Vector2(3479, -960)
 segment_count = 8
 
 [node name="Ropes" type="Node" parent="."]
@@ -198,7 +199,7 @@ position = Vector2(2002, -160)
 [node name="Checkpoints" type="Node" parent="."]
 
 [node name="Checkpoint" parent="Checkpoints" instance=ExtResource("16_tut4n")]
-position = Vector2(2662, -900)
+position = Vector2(3450, -1034)
 
 [node name="Teleports" type="Node" parent="."]
 

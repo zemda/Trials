@@ -31,6 +31,7 @@ layer = 0
 [node name="TimerUi" parent="Timer" instance=ExtResource("2_qxntb")]
 
 [node name="Background" parent="." instance=ExtResource("1_e8mw7")]
+z_index = -5
 offset_left = -807.0
 offset_bottom = 598.0
 scale_factor = 601.0

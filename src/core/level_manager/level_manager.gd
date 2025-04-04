@@ -1,7 +1,6 @@
 extends Node2D
 class_name LevelManager
 
-signal player_died
 
 @export var camera_limit_left: float = 0
 @export var camera_limit_right: float = 10000
@@ -86,6 +85,8 @@ func _store_initial_level_state() -> void:
 			if node is DestructiblePlatform:
 				data["platform_length"] = node.platform_length
 				data["destruction_time"] = node.destruction_time
+			if node is Enemy:
+				data["_shoot_cooldown"] = node._shoot_cooldown
 			_original_nodes_data.append(data)
 
 
@@ -141,6 +142,8 @@ func _recreate_nodes() -> void:
 						instance._original_position = data["position"]
 						instance.global_position = data["position"]
 					
+					elif instance is Enemy:
+						instance._shoot_cooldown = data["_shoot_cooldown"]
 					var parent = get_node_or_null(data["parent_path"])
 					if parent:
 						parent.add_child(instance)
@@ -162,7 +165,6 @@ func _recreate_nodes() -> void:
 	tween.tween_callback(func():
 		GameManager.hide_loading_screen()
 		_is_recreating_nodes = false
-		emit_signal("player_died")
 	)
 	
 	tween.play()
