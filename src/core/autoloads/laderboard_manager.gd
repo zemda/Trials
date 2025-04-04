@@ -62,7 +62,7 @@ func submit_level_time(level_name: String, time_seconds: float) -> void:
 	
 	var leaderboard_name = LEVEL_TIME_LEADERBOARD_PREFIX + simple_level_name
 	
-	var res = await Talo.leaderboards.add_entry(leaderboard_name, time_seconds)
+	var _res = await Talo.leaderboards.add_entry(leaderboard_name, time_seconds)
 	
 	emit_signal("leaderboard_updated", leaderboard_name)
 
@@ -74,7 +74,7 @@ func submit_game_time(time_seconds: float) -> void:
 	if Talo.identity_check() != OK:
 		return
 	
-	var res = await Talo.leaderboards.add_entry(GAME_COMPLETION_LEADERBOARD, time_seconds)
+	var _res = await Talo.leaderboards.add_entry(GAME_COMPLETION_LEADERBOARD, time_seconds)
 	
 	emit_signal("leaderboard_updated", GAME_COMPLETION_LEADERBOARD)
 

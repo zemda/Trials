@@ -210,7 +210,6 @@ func _on_checkpoint_activated(checkpoint) -> void:
 func _complete_level() -> void:
 	var level_time = GameManager.get_level_time()
 	
-	var completion_method = "skipped" if Input.is_action_just_pressed("ui_cancel") else "normal"
 	if not LeaderboardManager.was_skipped():
 		GameManager.save_level_time()
 		GameAnalytics.track_level_completed(level_name, level_time)
