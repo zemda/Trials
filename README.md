@@ -1,23 +1,39 @@
-# Bachelor Thesis
+# Trials
 
+## Gameplay Mechanics
+Navigate through intricate levels using these mechanics:
 
+### Grappling Hook
+- **Activated with Left Mouse Button**
+- Attachable to specific blue line "points" starting from Level 03 (till then can be used to detect collisions...). 
+- Points might have some chance to be only one time use
 
-## Základní body zadání
+### Attachable Rope
+- **Triggered by pressing the E Key**
+- Not all ropes are attachable -> spot the difference through subtle texture details
 
-1. Implementace základních herních mechanik:
-    - **Pohyb hráče:** Vytvoření ovládání pohybu hráče
-    - **Grappling hook:** Hák k přitahování (na určité body, některé např. jen jednorázové)
+### Portals
+- There's a chance, that they will either move you forward or not...
 
-2. Nepřátelé:
-    - **Enemy:** variace enemy, někteří budou hráče pronásledovat, některý bude na něj střílet projektily, některý je jen sleduje a nebo vybouchne při kontaktu s hráčem
-    - **Pathfinding:** pohybující se enemy budou mít pathfinding, pomocí kterého budou moci pronásledovat hráče i napříč platformami a podobně 
+## Controls
+- **Move using WASD or Arrow Keys**
+- **Grappling Hook**: Left Mouse Button
+- **Rope Attachment**: E Key
+- **Skip Level**: ESC Key (temporary until full version)
+- *All controls can be modified in the settings*
 
-4. Prostředí/pasti:
-    - **Kolabující platformy:** Platformy, které po krátkém kontaktu zmizí
-    - **Pohybující se platformy:** Hráč bude muset načasovat skok na platformu, aby se dostal do požadované destinace
-    - **Houpací lano:** Hráč se bude muset na lano uchytit, rozhoupat se a přeskakovat na další lano či platformu
-    - **Seesaw** Překážka podobná houpačce, nutno rychle přejít, jinak se přetočí a hráč spadne
+## Leaderboard System
+- Powered by Talo
+- Tracks best times per level and continuous run
+- Only randomly generated player names :( (saved in user://)
 
-5. Návrh úrovní a struktura mapy:
-    - **Design mapy** 
-    - **Kontrolní body:** Na některých místech mohou být respawn body
+## Notes
+- Skipping levels will prevent time tracking
+- Clearing cache resets your account (pls don't)
+- Only the best times are saved into leaderboard
+- **Hint**: In Level 02, use enemy explosions to your advantage
+
+## Assets
+- Tileset from uheartbeast
+- *Sounds are missing, some effects/animations might be incomplete*
+- *UI is not perfectly aligned, leaderboard might be buggy*
