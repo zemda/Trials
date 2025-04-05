@@ -60,18 +60,18 @@ func _create_rope() -> void:
 func _process_wrapping() -> void:
 	hook_target_ray.target_position = hook_target_ray.to_local(_anchor)
 	hook_target_ray.force_raycast_update()
-	if hook_target_ray.is_colliding() and \
-		hook_target_ray.get_collider().is_in_group("Wrappable"):
-		if (hook_target_ray.get_collision_point() - _anchor).length() < 3:
+	if hook_target_ray.is_colliding() and hook_target_ray.get_collider().is_in_group("Wrappable"):
+		if hook_target_ray.get_collision_point().distance_to(_anchor) < 3:
 			return
+
 		_anchor_stack.append(_anchor)
 		_anchor = hook_target_ray.get_collision_point()
 
 
 func _vector_alignment(vect_a: Vector2, vect_b: Vector2) -> float:
-	if vect_a.length() * vect_b.length() == 0:
+	if vect_a.is_zero_approx() or vect_b.is_zero_approx():
 		return 0.0
-	return vect_a.dot(vect_b) / (vect_a.length() * vect_b.length())
+	return vect_a.normalized().dot(vect_b.normalized())
 
 
 func _process_unwrapping() -> void:
@@ -82,21 +82,24 @@ func _process_unwrapping() -> void:
 	hook_target_ray.force_raycast_update()
 	
 	if hook_target_ray.is_colliding():
-		if(hook_target_ray.get_collision_point() - _anchor).length() > 3:
+		if hook_target_ray.get_collision_point().distance_to(_anchor) > 4:
 			return
 	
 	hook_target_ray.target_position = hook_target_ray.to_local(_anchor_stack[-1])
 	hook_target_ray.force_raycast_update()
 	
 	if hook_target_ray.is_colliding():
-		if (hook_target_ray.get_collision_point() - _anchor_stack[-1]).length() > 3:
+		var collision_point = hook_target_ray.get_collision_point()
+		
+		if collision_point.distance_to(_anchor_stack[-1]) > 4:
 			return
-	
-	var angle_closeness = _vector_alignment(
-		hook_target_ray.to_local(_anchor), 
-		hook_target_ray.to_local(_anchor_stack[-1])
-	)
-	if angle_closeness > 0.955:
+		
+		if collision_point.distance_to(_anchor_stack[-1]) <= 3 and collision_point.distance_to(_anchor) > 4:
+			_anchor = _anchor_stack.pop_back()
+			return
+
+	var angle_closeness = _vector_alignment(_anchor - global_position, _anchor_stack[-1] - global_position)
+	if angle_closeness > 0.96:
 		_anchor = _anchor_stack.pop_back()
 
 

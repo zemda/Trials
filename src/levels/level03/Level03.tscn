@@ -18,6 +18,7 @@
 [node name="Level03" type="Node2D" node_paths=PackedStringArray("player_start_point") groups=["gameplay_level"]]
 script = ExtResource("1_i8jwu")
 camera_limit_top = -3000.0
+camera_limit_bottom = 0.0
 level_name = "Level 03"
 player_start_point = NodePath("PlayerStartPoint")
 respawn_height = 200.0
@@ -43,7 +44,7 @@ milkyway_intensity = 0.545
 [node name="DebugUi" parent="." instance=ExtResource("4_x2u17")]
 
 [node name="PlayerStartPoint" type="Marker2D" parent="."]
-position = Vector2(245, -163)
+position = Vector2(245, -165)
 
 [node name="Pathfinder" type="Node2D" parent="." node_paths=PackedStringArray("tile_map") groups=["pathfinder_manager"]]
 script = ExtResource("5_drvkf")
