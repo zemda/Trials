@@ -9,6 +9,8 @@ on:
   push:
     branches:
       - github
+    paths:
+      - 'src/**'
 
 permissions:
   contents: write
