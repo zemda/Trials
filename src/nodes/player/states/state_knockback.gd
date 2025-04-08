@@ -10,9 +10,10 @@ func update(delta: float) -> void:
 		emit_signal("transition_to_default")
 		return
 	if host._knockback_velocity != Vector2.ZERO:
+		if host.velocity.y > 0:
+			host.velocity.y = 0
 		host.velocity += host._knockback_velocity
-		
-		host.velocity = host.velocity.clamp(Vector2(-400, -400), Vector2(400, 400))
+		host.velocity = host.velocity.clamp(Vector2(-300, -400), Vector2(300, 300))
 	
 	host.apply_gravity(delta)
 	host.handle_jump()
@@ -24,8 +25,8 @@ func update(delta: float) -> void:
 	
 	if host.is_on_wall_only() and Input.is_action_just_pressed("move_up"):
 		var wall_normal = host.get_wall_normal()
-		host.velocity.x = wall_normal.x * host.movement_data.speed
-		host.velocity.y = host.movement_data.jump_velocity
+		host.velocity.x += wall_normal.x * host.movement_data.speed
+		host.velocity.y += host.movement_data.jump_velocity
 	
 	host.apply_air_resistance(input_axis, delta)
 	host.update_animations(input_axis)
