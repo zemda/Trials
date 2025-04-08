@@ -37,9 +37,18 @@ func create_chain(add_hook: bool = true) -> void:
 		if i == (segment_count - 1) and add_hook:
 			segment = hook.instantiate() as RigidBody2D
 			segment.settings_resource = hook_settings_resource
+			if segment_settings_resource.collision_layer == 32:
+				segment.modulate = Color.SLATE_GRAY
+			else:
+				segment.modulate = Color.LIGHT_SKY_BLUE
+			
 		else:
 			segment = segment_scene.instantiate() as RigidBody2D
 			segment.settings_resource = segment_settings_resource
+			if segment_settings_resource.collision_layer == 32:
+				segment.modulate = Color.SLATE_GRAY
+			elif add_hook:
+				segment.modulate = Color.LIGHT_SKY_BLUE
 		
 		segment.position = Vector2(0, i * segment_spacing)
 		segments.append(segment)
