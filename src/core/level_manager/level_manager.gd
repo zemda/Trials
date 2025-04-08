@@ -87,6 +87,8 @@ func _store_initial_level_state() -> void:
 				data["destruction_time"] = node.destruction_time
 			if node is Enemy:
 				data["_shoot_cooldown"] = node._shoot_cooldown
+				if node is Assasin:
+					data["should_wander"] = node.should_wander
 			_original_nodes_data.append(data)
 
 
@@ -144,6 +146,8 @@ func _recreate_nodes() -> void:
 					
 					elif instance is Enemy:
 						instance._shoot_cooldown = data["_shoot_cooldown"]
+						if instance is Assasin:
+							instance.should_wander = data["should_wander"]
 					var parent = get_node_or_null(data["parent_path"])
 					if parent:
 						parent.add_child(instance)

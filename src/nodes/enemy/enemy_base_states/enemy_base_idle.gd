@@ -9,8 +9,6 @@ var _idle_timer: float = 0.0
 var _idle_duration: float = 0.0
 
 var _spawn_position: Vector2
-@export var _should_wander: bool = true
-
 
 func _enter() -> void:
 	host.velocity.x = 0
@@ -36,8 +34,5 @@ func _transition() -> int:
 		if host.find_ceiling():
 			_tries_to_hang += 1
 			return states.ATTACHING_CEILING
-	
-	if _idle_timer >= _idle_duration and _should_wander:
-		return states.WANDER
 	
 	return states.NONE

@@ -1,4 +1,7 @@
 extends Enemy
+class_name Assasin
+
+@export var should_wander: bool = true
 
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
