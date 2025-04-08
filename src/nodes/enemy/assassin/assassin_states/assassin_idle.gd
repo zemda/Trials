@@ -7,7 +7,7 @@ func _transition() -> int:
 		if distance_to_player <= host._player_chasing_distance:
 			return states.CHASING
 	
-	if _idle_timer >= _idle_duration and _should_wander:
+	if _idle_timer >= _idle_duration and host.should_wander:
 		return states.WANDER
 	
 	return states.NONE
