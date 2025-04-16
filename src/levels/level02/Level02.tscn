@@ -67,7 +67,6 @@ layer = 0
 metadata/_edit_use_anchors_ = true
 
 [node name="Background" parent="." instance=ExtResource("1_482am")]
-visible = false
 z_index = -5
 offset_left = -808.0
 offset_top = -2675.0
