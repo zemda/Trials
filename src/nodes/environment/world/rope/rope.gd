@@ -25,11 +25,11 @@ func _physics_process(delta: float) -> void:
 		_handle_rope_swing_input()
 		_handle_rope_climb_input()
 		
-		if Input.is_action_just_pressed("rope"):
+		if Input.is_action_just_pressed("jump_off_rope"):
 			_unlink_player_from_rope()
 		
 	elif _player_in_range:
-		if Input.is_action_just_pressed("rope"):
+		if Input.is_action_just_pressed("attach_rope"):
 			_link_player_to_rope()
 
 
@@ -113,7 +113,7 @@ func _handle_rope_climb_input() -> void: # TODO: add some timer, but then improv
 	if _attached_segment_index == -1 or not _player:
 		return
 
-	var up_down = Input.get_axis("move_up", "move_down")
+	var up_down = Input.get_axis("climb_rope_up", "climb_rope_down")
 	_climb_to_segment(_attached_segment_index + 1 * up_down)
 
 

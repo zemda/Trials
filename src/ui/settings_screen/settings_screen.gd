@@ -55,10 +55,13 @@ var _config: ConfigFile = ConfigFile.new()
 var _action_names: Dictionary = {
 	"move_left": "Move Left",
 	"move_right": "Move Right",
-	"move_down": "Move Down",
-	"move_up": "Jump / Move Up",
+	"move_down": "Move Down (e.g., used in wall jumping)",
+	"move_up": "Jump",
 	"grapple": "Grapple",
-	"rope": "Rope",
+	"attach_rope": "Attach to rope",
+	"jump_off_rope": "Jump off rope",
+	"climb_rope_up": "Climb up rope",
+	"climb_rope_down": "Climb down rope",
 }
 
 func _ready() -> void:
