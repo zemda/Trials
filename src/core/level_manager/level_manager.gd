@@ -4,8 +4,8 @@ class_name LevelManager
 
 @export var camera_limit_left: float = 0
 @export var camera_limit_right: float = 10000
-@export var camera_limit_top: float = 0
-@export var camera_limit_bottom: float = 2000
+@export var camera_limit_top: float = -2000
+@export var camera_limit_bottom: float = 0
 
 @export var level_name: String = ""
 @export var next_level_path: String = ""
