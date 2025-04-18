@@ -60,11 +60,13 @@ func find_path(start: Vector2, end: Vector2, character_width: int = 1, character
 
 func _find_top_surface_tile(pos: Vector2i) -> Vector2i:
 	for y in range(pos.y, pos.y + 100):
-		var check_pos = Vector2i(pos.x, y)
-		var above_pos = Vector2i(pos.x, y - 1)
-		
-		if _is_solid(check_pos) and not _is_solid(above_pos):
-			return above_pos
+		for x in 6:
+			for sgn in [-1,1]:
+				var check_pos = Vector2i(pos.x + x * sgn, y)
+				var above_pos = Vector2i(pos.x + x * sgn, y - 1)
+				
+				if _is_solid(check_pos) and not _is_solid(above_pos):
+					return above_pos
 	
 	return Vector2i(-1, -1)
 
@@ -304,64 +306,42 @@ func _get_max_jump_height_for_distance(distance: int) -> int:
 
 
 func _is_jump_arc_blocked(from_pos: Vector2i, to_pos: Vector2i, character_width: int = 1, character_height: int = 1) -> bool:
-	var dx = to_pos.x - from_pos.x
-	var dy = to_pos.y - from_pos.y  # Negative when jumping up
-	
-	if abs(dx) <= 1 and abs(dy) <= 1:
-		return false
-	
-	if abs(dx) > _jump_distance or abs(dy) > _max_jump_height:
-		return true
-	
-	var num_points = max(abs(dx) * 10, abs(dy) * 10)
-	var prev_cell = from_pos
-	
-	for i in range(1, num_points + 1):
-		var t = float(i) / num_points
-		
-		var arc_pos = _calculate_jump_arc_point(from_pos, to_pos, t)
-		
-		var check_cells = [
-			Vector2i(int(round(arc_pos.x)), int(round(arc_pos.y))),
-			Vector2i(int(round(arc_pos.x)), int(round(arc_pos.y)) - 1),
-			Vector2i(int(floor(arc_pos.x)), int(round(arc_pos.y))),
-			Vector2i(int(ceil(arc_pos.x)), int(round(arc_pos.y)))
-		]
-		
-		var curr_cell = check_cells[0]
-		
-		if curr_cell == prev_cell:
-			continue
-			
-		for cell in check_cells:
-			if _character_collides_at_position(cell, character_width, character_height):
-				return true
-		
-		# moving diagonally
-		if curr_cell.x != prev_cell.x and curr_cell.y != prev_cell.y:
-			var horiz_pos = Vector2i(curr_cell.x, prev_cell.y)
-			if _character_collides_at_position(horiz_pos, character_width, character_height):
-				return true
-		
-		prev_cell = curr_cell
+#	by gpt o4
+	var dx = abs(to_pos.x - from_pos.x)
+	var sample_count = max(1, dx * 10)
+
+	for i in range(1, sample_count + 1):
+		var t = float(i) / float(sample_count)
+		var arc_point = _calculate_jump_arc_point(from_pos, to_pos, t)
+		var cell_x = int(floor(arc_point.x))
+		var cell_y = int(floor(arc_point.y))
+
+		for w in range(character_width):
+			for h in range(character_height):
+				var check_cell = Vector2i(cell_x + w, cell_y - h)
+				if _is_solid(check_cell):
+					return true
+
+		if i > 1:
+			var prev_arc = _calculate_jump_arc_point(from_pos, to_pos, float(i - 1) / float(sample_count))
+			var prev_x = int(floor(prev_arc.x))
+			var prev_y = int(floor(prev_arc.y))
+			if cell_x != prev_x and cell_y != prev_y:
+				if _is_solid(Vector2i(cell_x, prev_y)) or _is_solid(Vector2i(prev_x, cell_y)):
+					return true
 	return false
 
 
+
 func _calculate_jump_arc_point(from_pos: Vector2i, to_pos: Vector2i, t: float) -> Vector2:
-	var start_x = float(from_pos.x)
-	var start_y = float(from_pos.y)
-	var end_x = float(to_pos.x)
-	var end_y = float(to_pos.y)
-	
-	var x = lerp(start_x, end_x, t)
-	var y = 0.0
-	var dy = end_y - start_y
-	
-	if dy <= 0:  # jumping
-		y = start_y + dy * t - abs(dy) * 2 * t * (1 - t)
-	else:  # falling
-		y = start_y + dy * t - abs(dy) * 0.5 * t * (1 - t)
-	return Vector2(x, y)
+#	by gpt o4
+	var start = Vector2(from_pos)
+	var finish = Vector2(to_pos)
+	var midpoint = (start + finish) * 0.5
+	var peak = midpoint - Vector2(0, _max_jump_height)
+	var one_minus_t = 1.0 - t
+#	 bezier
+	return one_minus_t * one_minus_t * start + 2.0 * one_minus_t * t * peak + t * t * finish
 
 
 func _character_collides_at_position(pos: Vector2i, character_width: int, character_height: int) -> bool:
