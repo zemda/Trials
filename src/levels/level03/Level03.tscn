@@ -18,8 +18,8 @@
 [node name="Level03" type="Node2D" node_paths=PackedStringArray("player_start_point") groups=["gameplay_level"]]
 script = ExtResource("1_i8jwu")
 camera_limit_top = -3000.0
-camera_limit_bottom = 0.0
 level_name = "Level 03"
+next_level_path = "res://levels/level04/Level04.tscn"
 player_start_point = NodePath("PlayerStartPoint")
 respawn_height = 200.0
 
@@ -49,6 +49,7 @@ position = Vector2(249, -176)
 [node name="Pathfinder" type="Node2D" parent="." node_paths=PackedStringArray("tile_map") groups=["pathfinder_manager"]]
 script = ExtResource("5_drvkf")
 tile_map = NodePath("../Map/base")
+debug_draw_path = false
 
 [node name="LevelDoneArea" parent="." instance=ExtResource("6_n2dkn")]
 position = Vector2(3655, -1446)
