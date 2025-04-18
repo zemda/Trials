@@ -54,7 +54,6 @@ script = ExtResource("3_8pjc3")
 camera_limit_left = -480.0
 camera_limit_right = 4950.0
 camera_limit_top = -2225.0
-camera_limit_bottom = 0.0
 level_name = "Level 02"
 next_level_path = "res://levels/level03/Level03.tscn"
 player_start_point = NodePath("PlayerStartPoint")
