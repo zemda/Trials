@@ -1,5 +1,15 @@
 extends ColorRect
 
+@export_group("Material Settings")
+@export_enum("v1", "v2") var shader_choice: int = 0:
+	set(value):
+		shader_choice = value
+		_update_shader_material()
+
+var shader_paths = [
+	"res://assets/shaders/night_sky.gdshader",
+	"res://assets/shaders/night_sky_gpto3.gdshader"
+]
 
 @export_group("Background Settings")
 @export var bg_parallax_strength: float = -1.0:
@@ -125,3 +135,9 @@ extends ColorRect
 		shooting_star_speed = value
 		if material:
 			material.set_shader_parameter("shooting_star_speed", value)
+
+
+func _update_shader_material() -> void:
+	var shader_material = ShaderMaterial.new()
+	shader_material.shader = load(shader_paths[shader_choice])
+	material = shader_material
