@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://cftmvn5pjp8ac"]
+[gd_scene load_steps=28 format=3 uid="uid://cftmvn5pjp8ac"]
 
 [ext_resource type="Script" uid="uid://em7hrgt21xi1" path="res://nodes/player/player.gd" id="1_8qk58"]
 [ext_resource type="Texture2D" uid="uid://dsqxdfviphsn" path="res://assets/sprites/player/playerT.png" id="2_ekgkp"]
@@ -12,6 +12,8 @@
 [ext_resource type="Script" uid="uid://dvph8ijhe7u05" path="res://nodes/player/states/state_swinging.gd" id="10_bcgbv"]
 [ext_resource type="PackedScene" uid="uid://dmr2mqoiknm8e" path="res://nodes/grappling_hook/GrapplingHook.tscn" id="10_wpntg"]
 [ext_resource type="Script" uid="uid://bgw10w860h865" path="res://nodes/player/states/state_knockback.gd" id="11_eiqky"]
+[ext_resource type="AudioStream" uid="uid://c816wcjs7ipo2" path="res://assets/effects_sounds/player/jump_brackeysgamesitch.wav" id="13_j4qgx"]
+[ext_resource type="AudioStream" uid="uid://cd2b00yud1quq" path="res://assets/effects_sounds/player/hurt_brackeysgamesitch.wav" id="14_2xyxk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g3yig"]
 atlas = ExtResource("2_ekgkp")
@@ -180,5 +182,18 @@ scale = Vector2(1.2, 1.2)
 shape = SubResource("CapsuleShape2D_t62km")
 target_position = Vector2(0, 5)
 collision_mask = 112
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="JumpSound" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("13_j4qgx")
+bus = &"SFX"
+
+[node name="AudioListener2D" type="AudioListener2D" parent="Sounds"]
+current = true
+
+[node name="DeathSound" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("14_2xyxk")
+bus = &"SFX"
 
 [connection signal="area_entered" from="HazardDetector" to="." method="_on_hazard_detector_area_entered"]

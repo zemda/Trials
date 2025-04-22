@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://b0hjee3bw5mrw"]
+[gd_scene load_steps=7 format=3 uid="uid://b0hjee3bw5mrw"]
 
 [ext_resource type="Theme" uid="uid://dblqbcjvfvwwx" path="res://assets/font,themes/ui_theme_16.tres" id="1_a2roq"]
 [ext_resource type="Script" uid="uid://cyjixqy1wirm7" path="res://ui/start_screen/start_screen.gd" id="1_j518t"]
 [ext_resource type="PackedScene" uid="uid://di5pg5ab0mckm" path="res://ui/settings_screen/SettingsScreen.tscn" id="2_mtvo4"]
 [ext_resource type="PackedScene" uid="uid://xmvrvw8swdhe" path="res://ui/containers/stats_container.tscn" id="4_73eb4"]
 [ext_resource type="PackedScene" uid="uid://dy7ev3lgjvve1" path="res://ui/containers/talo_leaderboard_container.tscn" id="5_cthws"]
+[ext_resource type="AudioStream" uid="uid://c08u3luxcligp" path="res://assets/effects_sounds/mt-am-itch-io-menu_music.wav" id="6_cthws"]
 
 [node name="StartScreen" type="CanvasLayer" groups=["ui_screen"]]
 script = ExtResource("1_j518t")
@@ -72,3 +73,8 @@ offset_top = 275.0
 offset_right = 58.0
 offset_bottom = 301.0
 text = "v0.1.0"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_cthws")
+autoplay = true
+bus = &"Music"

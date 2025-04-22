@@ -36,25 +36,13 @@ offset_top = -2675.0
 offset_right = 5584.0
 offset_bottom = 607.0
 shader_choice = 1
-bg_parallax_strength = -1.0
-bg_time_scale = 0.3
 scale_factor = 600.2
-star_density = 0.05
 star_twinkle_speed = 1.403
-star_color = Color(1, 1, 1, 1)
 aurora_enabled = true
-aurora_intensity = 0.288
 aurora_speed = 5.0
 aurora_color1 = Color(0.641695, 0.334173, 1, 1)
 aurora_color2 = Color(0, 1, 0, 1)
-aurora_frequency = 0.379
-milkyway_enabled = true
 milkyway_intensity = 0.691
-milkyway_scale_factor = 1.675
-milkyway_color = Color(0.5, 0.5, 0.8, 0.2)
-shooting_stars_enabled = true
-shooting_star_chance = 1.0
-shooting_star_speed = 1.31
 
 [node name="DebugUi" parent="." instance=ExtResource("4_w25qm")]
 
