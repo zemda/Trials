@@ -29,6 +29,10 @@ var _pause_screen = null
 var _player_instance = null
 var _player_initialized: bool = false
 
+var _music_player: AudioStreamPlayer
+const LEVEL_MUSIC_PATH: String = "res://assets/effects_sounds/suno_level_looped.wav"
+var _is_music_initialized: bool = false
+
 
 func _ready() -> void:
 	load_times()
@@ -44,6 +48,7 @@ func _ready() -> void:
 	add_child(_timer)
 	
 	SceneChanger.scene_loaded.connect(_on_scene_loaded)
+	_initialize_music()
 
 
 func _on_timer_tick() -> void:
@@ -55,6 +60,20 @@ func _input(event) -> void:
 	if event.is_action_pressed("pause"): # TODO add also esc later
 		if !_is_loading and !_input_disabled and is_in_gameplay_level():
 			_toggle_pause()
+
+func _initialize_music():
+	_music_player = AudioStreamPlayer.new()
+	_music_player.bus = "Music"
+	
+	var music = load(LEVEL_MUSIC_PATH)
+	if music:
+		_music_player.stream = music
+	else:
+		printerr("Failed to load music: ", LEVEL_MUSIC_PATH)
+		return
+	
+	add_child(_music_player)
+	_is_music_initialized = true
 
 
 func load_level(level_path: String) -> void:
@@ -68,6 +87,7 @@ func load_level(level_path: String) -> void:
 func _on_scene_loaded() -> void:
 	_is_loading = false
 	if not is_in_gameplay_level():
+		_stop_level_music()
 		return
 
 	load_times()
@@ -250,6 +270,7 @@ func restart_game() -> void:
 	_total_game_time = 0.0
 	_completed_levels.clear()
 	LeaderboardManager.clear_skip_detection()
+	_play_level_music()
 	load_level(SceneManager.Level01Path)
 
 
@@ -268,7 +289,17 @@ func prepare_for_new_game() -> void:
 	
 	_player_instance.global_position = Vector2(-2000, 0)
 	_player_instance.visible = false
+	_play_level_music()
 
+
+func _play_level_music() -> void:
+	if _is_music_initialized and !_music_player.playing:
+		_music_player.play()
+
+
+func _stop_level_music() -> void:
+	if _is_music_initialized and _music_player.playing:
+		_music_player.stop()
 
 
 func disable_player_input() -> void:

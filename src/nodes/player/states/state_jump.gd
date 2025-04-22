@@ -24,6 +24,7 @@ func _handle_wall_jump() -> void:
 		host.velocity.x = wall_normal.x * host.movement_data.speed / 1.7 # tweak this rng nums for better wall-jumps
 		if Input.is_action_pressed("move_up"):
 			host.velocity.y = host.movement_data.jump_velocity * 0.7
+			host.jump_sound.play()
 		elif Input.is_action_pressed("move_down"):
 			host.velocity.y = host.movement_data.jump_velocity * 0.35
 
