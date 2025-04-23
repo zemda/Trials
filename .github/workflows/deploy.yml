@@ -94,9 +94,11 @@ jobs:
           name: "Release ${{ steps.version.outputs.build_version }}"
           artifacts: |
             exports/${{ env.GAME_NAME }}-Web.zip
-            exports/windows/${{ env.GAME_NAME }}-Windows.exe
+            exports/windows/${{ env.GAME_NAME }}-Windows.x86_64.exe
             exports/linux/${{ env.GAME_NAME }}-Linux.x86_64
             exports/mac/${{ env.GAME_NAME }}-macOS.zip
+            LICENSE
+            THIRD_PARTY_LICENSES.md
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
       
