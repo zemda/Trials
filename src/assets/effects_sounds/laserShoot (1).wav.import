@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c63xhe1cijo5w"
+path="res://.godot/imported/laserShoot (1).wav-145ed46890f8f807807cd8f0610c5caf.sample"
+
+[deps]
+
+source_file="res://assets/effects_sounds/laserShoot (1).wav"
+dest_files=["res://.godot/imported/laserShoot (1).wav-145ed46890f8f807807cd8f0610c5caf.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

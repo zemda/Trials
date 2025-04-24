@@ -28,11 +28,10 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 16
 tab_alignment = 1
-current_tab = 2
+current_tab = 0
 drag_to_rearrange_enabled = true
 
 [node name="Audio" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 150
 theme_override_constants/margin_right = 150
@@ -115,6 +114,7 @@ theme = ExtResource("3_1xi8o")
 theme_override_font_sizes/font_size = 16
 
 [node name="Controls" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 100
 metadata/_tab_index = 2

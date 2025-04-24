@@ -2,6 +2,7 @@ extends Enemy
 class_name Assasin
 
 @export var should_wander: bool = true
+@onready var explo_sound: AudioStreamPlayer2D = $AudioStreamPlayer2D
 
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
