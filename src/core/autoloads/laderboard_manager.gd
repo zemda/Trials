@@ -32,7 +32,7 @@ func _ensure_all_leaderboards_exist() -> void:
 
 func _create_leaderboard_if_not_exists(leaderboard_name: String) -> void:
 	var res = await Talo.leaderboards.get_entries(leaderboard_name, 0)
-	if res.entries.size() == 0:
+	if res and res.entries.size() == 0:
 		var dummy_score = 999999.0
 		await Talo.leaderboards.add_entry(leaderboard_name, dummy_score)
 
