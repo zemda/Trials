@@ -73,13 +73,13 @@ jobs:
           du -sh exports/${{ env.GAME_NAME }}-Web.zip
       
       - name: Export Windows
-        run: godot -v --export-release --headless "Windows Desktop" ../exports/windows/${{ env.GAME_NAME }}-Windows.exe src/project.godot
+        run: godot -v --export-release --headless "Windows Desktop" ../exports/windows/${{ env.GAME_NAME }}-Windows-x86_64.exe src/project.godot
       
       - name: Export Linux
-        run: godot -v --export-release --headless "Linux" ../exports/linux/${{ env.GAME_NAME }}-Linux.x86_64 src/project.godot
+        run: godot -v --export-release --headless "Linux" ../exports/linux/${{ env.GAME_NAME }}-Linux-x86_64 src/project.godot
       
       - name: Export Mac
-        run: godot -v --export-release --headless "macOS" ../exports/mac/${{ env.GAME_NAME }}-macOS.zip src/project.godot || echo "Mac export failed but continuing workflow"
+        run: godot -v --export-release --headless "macOS" ../exports/mac/${{ env.GAME_NAME }}-macOS.zip src/project.godot
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -94,8 +94,8 @@ jobs:
           name: "Release ${{ steps.version.outputs.build_version }}"
           artifacts: |
             exports/${{ env.GAME_NAME }}-Web.zip
-            exports/windows/${{ env.GAME_NAME }}-Windows.x86_64.exe
-            exports/linux/${{ env.GAME_NAME }}-Linux.x86_64
+            exports/windows/${{ env.GAME_NAME }}-Windows-x86_64.exe
+            exports/linux/${{ env.GAME_NAME }}-Linux-x86_64
             exports/mac/${{ env.GAME_NAME }}-macOS.zip
             LICENSE
             THIRD_PARTY_LICENSES.md
