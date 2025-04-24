@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c6iyc3qrwi4bo"
-path="res://.godot/imported/Bronze key.png-c37533d9811d96a3d940cc8e3bbbbd72.ctex"
+uid="uid://ycmu5qpgykqp"
+path="res://.godot/imported/splash.png-929ed8a00b89ba36c51789452f874c77.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/objects/Bronze key.png"
-dest_files=["res://.godot/imported/Bronze key.png-c37533d9811d96a3d940cc8e3bbbbd72.ctex"]
+source_file="res://splash.png"
+dest_files=["res://.godot/imported/splash.png-929ed8a00b89ba36c51789452f874c77.ctex"]
 
 [params]
 
