@@ -379,10 +379,9 @@ func _apply_settings_to_ui() -> void:
 
 
 func _apply_settings_to_game() -> void:
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), linear_to_db(_current_settings.audio.master_volume)) # TODO rest & test
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), linear_to_db(_current_settings.audio.master_volume))
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), linear_to_db(_current_settings.audio.music_volume))
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), linear_to_db(_current_settings.audio.sfx_volume))
-	print(linear_to_db(_current_settings.audio.music_volume))
 
 	_apply_resolution_and_fullscreen()
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if 
