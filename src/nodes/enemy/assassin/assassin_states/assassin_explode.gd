@@ -19,6 +19,8 @@ func _transition() -> int:
 
 
 func _explode() -> void:
+	if not host.explo_sound.is_playing():
+		host.explo_sound.play()
 	_explosion_animation_started = true
 	
 	var direction_vector = host._player.global_position - host.global_position

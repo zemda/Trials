@@ -126,12 +126,12 @@ func apply_air_resistance(input_axis: float, delta: float) -> void:
 func handle_jump() -> void:
 	if is_on_floor():
 		if Input.is_action_pressed("move_up"):
-			jump_sound.play()
+			if not jump_sound.is_playing():
+				jump_sound.play()
 			velocity.y = movement_data.jump_velocity
 	else:
 		if Input.is_action_just_released("move_up") and velocity.y < movement_data.jump_velocity / 2:
 			velocity.y = movement_data.jump_velocity / 2.0
-			#jump_sound.play()
 
 
 func update_animations(input_axis: float) -> void:
@@ -167,5 +167,6 @@ func _on_hazard_detector_area_entered(_area: Area2D) -> void:
 	_knockback_velocity = Vector2.ZERO
 	fsm.change_state_to_default()
 	is_dead = true
-	death_sound.play()
+	if not death_sound.is_playing():
+		death_sound.play()
 	emit_signal("player_death")

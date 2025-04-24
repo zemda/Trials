@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cvnue72u1abtj"]
+[gd_scene load_steps=18 format=3 uid="uid://cvnue72u1abtj"]
 
 [ext_resource type="Script" uid="uid://0o5o22u55i65" path="res://nodes/enemy/assassin/assassin.gd" id="1_a1hb5"]
 [ext_resource type="Texture2D" uid="uid://cpopuh33exisv" path="res://assets/sprites/enemy/necro/idle/necromancer_idle_anim_f0.png" id="2_a1hb5"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://crttgkiygb2un" path="res://nodes/enemy/assassin/assassin_states/assassin_wander.gd" id="7_mqojr"]
 [ext_resource type="Texture2D" uid="uid://d1d7xl2edlp4t" path="res://assets/sprites/enemy/necro/run/necromancer_run_anim_f2.png" id="8_omeni"]
 [ext_resource type="Texture2D" uid="uid://cr86gr3f5qsal" path="res://assets/sprites/enemy/necro/run/necromancer_run_anim_f3.png" id="9_yhimi"]
+[ext_resource type="AudioStream" uid="uid://n8k12fj88hwo" path="res://assets/effects_sounds/enemy/explosion.wav" id="15_kscjl"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_r1uoc"]
 animations = [{
@@ -94,3 +95,7 @@ collision_mask = 2
 
 [node name="WallDetection" type="RayCast2D" parent="."]
 position = Vector2(0, -22)
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("15_kscjl")
+bus = &"SFX"
