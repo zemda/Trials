@@ -54,7 +54,6 @@ debug_draw_path = false
 
 [node name="LevelDoneArea" parent="." instance=ExtResource("6_n2dkn")]
 position = Vector2(3655, -1446)
-is_final_level = true
 scale_factor = 0.3
 normal_color = Color(0.507915, 0.0019002, 0.735797, 1)
 
