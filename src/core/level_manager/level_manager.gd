@@ -47,6 +47,8 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if _player and _player.global_position.y > respawn_height:
+		if not _player.death_sound.is_playing():
+			_player.death_sound.play()
 		_on_player_death()
 	
 	if Input.is_action_just_pressed("ui_cancel"): # TODO just for test
