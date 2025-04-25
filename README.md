@@ -5,8 +5,7 @@ Navigate through intricate levels using these mechanics:
 
 ### Grappling Hook
 - **Activated with Left Mouse Button**
-- Attachable to specific blue line "points" starting from Level 03 (till then can be used to detect collisions...). 
-- Points might have some chance to be only one time use
+- Attachable to specific blue line "points" starting from Level 03. Points might have some chance to be only one time use
 
 ### Attachable Rope
 - **Triggered by pressing the E Key**
@@ -25,15 +24,14 @@ Navigate through intricate levels using these mechanics:
 ## Leaderboard System
 - Powered by Talo
 - Tracks best times per level and continuous run
-- Only randomly generated player names :( (saved in user://)
+- Only randomly generated player names :(
 
 ## Notes
 - Skipping levels will prevent time tracking
 - Clearing cache resets your account (pls don't)
-- Only the best times are saved into leaderboard
-- **Hint**: In Level 02, use enemy explosions to your advantage
+- Only the best times are saved into leaderboard (online leaderboard UI might be buggy)
+- It is meant to be hard
 
 ## Assets
-- Tileset from uheartbeast
-- *Sounds are missing, some effects/animations might be incomplete*
-- *UI is not perfectly aligned, leaderboard might be buggy*
+- Tileset from [uheartbeast](https://github.com/uheartbeast)
+- Level background music generated via Suno
