@@ -71,9 +71,8 @@ func _process_teleport(player: Player) -> void:
 	var tween = create_tween()
 	
 	var portal_center_y = global_position.y
-	tween.tween_property(player, "global_position:y", portal_center_y, 0.3)
 	
-	tween.parallel().tween_property(dest_circle, "scale", Vector2(1.0, 1.0), fade_time * 0.3)
+	tween.parallel().tween_property(dest_circle, "scale", Vector2(1.0, 1.0), 0.1)
 	
 	tween.tween_callback(func():
 		player.global_position = target_pos
