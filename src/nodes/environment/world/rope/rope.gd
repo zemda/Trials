@@ -75,6 +75,8 @@ func _unlink_player_from_rope() -> void:
 	_attached_segment_index = -1
 
 	boost.x = clamp(boost.x, -370, 350)
+	if not _player.jump_sound.is_playing():
+		_player.jump_sound.play()
 	_player.velocity = Vector2.ZERO
 	_player.velocity += boost
 
