@@ -28,6 +28,7 @@ func _ensure_all_leaderboards_exist() -> void:
 	_create_leaderboard_if_not_exists(LEVEL_TIME_LEADERBOARD_PREFIX + "Level01")
 	_create_leaderboard_if_not_exists(LEVEL_TIME_LEADERBOARD_PREFIX + "Level02")
 	_create_leaderboard_if_not_exists(LEVEL_TIME_LEADERBOARD_PREFIX + "Level03")
+	_create_leaderboard_if_not_exists(LEVEL_TIME_LEADERBOARD_PREFIX + "Level04")
 
 
 func _create_leaderboard_if_not_exists(leaderboard_name: String) -> void:
@@ -100,6 +101,11 @@ func get_all_leaderboards() -> Array:
 	leaderboards.append({
 		"name": "Level03",
 		"id": LEVEL_TIME_LEADERBOARD_PREFIX + "Level03"
+	})
+	
+	leaderboards.append({
+		"name": "Level04",
+		"id": LEVEL_TIME_LEADERBOARD_PREFIX + "Level04"
 	})
 	
 	return leaderboards
