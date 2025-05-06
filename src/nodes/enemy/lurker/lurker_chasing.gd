@@ -1,8 +1,8 @@
 extends EnemyChasing
 
-@export var max_chase_time: float = 10.0
-@export var max_chase_distance: float = 400.0
-@export var return_after_no_player_time: float = 3.0
+@export_range(1.0, 10000.0) var max_chase_time: float = 10.0
+@export_range(1.0, 10000.0) var max_chase_distance: float = 400.0
+@export_range(1.0, 10000.0) var return_after_no_player_time: float = 3.0
 
 var _chase_timer: float = 0.0
 var _no_player_timer: float = 0.0

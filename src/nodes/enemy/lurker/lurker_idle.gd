@@ -1,7 +1,7 @@
 extends EnemyIdle
 
-@export var ceiling_search_interval: float = 2.0
-@export var max_idle_time: float = 30.0
+@export_range(0.0, 1000.0) var ceiling_search_interval: float = 2.0
+@export_range(1.0, 1000.0) var max_idle_time: float = 30.0
 
 var _ceiling_search_timer: float = 0.0
 var _idle_ceiling_timer: float = 0.0

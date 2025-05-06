@@ -2,8 +2,8 @@ extends Area2D
 
 
 @export_category("Teleport Settings")
-@export var correct_chance: float = 0.75
-@export var fade_time: float = 0.5
+@export_range(0.0, 1.0) var correct_chance: float = 0.75
+@export_range(0.1, 100.0) var fade_time: float = 0.5
 
 @export_category("Visual Settings")
 @export_range(0.5, 10.0) var scale_factor: float = 1.0

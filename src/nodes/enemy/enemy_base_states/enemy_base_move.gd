@@ -2,7 +2,7 @@ class_name EnemyMove
 extends FSMState
 
 
-@export var chasing_threshold: float = 130
+@export_range(1.00, 1000.0) var chasing_threshold: float = 130
 
 const NO_TARGET: Vector2 = Vector2(-9999999, -9999999)
 

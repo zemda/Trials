@@ -5,8 +5,8 @@ extends Node2D
 @export var hook: PackedScene
 @export var segment_settings_resource: SegmentData
 @export var hook_settings_resource: SegmentData
-@export var segment_count: int = 5
-@export var segment_spacing := 6.0
+@export_range(1, 20) var segment_count: int = 5
+@export_range(1.0, 100.0) var segment_spacing: float = 6.0
 
 var segments = []
 

@@ -1,11 +1,11 @@
 extends CharacterBody2D
 class_name Enemy
 
-@export var max_jump_height: int = 4
-@export var max_jump_distance: int = 8
+@export_range(1, 100) var max_jump_height: int = 4
+@export_range(1, 100) var max_jump_distance: int = 8
 
-@export var player_height: int = 1
-@export var player_width: int = 1
+@export_range(1, 10) var player_height: int = 1
+@export_range(1, 10) var player_width: int = 1
 @export var debug_draw: bool = true
 
 @onready var _wall_raycast: RayCast2D = $WallDetection
@@ -32,7 +32,7 @@ var _gravity_enabled: bool = true
 
 @export var _projectile_scene: PackedScene
 var _can_shoot: bool = true
-@export var _shoot_cooldown: float = 1.5
+@export_range(0.1, 100.0) var _shoot_cooldown: float = 1.5
 var _shoot_timer: float = 0.0
 var _shoot_range: float = 200.0
 

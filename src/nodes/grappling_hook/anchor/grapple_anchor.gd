@@ -3,7 +3,7 @@ extends Area2D
 signal hit_hookable(position, collider)
 signal failed
 
-@export var speed := 800.0
+@export_range(1.00, 10000.0) var speed: float = 800.0
 var _direction := Vector2.ZERO
 var _max_distance := 500.0
 var _distance_traveled := 0.0

@@ -1,9 +1,9 @@
 extends Area2D
 class_name HookPoint
 
-@export var one_time_use_chance: float = 0.5
+@export_range(0.0, 1.0) var one_time_use_chance: float = 0.5
 @export var is_one_time_use: bool = true
-@export var x_scale: int = 1
+@export_range(1, 100) var x_scale: int = 1
 
 @export_category("Visual Settings")
 @export_range(1.0, 10.0) var line_height: float = 8.0:

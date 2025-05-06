@@ -2,9 +2,9 @@ extends Path2D
 class_name MovingPlatform
 
 
-@export var platform_length: int = 3
-@export var loop_speed: float = 0.2: set = set_loop_speed
-@export var not_loop_speed: float = 0.5: set = set_not_loop_speed
+@export_range(1, 100) var platform_length: int = 3
+@export_range(0.1, 1000.0) var loop_speed: float = 0.2: set = set_loop_speed
+@export_range(0.1, 1000.0) var not_loop_speed: float = 0.5: set = set_not_loop_speed
 @export var loop: bool = false
 
 @onready var _path_follow: PathFollow2D = $PathFollow2D

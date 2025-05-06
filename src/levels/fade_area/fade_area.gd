@@ -1,8 +1,8 @@
 extends Area2D
 
-@export var fade_duration: float = 0.4
-@export var visible_alpha: float = 1.0
-@export var hidden_alpha: float = 0.1
+@export_range(0.0, 100.0) var fade_duration: float = 0.4
+@export_range(0.0, 100.0) var visible_alpha: float = 1.0
+@export_range(0.0, 100.0) var hidden_alpha: float = 0.1
 
 var _ease_type: Tween.EaseType = Tween.EASE_OUT
 var _transition_type: Tween.TransitionType = Tween.TRANS_SINE

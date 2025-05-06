@@ -19,6 +19,34 @@ var _used_cells_dict: Dictionary = {}
 var _used_cells_vect: Array[Vector2i] = []
 
 
+# NOTE: Current limitations and future improvements
+#
+# LIMITATIONS:
+# - This pathfinding implementation doesnt account for the width and height of the
+#   enemy entity using it (even tho its partialy prepared to)
+# - May not function correctly for jumps that exceed the default maximum jump height
+#   or distance
+#
+# TODO:
+# - Move jump force calculation from pathfinder to enemy script:
+#   Currently, the pathfinder provides metadata about jump force, but this logic
+#   should be handled by individual enemy scripts
+# - Improve get_max_jump_height_for_distance() to be calculated based on init
+#
+# POTENTIAL IMPLEMENTATION APPROACH:
+# - Create a unified pathfinding system with a shared navigation graph containing
+#   all possible connections for maximum jump parameters (e.g., 1-20 blocks distance,
+#   1-8 blocks height).
+# - When calling find_path(), pass specific enemy parameters (max_jump_height,
+#   max_jump_distance, width, height).
+# - During pathfinding, filter available graph edges based on these parameters.
+# - This approach would primarily require:
+#   1. Implementing ideal jump arc calculation to check for obstacles in the trajectory
+#   2. Correctly determining the maximum possible entity size for each jump
+#   3. Custom A* implementation instead of using Godots built in functionality (that is not great cuz doesnt offer weighted edges, but only vertices)
+#
+# This implementation serves as a functional prototype for 2D platformer pathfinding, it should be possible  to easily implmenet the improvements mentioned above
+
 func _init(tile_map: TileMapLayer, max_jump_height: int = 4, jump_distance: int = 7) -> void:
 	_tile_map = tile_map
 	_used_cells_vect = _tile_map.get_used_cells()
@@ -306,7 +334,7 @@ func _get_max_jump_height_for_distance(distance: int) -> int:
 
 
 func _is_jump_arc_blocked(from_pos: Vector2i, to_pos: Vector2i, character_width: int = 1, character_height: int = 1) -> bool:
-#	by gpt o4
+#	by gpt o4, todo impl the character dimension checks properly
 	var dx = abs(to_pos.x - from_pos.x)
 	var sample_count = max(1, dx * 10)
 
@@ -342,15 +370,6 @@ func _calculate_jump_arc_point(from_pos: Vector2i, to_pos: Vector2i, t: float) -
 	var one_minus_t = 1.0 - t
 #	 bezier
 	return one_minus_t * one_minus_t * start + 2.0 * one_minus_t * t * peak + t * t * finish
-
-
-func _character_collides_at_position(pos: Vector2i, character_width: int, character_height: int) -> bool:
-	for w in range(character_width):
-		for h in range(character_height):
-			var check_pos = Vector2i(pos.x + w, pos.y - h)
-			if _is_solid(check_pos):
-				return true
-	return false
 
 
 func _is_solid(pos: Vector2i) -> bool:

@@ -1,14 +1,14 @@
 extends Area2D
 class_name DestructiblePlatform
 
-@export var platform_length: int = 1
-@export var destruction_time: float = 1.5
-@export var tile_fall_delay: float = 0.15
-@export var fall_distance: float = 150.0
-@export var fall_duration: float = 0.5
-@export var fade_duration: float = 0.3
-@export var initial_shake_intensity: float = 2.0
-@export var max_shake_intensity: float = 10.0
+@export_range(1, 100) var platform_length: int = 1
+@export_range(0.1, 100.0) var destruction_time: float = 1.5
+@export_range(0.1, 100.0) var tile_fall_delay: float = 0.15
+@export_range(1, 10000) var fall_distance: float = 150.0
+@export_range(0.1, 100.0) var fall_duration: float = 0.5
+@export_range(0.0, 100.0) var fade_duration: float = 0.3
+@export_range(0.0, 100.0) var initial_shake_intensity: float = 2.0
+@export_range(1.0, 100.0) var max_shake_intensity: float = 10.0
 @export var warning_particles_color: Color = Color(0.9, 0.6, 0.3, 1.0)
 @export var destruction_particles_color: Color = Color(0.7, 0.7, 0.7, 1.0)
 

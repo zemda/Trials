@@ -1,9 +1,9 @@
 extends CharacterBody2D
 
 
-@export var projectile_speed: float = 2000.0
-@export var knockback_force: float = 20.0
-@export var arc: float = 10.0
+@export_range(1.00, 50000.0) var projectile_speed: float = 2000.0
+@export_range(1.00, 100.0) var knockback_force: float = 20.0
+@export_range(1.0, 1000.0) var arc: float = 10.0
 
 var is_shooter_on_ceiling: bool = false
 var shooter_position: Vector2 = Vector2.ZERO

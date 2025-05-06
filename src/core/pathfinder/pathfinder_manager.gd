@@ -3,8 +3,8 @@ class_name PathfinderManager
 
 @export var tile_map: TileMapLayer
 @export var debug_draw_path: bool = true
-@export var max_jump_height: int = 4
-@export var max_jump_distance: int = 7 # TODO: might do per enemy
+@export_range(1, 10) var max_jump_height: int = 4
+@export_range(1, 20) var max_jump_distance: int = 7 # TODO: might do per enemy
 
 var _player: Player
 var _pathfinder: Pathfinder

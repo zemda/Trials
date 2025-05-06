@@ -1,9 +1,9 @@
 extends Camera2D
 
-@export var teleport_threshold: float = 60.0
-@export var base_smoothing_speed: float = 5.0
-@export var max_smoothing_speed: float = 15.0 
-@export var velocity_threshold: float = 300.0
+@export_range(1, 100.0) var teleport_threshold: float = 60.0
+@export_range(1, 100.0) var base_smoothing_speed: float = 5.0
+@export_range(1, 100.0) var max_smoothing_speed: float = 15.0 
+@export_range(1, 100.0) var velocity_threshold: float = 300.0
 
 var previous_parent_position: Vector2
 var first_frame: bool = true

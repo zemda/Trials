@@ -1,7 +1,7 @@
 extends EnemyLurking
 
-@export var chase_chance: float = 0.02
-@export var detection_distance_bonus: float = 48.0
+@export_range(0.0, 1.0) var chase_chance: float = 0.02
+@export_range(1.0, 1000.0) var detection_distance_bonus: float = 48.0
 
 
 func _enter() -> void:

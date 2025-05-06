@@ -2,7 +2,7 @@ extends Node
 
 signal scene_loaded
 
-@export var max_load_time = 10000 # 10 seconds max loading time
+var max_load_time: int = 10000 # 10 seconds max loading time
 
 var _is_changing_scene: bool = false
 
