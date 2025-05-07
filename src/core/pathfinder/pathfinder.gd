@@ -28,9 +28,6 @@ var _used_cells_vect: Array[Vector2i] = []
 #   or distance
 #
 # TODO:
-# - Move jump force calculation from pathfinder to enemy script:
-#   Currently, the pathfinder provides metadata about jump force, but this logic
-#   should be handled by individual enemy scripts
 # - Improve get_max_jump_height_for_distance() to be calculated based on init
 #
 # POTENTIAL IMPLEMENTATION APPROACH:
@@ -87,7 +84,7 @@ func find_path(start: Vector2, end: Vector2, character_width: int = 1, character
 
 
 func _find_top_surface_tile(pos: Vector2i) -> Vector2i:
-	for y in range(pos.y, pos.y + 100):
+	for y in range(pos.y, pos.y + 5):
 		for x in 6:
 			for sgn in [-1,1]:
 				var check_pos = Vector2i(pos.x + x * sgn, y)
@@ -274,17 +271,7 @@ func _generate_path(start_grid: Vector2i, end_grid: Vector2i, _character_width: 
 				
 				node["height"] = dy
 				node["distance"] = dx
-				node["jump_force"] = (
-					190.0 if dy == 1 and dx <= 3 else
-					230.0 if dy == 1 and dx <= 4 else
-					270.0 if dy == 1 and dx <= 5 else
-					340.0 if dy == 1 and dx <= 6 else
-					370.0 if dy == 1 and dx <= 7 else
-					275.0 if dy <= 2 and dx <= 3 else
-					320.0 if dy <= 2 and dx <= 6 else
-					335.0 if dy <= 3 and dx <= 4 else
-					380.0
-				)
+
 				if not is_on_surface:
 					if (i+1) <= id_path.size():
 						rewrite_last_and_skip_this = true

@@ -82,10 +82,35 @@ func _next_point() -> void:
 		
 	if next_node.get("type", "move") == "jump":
 		if host.is_on_floor():
-			var jump_force = next_node.get("jump_force", 380)
+			var dy = next_node.get("height", -1)
+			var dx = next_node.get("distance", -1)
+			
+			var jump_force = calculate_jump_force(dy, dx)
+			#var jump_force = next_node.get("jump_force", 380)
 			host.velocity.y = -jump_force
 	
 	_current_target = next_node.position
+
+
+func calculate_jump_force(dy: float, dx: float) -> float:
+	if dy == 1 and dx <= 3:
+		return 190.0
+	elif dy == 1 and dx <= 4:
+		return 230.0
+	elif dy == 1 and dx <= 5:
+		return 270.0
+	elif dy == 1 and dx <= 6:
+		return 340.0
+	elif dy == 1 and dx <= 7:
+		return 370.0
+	elif dy <= 2 and dx <= 3:
+		return 275.0
+	elif dy <= 2 and dx <= 6:
+		return 320.0
+	elif dy <= 3 and dx <= 4:
+		return 335.0
+	else:
+		return 380.0
 
 
 func _check_if_stuck(delta: float) -> void:
