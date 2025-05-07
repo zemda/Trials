@@ -28,7 +28,7 @@ var _used_cells_vect: Array[Vector2i] = []
 #   or distance
 #
 # TODO:
-# - Improve get_max_jump_height_for_distance() to be calculated based on init
+# - Improve get_max_jump_height_for_distance() to be calculated based on probably init or something, differs for different enemy speed
 #
 # POTENTIAL IMPLEMENTATION APPROACH:
 # - Create a unified pathfinding system with a shared navigation graph containing
@@ -61,7 +61,7 @@ func _init(tile_map: TileMapLayer, max_jump_height: int = 4, jump_distance: int 
 	_max_jump_height = max_jump_height
 	_jump_distance = jump_distance
 	#print("PathFinder initialized")
-	_create_grid(0, max_x, min_y, -1)
+	_create_grid(0, max_x, min_y, -1) # NOTE adjust if map might be in all quadrants
 	_create_connections()
 
 
@@ -75,17 +75,17 @@ func find_path(start: Vector2, end: Vector2, character_width: int = 1, character
 	if end_grid == Vector2i(-1, -1):
 		#print("No valid surface tile found")
 		return []
-
+	
 	var path = _generate_path(start_grid, end_grid, character_width, character_height)
-
+	
 	_path_to_draw = path
 	queue_redraw()
 	return path
 
 
 func _find_top_surface_tile(pos: Vector2i) -> Vector2i:
-	for y in range(pos.y, pos.y + 5):
-		for x in 6:
+	for y in range(pos.y, pos.y + 5): 
+		for x in 6: # NOTE: this might cause that it wont find our desired path... but on the other hand, when player is in jump, this will find desired path somewhere next to him and not under him...
 			for sgn in [-1,1]:
 				var check_pos = Vector2i(pos.x + x * sgn, y)
 				var above_pos = Vector2i(pos.x + x * sgn, y - 1)
@@ -228,7 +228,7 @@ func _generate_path(start_grid: Vector2i, end_grid: Vector2i, _character_width: 
 	
 	var start_id = grid_to_id[start_grid]
 	var end_id = grid_to_id[end_grid]
-	var id_path = astar.get_id_path(start_id, end_id, true)
+	var id_path = astar.get_id_path(start_id, end_id, false) # NOTE: if true, then it might return path ending somewhere in the air... but it might get the enemy closer, soooooooooooooooo
 	
 	if id_path.size() == 0:
 		#print("No path found")
@@ -302,7 +302,7 @@ func _can_jump_to(from_pos: Vector2i, to_pos: Vector2i) -> bool:
 	return dy <= max_height
 
 
-func _get_max_jump_height_for_distance(distance: int) -> int:
+func _get_max_jump_height_for_distance(distance: int) -> int: # NOTE "hardcoded", its adjusted to this games enemy speed/jump forces
 	if distance <= 0:
 		return _max_jump_height + 1
 	elif distance >= _jump_distance:
