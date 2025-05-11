@@ -29,7 +29,7 @@ func _physics_process(delta: float) -> void:
 			_unlink_player_from_rope()
 		
 	elif _player_in_range:
-		if Input.is_action_just_pressed("attach_rope"):
+		if Input.is_action_just_pressed("attach_rope"): # TODO should be handled in player files, so we can adjust from which state he can attach etc... _player_in_range -> rope_in_range in players script, if input in player script/states, then transition to rope state and call this link, ez
 			_link_player_to_rope()
 
 

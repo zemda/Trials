@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://di5pg5ab0mckm" path="res://ui/settings_screen/SettingsScreen.tscn" id="2_mtvo4"]
 [ext_resource type="PackedScene" uid="uid://xmvrvw8swdhe" path="res://ui/containers/stats_container.tscn" id="4_73eb4"]
 [ext_resource type="PackedScene" uid="uid://dy7ev3lgjvve1" path="res://ui/containers/talo_leaderboard_container.tscn" id="5_cthws"]
-[ext_resource type="AudioStream" uid="uid://c08u3luxcligp" path="res://assets/effects_sounds/mt-am-itch-io-menu_music.wav" id="6_cthws"]
+[ext_resource type="AudioStream" uid="uid://ct53ekv5a3l5i" path="res://assets/effects_sounds/mt-am-itch-io-menu_music.ogg" id="6_cthws"]
 
 [node name="StartScreen" type="CanvasLayer" groups=["ui_screen"]]
 script = ExtResource("1_j518t")

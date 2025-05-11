@@ -30,7 +30,7 @@ var _player_instance = null
 var _player_initialized: bool = false
 
 var _music_player: AudioStreamPlayer
-const LEVEL_MUSIC_PATH: String = "res://assets/effects_sounds/suno_level_looped.wav"
+const LEVEL_MUSIC_PATH: String = "res://assets/effects_sounds/suno_level_looped.ogg"
 var _is_music_initialized: bool = false
 
 

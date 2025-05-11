@@ -86,7 +86,6 @@ func _next_point() -> void:
 			var dx = next_node.get("distance", -1)
 			
 			var jump_force = calculate_jump_force(dy, dx)
-			#var jump_force = next_node.get("jump_force", 380)
 			host.velocity.y = -jump_force
 	
 	_current_target = next_node.position
