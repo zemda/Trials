@@ -84,7 +84,7 @@ func find_path(start: Vector2, end: Vector2, character_width: int = 1, character
 
 
 func _find_top_surface_tile(pos: Vector2i) -> Vector2i:
-	for y in range(pos.y, pos.y + 5): 
+	for y in range(pos.y, pos.y + 12): 
 		for x in 6: # NOTE: this might cause that it wont find our desired path... but on the other hand, when player is in jump, this will find desired path somewhere next to him and not under him...
 			for sgn in [-1,1]:
 				var check_pos = Vector2i(pos.x + x * sgn, y)

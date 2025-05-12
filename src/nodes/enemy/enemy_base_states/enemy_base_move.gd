@@ -32,7 +32,7 @@ func _handle_player_behind_wall_chasing(is_mid_jump: bool) -> void:
 
 
 func _handle_lost_player_chasing(is_mid_jump: bool) -> void:
-	if host._player_last_known_position != NO_TARGET:
+	if (host._player_last_known_position != NO_TARGET and _current_path.is_empty()) or _stuck_timer > _stuck_timeout:
 		_chase_last_known_position(is_mid_jump)
 
 
