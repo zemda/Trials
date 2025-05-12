@@ -104,6 +104,7 @@ func _process_unwrapping() -> void:
 
 
 func apply_grapple_physics(delta: float) -> void:
+	# claude help slop
 	const DESIRED_RADIAL_SPEED = 400
 	const RADIAL_ACCEL_FACTOR = 0.9
 	const INITIAL_SWING_SPEED = 100
