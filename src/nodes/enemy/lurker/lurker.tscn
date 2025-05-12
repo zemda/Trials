@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://ch2058mukqhnb"]
+[gd_scene load_steps=26 format=3 uid="uid://ch2058mukqhnb"]
 
 [ext_resource type="Script" uid="uid://d0od5pvgcquf1" path="res://nodes/enemy/lurker/lurker.gd" id="1_fo7qf"]
 [ext_resource type="PackedScene" uid="uid://v1oqu883jhhh" path="res://nodes/projectile/Projectile.tscn" id="2_c8vxq"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://8jsp1321b2iq" path="res://nodes/enemy/lurker/lurker_chasing.gd" id="7_u88lk"]
 [ext_resource type="Script" uid="uid://btvw0qq7ppg35" path="res://nodes/enemy/lurker/lurker_attaching_ceiling.gd" id="8_1ag4h"]
 [ext_resource type="Script" uid="uid://du1ap7cx13uke" path="res://nodes/enemy/lurker/state_returning_to_ceiling.gd" id="9_1ag4h"]
+[ext_resource type="Script" uid="uid://chr82pnq6m6ix" path="res://nodes/enemy/lurker/lurker_states/lurker_wander.gd" id="11_sweu0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_u88lk"]
 atlas = ExtResource("3_2c6nf")
@@ -136,7 +137,6 @@ script = ExtResource("5_0nlyp")
 
 [node name="state_idle" type="Node" parent="FSM"]
 script = ExtResource("7_1ag4h")
-_should_wander = false
 
 [node name="state_chasing" type="Node" parent="FSM"]
 script = ExtResource("7_u88lk")
@@ -146,6 +146,9 @@ script = ExtResource("9_1ag4h")
 
 [node name="state_attaching_ceiling" type="Node" parent="FSM"]
 script = ExtResource("8_1ag4h")
+
+[node name="state_wander" type="Node" parent="FSM"]
+script = ExtResource("11_sweu0")
 
 [node name="PlayerDetection" type="RayCast2D" parent="."]
 collision_mask = 2

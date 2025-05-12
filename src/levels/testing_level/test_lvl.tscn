@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://fsxe3pnrpvr5" path="res://levels/level_tile_map.tscn" id="7_0vv7q"]
 [ext_resource type="PackedScene" uid="uid://dg6qa72um6jsk" path="res://nodes/enemy/test_for_pf/test_for_pf.tscn" id="8_u0f1p"]
 
-[node name="Level05" type="Node2D" node_paths=PackedStringArray("player_start_point") groups=["gameplay_level"]]
+[node name="Test level" type="Node2D" node_paths=PackedStringArray("player_start_point") groups=["gameplay_level"]]
 script = ExtResource("1_g6c05")
 player_start_point = NodePath("PlayerStartPoint")
 
